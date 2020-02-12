@@ -1,0 +1,8 @@
+{
+	"BuildId": "10570792",
+	"Modules": 
+	{
+		"ALegendaryMine": "UE4Editor-ALegendaryMine.dll",
+		"RoomTemplateDesigner": "UE4Editor-RoomTemplateDesigner.dll"
+	}
+}
