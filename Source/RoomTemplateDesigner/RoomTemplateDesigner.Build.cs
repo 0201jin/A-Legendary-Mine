@@ -38,6 +38,7 @@ public class RoomTemplateDesigner : ModuleRules
                 "Json",
                 "Slate",
                 "SlateCore",
+                "EditorWidgets",
                 "Engine",
                 "InputCore",
                 "UnrealEd", // for FAssetEditorManager
