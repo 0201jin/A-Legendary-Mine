@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "SlateBasics.h"
 #include "MyCustomAsset.h"
+#include "WorkflowOrientedApp/SContentReference.h"
 
 class UMyCustomAsset;
 class FCustomAssetEditor;
@@ -18,6 +19,8 @@ public:
 
 	void Construct(const FArguments& Args);
 	FReply ButtonPressed();
+	void SetReference(UObject* Object);
+	UObject* GetFreference() const;
 	void ListItemClick(TSharedPtr<FMeshData> SelectItem);
 
 	/* Adds a new textbox with the string to the list */
@@ -30,4 +33,7 @@ public:
 
 	/* The actual UI list */
 	TSharedPtr<STileView<TSharedPtr<FMeshData>>> ListViewWidget;
+
+	TSharedPtr<SContentReference> ContentReferencePtr;
+	UObject * ContentObject;
 };

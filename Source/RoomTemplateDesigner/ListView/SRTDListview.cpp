@@ -9,7 +9,7 @@
 #include "AssetThumbnail.h"
 #include "ImageUtils.h"
 #include "Widgets/SWidget.h"
-#include "WorkflowOrientedApp/SContentReference.h"
+#include "SAssetDropTarget.h"
 
 void SRTDListview::Construct(const FArguments & Args)
 {
@@ -21,6 +21,18 @@ void SRTDListview::Construct(const FArguments & Args)
 		Items.Add(MakeShareable(new FMeshData(ISMData)));
 	}
 
+	ContentReferencePtr = SNew(SContentReference)
+		.AllowedClass(UStaticMesh::StaticClass())
+		//.AllowedClass(AActor::StaticClass())
+		.AllowSelectingNewAsset(true)
+		.AllowClearingReference(true)
+		.ShowFindInBrowserButton(true)
+		.AssetReference(this, &SRTDListview::GetFreference)
+		.ShowToolsButton(false)
+		.WidthOverride(250.0f)
+		.InitialAssetViewType(EAssetViewType::Tile)
+		.OnSetReference(this, &SRTDListview::SetReference);
+
 	ChildSlot
 		[
 			SNew(SScrollBox)
@@ -29,11 +41,15 @@ void SRTDListview::Construct(const FArguments & Args)
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
 		[
-			SNew(SContentReference)
-			//.AssetReference(this, &FPersona::GetMeshAsObject)
-			.AllowSelectingNewAsset(false)
-			.AllowClearingReference(false)
-			.WidthOverride(80.0f)
+			SNew(SAssetDropTarget)
+			[
+				ContentReferencePtr.ToSharedRef()
+			]
+			//SNew(SContentReference)
+			////.AssetReference(this, &FPersona::GetMeshAsObject)
+			//.AllowSelectingNewAsset(false)
+			//.AllowClearingReference(false)
+			//.WidthOverride(80.0f)
 		]
 	+ SHorizontalBox::Slot()
 		[
@@ -47,7 +63,7 @@ void SRTDListview::Construct(const FArguments & Args)
 		[
 			SAssignNew(ListViewWidget, STileView<TSharedPtr<FMeshData>>)
 			.ItemWidth(128)
-		.ItemHeight(128)
+		.ItemHeight(148)
 		.ListItemsSource(&Items)
 		.OnGenerateTile(this, &SRTDListview::OnGenerateRowForList)
 		.OnMouseButtonClick_Raw(this, &SRTDListview::ListItemClick)
@@ -58,17 +74,32 @@ void SRTDListview::Construct(const FArguments & Args)
 FReply SRTDListview::ButtonPressed()
 {
 	//애셋 브라우저와 연결 후 데이터 받아오기
+	
+	if (ContentObject != nullptr)
+	{
+		FMeshData MD;
+		MD.MeshData = ContentObject->GetPathName();
+		MD.ArrayIndex = AssetData->MeshDataArr.Num();
 
-	FMeshData MD;
-	MD.MeshData = "StaticMesh'/Engine/BasicShapes/Cube.Cube'";
-	MD.ArrayIndex = AssetData->MeshDataArr.Num();
+		AssetData->MeshDataArr.Add(MD);
+		Items.Add(MakeShareable(new FMeshData(MD)));
 
-	AssetData->MeshDataArr.Add(MD);
-	Items.Add(MakeShareable(new FMeshData(MD)));
+		ListViewWidget->RequestListRefresh();
 
-	ListViewWidget->RequestListRefresh();
+		UE_LOG(LogTemp, Log, TEXT("%s"), *ContentObject->GetPathName());
+	}
 
 	return FReply::Handled();
+}
+
+void SRTDListview::SetReference(UObject * Object)
+{
+	ContentObject = Object;
+}
+
+UObject * SRTDListview::GetFreference() const
+{
+	return ContentObject;
 }
 
 void SRTDListview::ListItemClick(TSharedPtr<FMeshData> SelectItem)
@@ -80,15 +111,25 @@ TSharedRef<ITableRow> SRTDListview::OnGenerateRowForList(TSharedPtr<FMeshData> I
 {
 	//fassetthumbnail
 
-	//UObject* StaticMesh = LoadObject<UObject>(NULL, *Item.Get()->MeshData, NULL, LOAD_None, NULL);
-	UObject* StaticMesh = LoadObject<UObject>(NULL, TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"), NULL, LOAD_None, NULL);
-	TSharedPtr<FAssetThumbnailPool> MyThumbnailPool = MakeShareable(new FAssetThumbnailPool(50));
+	UObject* StaticMesh = LoadObject<UObject>(NULL, *Item.Get()->MeshData, NULL, LOAD_None, NULL);
+	TSharedPtr<FAssetThumbnailPool> MyThumbnailPool = MakeShareable(new FAssetThumbnailPool(16, false));
 	TSharedPtr<FAssetThumbnail> MyThumbnail = MakeShareable(new FAssetThumbnail(StaticMesh, 64, 64, MyThumbnailPool));
 
 	return
 		SNew(STableRow<TSharedPtr<FMeshData>>, OwnerTable)
 		.Padding(2.0f)
 		[
-			MyThumbnail->MakeThumbnailWidget()
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+		.FillHeight(128)
+				[
+					MyThumbnail->MakeThumbnailWidget()
+				]
+			+ SVerticalBox::Slot()
+				.FillHeight(20)
+				[
+					SNew(STextBlock)
+					.Text(FText::FromString(StaticMesh->GetName()))
+				]
 		];
 }

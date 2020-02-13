@@ -47,7 +47,7 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 
 	for (int i = 0; IGCObject->ActorData.Num() > i; i++)
 	{
-		UStaticMesh* ISMStaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->ActorData[ActorIndex].Meshdata, NULL, LOAD_None, NULL);
+		UStaticMesh* ISMStaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->ActorData[i].Meshdata, NULL, LOAD_None, NULL);
 
 		actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
 		actor[i]->SetStaticMesh(ISMStaticMesh);
