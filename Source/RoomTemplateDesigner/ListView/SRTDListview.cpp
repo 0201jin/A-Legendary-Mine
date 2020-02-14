@@ -10,6 +10,7 @@
 #include "ImageUtils.h"
 #include "Widgets/SWidget.h"
 #include "SAssetDropTarget.h"
+#include "Thumbnail/ThumbnailWidget.h"
 
 void SRTDListview::Construct(const FArguments & Args)
 {
@@ -23,7 +24,6 @@ void SRTDListview::Construct(const FArguments & Args)
 
 	ContentReferencePtr = SNew(SContentReference)
 		.AllowedClass(UStaticMesh::StaticClass())
-		//.AllowedClass(AActor::StaticClass())
 		.AllowSelectingNewAsset(true)
 		.AllowClearingReference(true)
 		.ShowFindInBrowserButton(true)
@@ -45,11 +45,6 @@ void SRTDListview::Construct(const FArguments & Args)
 			[
 				ContentReferencePtr.ToSharedRef()
 			]
-			//SNew(SContentReference)
-			////.AssetReference(this, &FPersona::GetMeshAsObject)
-			//.AllowSelectingNewAsset(false)
-			//.AllowClearingReference(false)
-			//.WidthOverride(80.0f)
 		]
 	+ SHorizontalBox::Slot()
 		[
@@ -109,11 +104,7 @@ void SRTDListview::ListItemClick(TSharedPtr<FMeshData> SelectItem)
 
 TSharedRef<ITableRow> SRTDListview::OnGenerateRowForList(TSharedPtr<FMeshData> Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
-	//fassetthumbnail
-
 	UObject* StaticMesh = LoadObject<UObject>(NULL, *Item.Get()->MeshData, NULL, LOAD_None, NULL);
-	TSharedPtr<FAssetThumbnailPool> MyThumbnailPool = MakeShareable(new FAssetThumbnailPool(16, false));
-	TSharedPtr<FAssetThumbnail> MyThumbnail = MakeShareable(new FAssetThumbnail(StaticMesh, 64, 64, MyThumbnailPool));
 
 	return
 		SNew(STableRow<TSharedPtr<FMeshData>>, OwnerTable)
@@ -121,12 +112,13 @@ TSharedRef<ITableRow> SRTDListview::OnGenerateRowForList(TSharedPtr<FMeshData> I
 		[
 			SNew(SVerticalBox)
 			+ SVerticalBox::Slot()
-		.FillHeight(128)
-				[
-					MyThumbnail->MakeThumbnailWidget()
+			.FillHeight(128)
+				[	
+					SNew(SThumbnailWidget)
+					.Object(StaticMesh)
 				]
 			+ SVerticalBox::Slot()
-				.FillHeight(20)
+			.FillHeight(20)
 				[
 					SNew(STextBlock)
 					.Text(FText::FromString(StaticMesh->GetName()))

@@ -212,6 +212,8 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 				}
 				else
 				{
+					ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
+
 					FTransform Transform = FTransform::Identity;
 					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
 					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());

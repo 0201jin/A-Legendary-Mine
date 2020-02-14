@@ -21,7 +21,8 @@
 			"AdditionalDependencies": [
 				"CoreUObject",
 				"Engine",
-				"UnrealEd"
+				"UnrealEd",
+				"UMG"
 			]
 		}
 	]
