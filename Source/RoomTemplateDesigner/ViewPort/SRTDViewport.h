@@ -24,6 +24,8 @@ public:
 	SRTDViewport();
 	~SRTDViewport();
 
+	void CreateWalls(int _x, int _y);
+
 	// FGCObject 인터페이스. U오브젝트가 아니라도 가비지컬렉션 회수 가능.
 	virtual void AddReferencedObjects(FReferenceCollector& Collector) override;
 	TSharedRef<class FPreviewScene> GetPreviewScene();

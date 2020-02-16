@@ -19,8 +19,6 @@ public:
 	void Construct(const FArguments & Args);
 
 protected:
-	TSharedPtr<class SOverlay> Overlay;
-
 	TSharedPtr<class FAssetThumbnailPool> MyThumbnailPool;
 	TSharedPtr<class FAssetThumbnail> MyThumbnail;
 };

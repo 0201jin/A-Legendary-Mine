@@ -63,6 +63,11 @@ FRTDViewportClient::~FRTDViewportClient()
 {
 }
 
+void FRTDViewportClient::CreateWalls(int _x, int _y)
+{
+	UE_LOG(LogTemp, Log, TEXT("%d %d"), _x, _y);
+}
+
 void FRTDViewportClient::Tick(float DeltaSeconds)
 {
 	if (bW)

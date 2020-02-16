@@ -20,6 +20,11 @@ SRTDViewport::~SRTDViewport()
 	}
 }
 
+void SRTDViewport::CreateWalls(int _x, int _y)
+{
+	IGCViewportClient->CreateWalls(_x, _y);
+}
+
 void SRTDViewport::AddReferencedObjects(FReferenceCollector & Collector)
 {
 	Collector.AddReferencedObject(IGCObject);

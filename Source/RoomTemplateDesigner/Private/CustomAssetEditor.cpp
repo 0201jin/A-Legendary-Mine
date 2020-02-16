@@ -12,15 +12,16 @@
 #include "AdvancedPreviewSceneModule.h"
 
 #include "ListView/SRTDListview.h"
+#include "RoomSizeWidget/SRoomSizeWidget.h"
 
 #include "IDetailsView.h"
 
 #define LOCTEXT_NAMESPACE "RoomTemplateDesigner"
 
 const FName FCustomAssetEditor::ToolkitFName(TEXT("RoomTemplateDesigner"));
-const FName FCustomAssetEditor::PropertiesTabId(TEXT("Properties"));
 const FName FCustomAssetEditor::ViewportTabId(TEXT("Viewport"));
 const FName FCustomAssetEditor::ListviewTabId(TEXT("ListView"));
+const FName FCustomAssetEditor::RoomSizeId(TEXT("RoomSize"));
 
 void FCustomAssetEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
@@ -29,15 +30,15 @@ void FCustomAssetEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>
 
 	FAssetEditorToolkit::RegisterTabSpawners(InTabManager);
 
-	InTabManager->RegisterTabSpawner(PropertiesTabId, FOnSpawnTab::CreateSP(this, &FCustomAssetEditor::SpawnPropertiesTab))
-		.SetGroup(WorkspaceMenuCategoryRef)
-		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
-
 	InTabManager->RegisterTabSpawner(ViewportTabId, FOnSpawnTab::CreateSP(this, &FCustomAssetEditor::SpawnTab_Viewport))
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
 
 	InTabManager->RegisterTabSpawner(ListviewTabId, FOnSpawnTab::CreateSP(this, &FCustomAssetEditor::SpawnTab_Listview))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
+
+	InTabManager->RegisterTabSpawner(RoomSizeId, FOnSpawnTab::CreateSP(this, &FCustomAssetEditor::SpawnTab_RoomSize))
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
 }
@@ -46,7 +47,7 @@ void FCustomAssetEditor::UnregisterTabSpawners(const TSharedRef<class FTabManage
 {
 	FAssetEditorToolkit::UnregisterTabSpawners(InTabManager);
 
-	InTabManager->UnregisterTabSpawner(PropertiesTabId);
+	InTabManager->UnregisterTabSpawner(RoomSizeId);
 	InTabManager->UnregisterTabSpawner(ViewportTabId);
 	InTabManager->UnregisterTabSpawner(ListviewTabId);
 }
@@ -59,16 +60,15 @@ void FCustomAssetEditor::InitCustomAssetEditorEditor(const EToolkitMode::Type Mo
 
 	SetCustomAsset(InCustomAsset);
 
-	FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	const FDetailsViewArgs DetailsViewArgs(bIsUpdatable, bIsLockable, true, FDetailsViewArgs::ObjectsUseNameArea, false);
-	DetailsView = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
-
 	Viewport = SNew(SRTDViewport)
 		.ParentIGCEditor(SharedThis(this))
 		.ObjectToEdit(CustomAsset);
 
 	Listview = SNew(SRTDListview)
 		.ObjectToEdit(CustomAsset);
+
+	RoomSize = SNew(SRoomSizeWidget)
+		.Viewport(Viewport);
 
 	const TSharedRef<FTabManager::FLayout> StandaloneDefaultLayout = FTabManager::NewLayout("Standalone_CustomAssetEditor_Layout_v1")
 		->AddArea
@@ -96,14 +96,15 @@ void FCustomAssetEditor::InitCustomAssetEditorEditor(const EToolkitMode::Type Mo
 					->Split
 					(
 						FTabManager::NewStack()
-						->SetSizeCoefficient(0.6f)
+						->SetSizeCoefficient(0.9f)
 						->AddTab(ListviewTabId, ETabState::OpenedTab)
 					)
-					/*->Split
+					->Split
 					(
 						FTabManager::NewStack()
-						->AddTab(PropertiesTabId, ETabState::OpenedTab)
-					)*/
+						->SetSizeCoefficient(0.1f)
+						->AddTab(RoomSizeId, ETabState::OpenedTab)
+					)
 				)
 			)
 		);
@@ -119,20 +120,13 @@ void FCustomAssetEditor::InitCustomAssetEditorEditor(const EToolkitMode::Type Mo
 		bCreateDefaultStandaloneMenu,
 		bCreateDefaultToolbar,
 		(UObject*)InCustomAsset);
-
-	// Set the asset we are editing in the details view
-	if (DetailsView.IsValid())
-	{
-		DetailsView->SetObject((UObject*)CustomAsset);
-	}
 }
 
 FCustomAssetEditor::~FCustomAssetEditor()
 {
-	DetailsView.Reset();
 	Viewport.Reset();
-	PropertiesTab.Reset();
 	Listview.Reset();
+	RoomSize.Reset();
 }
 
 FName FCustomAssetEditor::GetToolkitFName() const
@@ -170,16 +164,6 @@ void FCustomAssetEditor::SetCustomAsset(UMyCustomAsset* InCustomAsset)
 	CustomAsset = InCustomAsset;
 }
 
-TSharedRef<SDockTab> FCustomAssetEditor::SpawnPropertiesTab(const FSpawnTabArgs& Args)
-{
-	check(Args.GetTabId() == PropertiesTabId);
-
-	return SNew(SDockTab)
-		[
-			DetailsView.ToSharedRef()
-		];
-}
-
 TSharedRef<SDockTab> FCustomAssetEditor::SpawnTab_Viewport(const FSpawnTabArgs & Args)
 {
 	check(Args.GetTabId() == ViewportTabId);
@@ -197,6 +181,16 @@ TSharedRef<SDockTab> FCustomAssetEditor::SpawnTab_Listview(const FSpawnTabArgs &
 	return SNew(SDockTab)
 		[
 			Listview.ToSharedRef()
+		];
+}
+
+TSharedRef<SDockTab> FCustomAssetEditor::SpawnTab_RoomSize(const FSpawnTabArgs & Args)
+{
+	check(Args.GetTabId() == RoomSizeId);
+
+	return SNew(SDockTab)
+		[
+			RoomSize.ToSharedRef()
 		];
 }
 

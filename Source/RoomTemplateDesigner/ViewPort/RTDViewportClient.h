@@ -18,6 +18,8 @@ public:
 	FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> ParentIGCEditor, const TSharedRef<class FPreviewScene>& AdvPreviewScene, const TSharedRef<class SRTDViewport>& IGCViewport, UMyCustomAsset* ObjectToEdit);
 	~FRTDViewportClient();
 
+	void CreateWalls(int _x, int _y);
+
 	// 에디터에서 사용하는 입력
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void Draw(const FSceneView* View, FPrimitiveDrawInterface* PDI) override;

@@ -39,20 +39,18 @@ public:
 	static const FName ToolkitFName;
 
 private:
-	TSharedRef<SDockTab> SpawnPropertiesTab(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_Listview(const FSpawnTabArgs& Args);
+	TSharedRef<SDockTab> SpawnTab_RoomSize(const FSpawnTabArgs& Args);
 
 private:
-	TSharedPtr< SDockableTab > PropertiesTab;
-
-	TSharedPtr<class IDetailsView> DetailsView;
+	TSharedPtr<class SRoomSizeWidget> RoomSize;
 	TSharedPtr<class SRTDViewport> Viewport;
 	TSharedPtr<class SRTDListview> Listview;
 
-	static const FName PropertiesTabId;
 	static const FName ViewportTabId;
 	static const FName ListviewTabId;
+	static const FName RoomSizeId;
 
 	UMyCustomAsset* CustomAsset;
 };
