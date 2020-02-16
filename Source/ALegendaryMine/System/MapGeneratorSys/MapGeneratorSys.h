@@ -15,6 +15,12 @@ public:
 	MapGeneratorSys();
 	~MapGeneratorSys();
 
+	void MapGen();
+	TArray<FRoomData> GetRoomArray();
+	FALGraph GetGraph();
+
 protected:
 	FALGraph graph;
+
+	TArray<FRoomData> RoomArray;
 };

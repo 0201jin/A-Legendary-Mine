@@ -18,12 +18,12 @@ int PQWeightComp(FGraphEdge d1, FGraphEdge d2)
 }
 
 /*배열기반 스택 함수들*/
-void MapGeneratorStruct::StackInit(FArrayStack * _pstack)
+void StackInit(FArrayStack * _pstack)
 {
 	_pstack->TopIndex = -1;
 }
 
-bool MapGeneratorStruct::SIsEmpty(FArrayStack * _pstack)
+bool SIsEmpty(FArrayStack * _pstack)
 {
 	if (_pstack->TopIndex == -1)
 		return true;
@@ -31,13 +31,13 @@ bool MapGeneratorStruct::SIsEmpty(FArrayStack * _pstack)
 		return false;
 }
 
-void MapGeneratorStruct::SPush(FArrayStack * _pstack, int _data)
+void SPush(FArrayStack * _pstack, int _data)
 {
 	_pstack->TopIndex += 1;
 	_pstack->StackArr[_pstack->TopIndex] = _data;
 }
 
-int MapGeneratorStruct::SPop(FArrayStack * _pstack)
+int SPop(FArrayStack * _pstack)
 {
 	int rIdx;
 
@@ -50,7 +50,7 @@ int MapGeneratorStruct::SPop(FArrayStack * _pstack)
 	return _pstack->StackArr[rIdx];
 }
 
-int MapGeneratorStruct::SPeek(FArrayStack * _pstack)
+int SPeek(FArrayStack * _pstack)
 {
 	if (SIsEmpty(_pstack))
 		exit(-1);
@@ -60,7 +60,7 @@ int MapGeneratorStruct::SPeek(FArrayStack * _pstack)
 /*배열기반 스택 함수들*/
 
 /*연결리스트 함수들*/
-void MapGeneratorStruct::ListInit(FList * _plist)
+void ListInit(FList * _plist)
 {
 	_plist->Head = new FListNode;
 	_plist->Head->next = nullptr;
@@ -68,7 +68,7 @@ void MapGeneratorStruct::ListInit(FList * _plist)
 	_plist->NumOfData = 0;
 }
 
-void MapGeneratorStruct::FInsert(FList * _plist, int _data)
+void FInsert(FList * _plist, int _data)
 {
 	FListNode * newNode = new FListNode;
 	newNode->data = _data;
@@ -79,7 +79,7 @@ void MapGeneratorStruct::FInsert(FList * _plist, int _data)
 	(_plist->NumOfData)++;
 }
 
-void MapGeneratorStruct::SInsert(FList * _plist, int _data)
+void SInsert(FList * _plist, int _data)
 {
 	FListNode * newNode = new FListNode;
 	FListNode * pred = _plist->Head;
@@ -97,7 +97,7 @@ void MapGeneratorStruct::SInsert(FList * _plist, int _data)
 	(_plist->NumOfData)++;
 }
 
-void MapGeneratorStruct::LInsert(FList * _plist, int _data)
+void LInsert(FList * _plist, int _data)
 {
 	if (_plist->comp == nullptr)
 		FInsert(_plist, _data);
@@ -105,7 +105,7 @@ void MapGeneratorStruct::LInsert(FList * _plist, int _data)
 		SInsert(_plist, _data);
 }
 
-bool MapGeneratorStruct::LFirst(FList * _plist, int * _data)
+bool LFirst(FList * _plist, int * _data)
 {
 	if (_plist->Head->next == nullptr)
 		return false;
@@ -117,7 +117,7 @@ bool MapGeneratorStruct::LFirst(FList * _plist, int * _data)
 	return true;
 }
 
-bool MapGeneratorStruct::LNext(FList * _plist, int * _data)
+bool LNext(FList * _plist, int * _data)
 {
 	if (_plist->Cur->next == nullptr)
 		return false;
@@ -129,7 +129,7 @@ bool MapGeneratorStruct::LNext(FList * _plist, int * _data)
 	return true;
 }
 
-int MapGeneratorStruct::LRemove(FList * _plist)
+int LRemove(FList * _plist)
 {
 	FListNode * rpos = _plist->Cur;
 	int rdata = rpos->data;
@@ -143,56 +143,58 @@ int MapGeneratorStruct::LRemove(FList * _plist)
 	return rdata;
 }
 
-int MapGeneratorStruct::LCount(FList * _plist)
+int LCount(FList * _plist)
 {
 	return _plist->NumOfData;
 }
 
-void MapGeneratorStruct::SetSortRule(FList * _plist, int(*comp)(int d1, int d2))
+void SetSortRule(FList * _plist, int(*comp)(int d1, int d2))
 {
 	_plist->comp = comp;
 }
 /*연결리스트 함수들*/
 
 /*우선순위 큐 함수들*/
-int MapGeneratorStruct::GetParentIDX(int _idx)
+int GetParentIDX(int _idx)
 {
 	return _idx / 2;
 }
 
-int MapGeneratorStruct::GetLChildIDX(int _idx)
-{
-	return _idx / 2;
-}
-
-int MapGeneratorStruct::GetRChildIDX(int _idx)
+int GetLChildIDX(int _idx)
 {
 	return _idx * 2;
 }
 
-int MapGeneratorStruct::GetHiPriChildIDX(FPQueue * _ppq, int _idx)
+int GetRChildIDX(int _idx)
+{
+	return GetLChildIDX(_idx) + 1;
+}
+
+int GetHiPriChildIDX(FPQueue * _ppq, int _idx)
 {
 	if (GetLChildIDX(_idx) > _ppq->NumOfData)
 		return 0;
+
 	else if (GetLChildIDX(_idx) == _ppq->NumOfData)
 		return GetLChildIDX(_idx);
+
 	else
 	{
 		if (_ppq->Comp(_ppq->HeapArr[GetLChildIDX(_idx)],
-			_ppq->HeapArr[GetRChildIDX(_idx)]) < 0)
+						_ppq->HeapArr[GetRChildIDX(_idx)]) < 0)
 			return GetRChildIDX(_idx);
 		else
 			return GetLChildIDX(_idx);
 	}
 }
 
-void MapGeneratorStruct::PQueueInit(FPQueue * _ppq, PriorityComp _pc)
+void PQueueInit(FPQueue * _ppq, PriorityComp _pc)
 {
 	_ppq->NumOfData = 0;
 	_ppq->Comp = _pc;
 }
 
-bool MapGeneratorStruct::PQIsEmpty(FPQueue * _ppq)
+bool PQIsEmpty(FPQueue * _ppq)
 {
 	if (_ppq->NumOfData == 0)
 		return true;
@@ -200,7 +202,7 @@ bool MapGeneratorStruct::PQIsEmpty(FPQueue * _ppq)
 		return false;
 }
 
-void MapGeneratorStruct::PEnqueue(FPQueue * _ppq, FGraphEdge _data)
+void PEnqueue(FPQueue * _ppq, FGraphEdge _data)
 {
 	int idx = _ppq->NumOfData + 1;
 
@@ -221,7 +223,7 @@ void MapGeneratorStruct::PEnqueue(FPQueue * _ppq, FGraphEdge _data)
 	_ppq->NumOfData += 1;
 }
 
-FGraphEdge MapGeneratorStruct::PDequeue(FPQueue * _ppq)
+FGraphEdge PDequeue(FPQueue * _ppq)
 {
 	FGraphEdge retData = _ppq->HeapArr[1];
 	FGraphEdge lastElem = _ppq->HeapArr[_ppq->NumOfData];
@@ -248,11 +250,11 @@ FGraphEdge MapGeneratorStruct::PDequeue(FPQueue * _ppq)
 /*우선순위 큐 함수들*/
 
 /*그래프 함수들*/
-void MapGeneratorStruct::GraphInit(FALGraph * _pg, int _nv)
+void GraphInit(FALGraph * _pg, int _nv)
 {
-	int i;
+	int i = 0;
 
-	_pg->AdjList = new FList;
+	_pg->AdjList = (FList*)malloc(sizeof(FList) * _nv);
 	_pg->NumV = _nv;
 	_pg->NumE = 0;
 
@@ -263,16 +265,19 @@ void MapGeneratorStruct::GraphInit(FALGraph * _pg, int _nv)
 		SetSortRule(&(_pg->AdjList[i]), WhoIsPrecede);
 	}
 
+	_pg->VisitInfo = (int*)malloc(sizeof(int) * _pg->NumV);
+	memset(_pg->VisitInfo, 0, sizeof(int) * _pg->NumV);
+
 	PQueueInit(&(_pg->Queue), PQWeightComp);
 }
 
-void MapGeneratorStruct::GraphDestory(FALGraph * _pg)
+void GraphDestory(FALGraph * _pg)
 {
 	if (_pg->AdjList != nullptr)
 		delete(_pg->AdjList);
 }
 
-void MapGeneratorStruct::AddEdge(FALGraph * _pg, int _fromV, int _toV, int _weight)
+void AddEdge(FALGraph * _pg, int _fromV, int _toV, int _weight)
 {
 	FGraphEdge edge = { _fromV, _toV, _weight };
 
@@ -283,14 +288,14 @@ void MapGeneratorStruct::AddEdge(FALGraph * _pg, int _fromV, int _toV, int _weig
 	PEnqueue(&(_pg->Queue), edge);
 }
 
-void MapGeneratorStruct::RemoveEdge(FALGraph * _pg, int _fromV, int _toV)
+void RemoveEdge(FALGraph * _pg, int _fromV, int _toV)
 {
 	RemoveWayEdge(_pg, _fromV, _toV);
 	RemoveWayEdge(_pg, _toV, _fromV);
 	(_pg->NumE)--;
 }
 
-void MapGeneratorStruct::RemoveWayEdge(FALGraph * _pg, int _fromV, int _toV)
+void RemoveWayEdge(FALGraph * _pg, int _fromV, int _toV)
 {
 	int Edge;
 
@@ -313,14 +318,14 @@ void MapGeneratorStruct::RemoveWayEdge(FALGraph * _pg, int _fromV, int _toV)
 	}
 }
 
-void MapGeneratorStruct::RecoverEdge(FALGraph * _pg, int _fromV, int _toV, int _weight)
+void RecoverEdge(FALGraph * _pg, int _fromV, int _toV, int _weight)
 {
 	LInsert(&(_pg->AdjList[_fromV]), _toV);
 	LInsert(&(_pg->AdjList[_toV]), _fromV);
 	(_pg->NumE)++;
 }
 
-bool MapGeneratorStruct::IsConnvertex(FALGraph * _pg, int _v1, int _v2)
+bool IsConnvertex(FALGraph * _pg, int _v1, int _v2)
 {
 	FArrayStack Stack;
 	int visitV = _v1;
@@ -379,41 +384,41 @@ bool MapGeneratorStruct::IsConnvertex(FALGraph * _pg, int _v1, int _v2)
 	return false;
 }
 
-void MapGeneratorStruct::ShowGraphEdgeInfo(FALGraph * _pg)
+void ShowGraphEdgeInfo(FALGraph * _pg)
 {
 	int i;
 	int vx;
 
 	for (i = 0; i < _pg->NumV; i++)
 	{
-		FString text = FString::Chr(i + 65) + TEXT(" 와 연결된 정점 : ");
+		FString text = FString::FromInt(i) + TEXT(" 와 연결된 정점 : ");
 
 		if (LFirst(&(_pg->AdjList[i]), &vx))
 		{
-			text += FString::Chr(vx + 65) + TEXT(" ");
+			text += FString::FromInt(vx) + TEXT(" ");
 
 			while (LNext(&(_pg->AdjList[i]), &vx))
-				text += FString::Chr(vx + 65) + TEXT(" ");
+				text += FString::FromInt(vx) + TEXT(" ");
 		}
 
 		UE_LOG(LogTemp, Log, TEXT("%s"), *text);
 	}
 }
 
-bool MapGeneratorStruct::VisitVertex(FALGraph * _pg, int _visitV)
+bool VisitVertex(FALGraph * _pg, int _visitV)
 {
 	if (_pg->VisitInfo[_visitV] == 0)
 	{
 		_pg->VisitInfo[_visitV] = 1;
 
-		UE_LOG(LogTemp, Log, TEXT("%c"), _visitV + 65);
+		UE_LOG(LogTemp, Log, TEXT("%d"), _visitV);
 		return true;
 	}
 
 	return false;
 }
 
-void MapGeneratorStruct::DFShowGraphVertex(FALGraph * _pg, int _startV)
+void DFShowGraphVertex(FALGraph * _pg, int _startV)
 {
 	FArrayStack stack;
 	int visitV = _startV;
@@ -459,9 +464,9 @@ void MapGeneratorStruct::DFShowGraphVertex(FALGraph * _pg, int _startV)
 	memset(_pg->VisitInfo, 0, sizeof(int) * _pg->NumV);
 }
 
-void MapGeneratorStruct::ConKruskalMST(FALGraph * _pg)
+void ConKruskalMST(FALGraph * _pg)
 {
-	FGraphEdge recvEdge[100];
+	FGraphEdge recvEdge[ARR_SIZE];
 	FGraphEdge Edge;
 	int eidx = 0;
 	int i;
@@ -482,7 +487,7 @@ void MapGeneratorStruct::ConKruskalMST(FALGraph * _pg)
 		PEnqueue(&(_pg->Queue), recvEdge[i]);
 }
 
-void MapGeneratorStruct::ShowGraphEdgeWeightInfo(FALGraph * _pg)
+void ShowGraphEdgeWeightInfo(FALGraph * _pg)
 {
 	FPQueue copyPQ = _pg->Queue;
 	FGraphEdge edge;
@@ -491,7 +496,7 @@ void MapGeneratorStruct::ShowGraphEdgeWeightInfo(FALGraph * _pg)
 	{
 		edge = PDequeue(&copyPQ);
 
-		UE_LOG(LogTemp, Log, TEXT("%c-%c weight : %d"), edge.Vertex1 + 65, edge.Vertex2 + 65, edge.Weight);
+		UE_LOG(LogTemp, Log, TEXT("%d-%d weight : %d"), edge.Vertex1, edge.Vertex2, edge.Weight);
 	}
 }
 /*그래프 함수들*/
