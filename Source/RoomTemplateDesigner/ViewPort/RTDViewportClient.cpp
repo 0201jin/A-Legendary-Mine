@@ -45,6 +45,14 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 
 	actor.Empty();
 
+	if (IGCObject->MeshDataArr.Num() == 0)
+	{
+		FMeshData data;
+		data.MeshData = "StaticMesh'/Engine/BasicShapes/Cube.Cube'"; //검은색 기둥 넣기
+
+		IGCObject->MeshDataArr.Add(data);
+	}
+
 	for (int i = 0; IGCObject->ActorData.Num() > i; i++)
 	{
 		UStaticMesh* ISMStaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->ActorData[i].Meshdata, NULL, LOAD_None, NULL);
@@ -65,6 +73,50 @@ FRTDViewportClient::~FRTDViewportClient()
 
 void FRTDViewportClient::CreateWalls(int _x, int _y)
 {
+	if (IGCObject->MeshDataArr[0].Index == -1)
+	{
+		ActorIndex = IGCObject->ActorData.Num();
+
+		UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[0].MeshData, NULL, LOAD_None, NULL);
+		actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
+		actor[ActorIndex]->SetStaticMesh(StaticMesh);
+
+		IGCObject->ActorData.Add(FISMData());
+		IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+		IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[0].MeshData;
+
+		IGCObject->MeshDataArr[0].Index = ActorIndex;
+	}
+
+	for (int x = 0; x < _x; x++)
+	{
+		FTransform Transform = FTransform::Identity;
+		Transform.SetLocation(FVector(x * 100, 0, 0));
+		Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+		actor[IGCObject->MeshDataArr[0].Index]->AddInstanceWorldSpace(Transform);
+
+		Transform.SetLocation(FVector(x * 100, (_y - 1) * 100, 0));
+		Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+		actor[IGCObject->MeshDataArr[0].Index]->AddInstanceWorldSpace(Transform);
+	}
+
+	for (int y = 1; y < (_y - 1); y++)
+	{
+		FTransform Transform = FTransform::Identity;
+		Transform.SetLocation(FVector(0, y * 100, 0));
+		Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+		actor[IGCObject->MeshDataArr[0].Index]->AddInstanceWorldSpace(Transform);
+
+		Transform.SetLocation(FVector((_x - 1) * 100, y * 100, 0));
+		Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+		actor[IGCObject->MeshDataArr[0].Index]->AddInstanceWorldSpace(Transform);
+	}
+
+	FTransform Transform = FTransform::Identity;
+	Transform.SetRotation(FQuat(0, 0, 0, 0));
+	PreviewScene->AddComponent(actor[IGCObject->MeshDataArr[0].Index], Transform);
+	IGCObject->ActorData[IGCObject->MeshDataArr[0].Index].ActorData = actor[IGCObject->MeshDataArr[0].Index]->PerInstanceSMData;
+
 	UE_LOG(LogTemp, Log, TEXT("%d %d"), _x, _y);
 }
 
