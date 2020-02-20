@@ -25,6 +25,18 @@ struct FRoomData
 };
 
 USTRUCT(Atomic)
+struct FRoadData
+{
+	GENERATED_USTRUCT_BODY()
+
+		int X = 0;
+	int Y = 0;
+
+	int V1 = 0;
+	int V2 = 0;
+};
+
+USTRUCT(Atomic)
 struct FArrayStack
 {
 	GENERATED_USTRUCT_BODY()

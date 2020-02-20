@@ -181,7 +181,7 @@ int GetHiPriChildIDX(FPQueue * _ppq, int _idx)
 	else
 	{
 		if (_ppq->Comp(_ppq->HeapArr[GetLChildIDX(_idx)],
-						_ppq->HeapArr[GetRChildIDX(_idx)]) < 0)
+			_ppq->HeapArr[GetRChildIDX(_idx)]) < 0)
 			return GetRChildIDX(_idx);
 		else
 			return GetLChildIDX(_idx);
@@ -467,8 +467,10 @@ void DFShowGraphVertex(FALGraph * _pg, int _startV)
 void ConKruskalMST(FALGraph * _pg)
 {
 	FGraphEdge recvEdge[ARR_SIZE];
+	FGraphEdge delEdge[ARR_SIZE];
 	FGraphEdge Edge;
 	int eidx = 0;
+	int del = 0;
 	int i;
 
 	while (_pg->NumE + 1 > _pg->NumV)
@@ -481,6 +483,33 @@ void ConKruskalMST(FALGraph * _pg)
 			RecoverEdge(_pg, Edge.Vertex1, Edge.Vertex2, Edge.Weight);
 			recvEdge[eidx++] = Edge;
 		}
+		else
+		{
+			delEdge[del++] = Edge;
+		}
+	}
+
+	for(int x = 0; x < _pg->NumV * 0.15; x++)
+	{
+		int MinIndex = 0;
+
+		for (int i = 1; i < del; i++)
+		{
+			if (delEdge[MinIndex].Weight > delEdge[i].Weight)
+				MinIndex = i;
+		}
+
+		Edge = delEdge[MinIndex];
+		RecoverEdge(_pg, Edge.Vertex1, Edge.Vertex2, Edge.Weight);
+		recvEdge[eidx++] = Edge;
+
+		for (int i = MinIndex; i < del; i++)
+		{
+			if (i + 1 < ARR_SIZE)
+				delEdge[i] = delEdge[i + 1];
+		}
+
+		del--;
 	}
 
 	for (i = 0; i < eidx; i++)
