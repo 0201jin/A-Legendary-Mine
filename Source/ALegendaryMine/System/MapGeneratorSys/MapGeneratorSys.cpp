@@ -112,7 +112,9 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 			Data.SY = (RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY) - RoomArray[edge.Vertex1].Y;
 		}
 
-		while (true)
+		int wi = 0;
+
+		while (wi++ < 100)
 		{
 			/*
 			랜덤으로 뽑아서 길목 조건에 충족하는지 확인
@@ -149,14 +151,157 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 				}
 			}
 
+			FRoadData Data;
+			Data.V1 = edge.Vertex1;
+			Data.V2 = edge.Vertex2;
+			Data.X = x;
+			Data.Y = y;
+
+			if (RoomArray[Data.V1].X < Data.X &&
+				RoomArray[Data.V1].X + RoomArray[Data.V1].SX > Data.X)
+			{
+				if (RoomArray[Data.V1].Y > Data.Y) //길을 오른쪽으로
+				{
+					Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y - 1, 0);
+				}
+				else //길을 왼쪽으로
+				{
+					Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY + 1, 0);
+				}
+			}
+			else if (RoomArray[Data.V1].Y < Data.Y &&
+				RoomArray[Data.V1].Y + RoomArray[Data.V1].SY > Data.Y)
+			{
+				if (RoomArray[Data.V1].X > Data.X) //길을 위로
+				{
+					Data.V1R = FVector(RoomArray[edge.Vertex1].X -1, y, 0);
+				}
+				else //길을 아래로
+				{
+					Data.V1R = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX +1, y, 0);
+				}
+			}
+
+			if (RoomArray[Data.V2].X < Data.X &&
+				RoomArray[Data.V2].X + RoomArray[Data.V2].SX > Data.X)
+			{
+				if (RoomArray[Data.V2].Y > Data.Y) //길을 오른쪽으로
+				{
+					Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y -1, 0);
+				}
+				else //길을 왼쪽을 
+				{
+					Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY +1, 0);
+				}
+			}
+			else if (RoomArray[Data.V2].Y < Data.Y &&
+				RoomArray[Data.V2].Y + RoomArray[Data.V2].SY > Data.Y)
+			{
+				if (RoomArray[Data.V2].X > Data.X) //길을 위로
+				{
+					Data.V2R = FVector(RoomArray[edge.Vertex2].X - 1, y, 0);
+				}
+				else //길을 아래로
+				{
+					Data.V2R = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX + 1, y, 0);
+				}
+			}
+
+			/*충돌하는 길이 있는지 확인*/
+
+			for (int i = 0; i < RoadArray.Num(); i++)
+			{
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V1R))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
+				{
+					bCheck = false;
+					break;
+				}
+
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V1R))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
+				{
+					bCheck = false;
+					break;
+				}
+			}
+
+			/*충돌하는 방이 있는지 확인*/
+			for (int i = 0; i < RoomArray.Num(); i++)
+			{
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+				{
+					bCheck = false;
+					break;
+				}
+			}
+
 			if (bCheck)
 			{
-				FRoadData Data;
-				Data.V1 = edge.Vertex1;
-				Data.V2 = edge.Vertex2;
-				Data.X = x;
-				Data.Y = y;
-
 				RoadArray.Add(Data);
 
 				break;
@@ -180,4 +325,23 @@ TArray<FRoadData> MapGeneratorSys::GetRoadArray()
 FALGraph MapGeneratorSys::GetGraph()
 {
 	return graph;
+}
+
+bool MapGeneratorSys::GetIntersectPoint(const FVector & AP1, const FVector & AP2, const FVector & BP1, const FVector & BP2)
+{
+	double t;
+	double s;
+	double under = (BP2.Y - BP1.Y)*(AP2.X - AP1.X) - (BP2.X - BP1.X)*(AP2.Y - AP1.Y);
+	if (under == 0) return false;
+
+	double _t = (BP2.X - BP1.X)*(AP1.Y - BP1.Y) - (BP2.Y - BP1.Y)*(AP1.X - BP1.X);
+	double _s = (AP2.X - AP1.X)*(AP1.Y - BP1.Y) - (AP2.Y - AP1.Y)*(AP1.X - BP1.X);
+
+	t = _t / under;
+	s = _s / under;
+
+	if (t<0.0 || t>1.0 || s<0.0 || s>1.0) return false;
+	if (_t == 0 && _s == 0) return false;
+
+	return true;
 }

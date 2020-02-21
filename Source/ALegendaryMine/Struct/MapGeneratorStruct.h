@@ -33,7 +33,10 @@ struct FRoadData
 	int Y = 0;
 
 	int V1 = 0;
+	FVector V1R = FVector();
+
 	int V2 = 0;
+	FVector V2R = FVector();
 };
 
 USTRUCT(Atomic)
