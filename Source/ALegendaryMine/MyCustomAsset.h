@@ -56,5 +56,8 @@ public:
 	UPROPERTY()
 		int32 SY;
 
+	UPROPERTY()
+		bool IsBossRoom;
+
 	int16 MeshDataIndex = 0; //MeshDataArr¿« Index∏¶ ∞°∏£≈¥
 };

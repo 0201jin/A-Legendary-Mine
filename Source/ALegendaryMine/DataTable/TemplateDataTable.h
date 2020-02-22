@@ -1,0 +1,29 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+#include "Engine/DataTable.h"
+#include "Engine.h"
+#include "MyCustomAsset.h"
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "TemplateDataTable.generated.h"
+
+USTRUCT(BlueprintType)
+struct FTemplateDataTableRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		UMyCustomAsset * Template;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool IsBossRoom;
+};
+
+UCLASS()
+class ALEGENDARYMINE_API ATemplateDataTable : public AActor
+{
+	GENERATED_BODY()
+};

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ALegendaryMine/Struct/MapGeneratorStruct.h"
+#include "MyCustomAsset.h"
 
 #include "CoreMinimal.h"
 
@@ -28,4 +29,6 @@ protected:
 
 	TArray<FRoomData> RoomArray;
 	TArray<FRoadData> RoadArray;
+
+	TArray<TArray<UMyCustomAsset*>> TemplateArray;
 };
