@@ -211,26 +211,26 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 			for (int i = 0; i < RoadArray.Num(); i++)
 			{
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
 					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V1R))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
 					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
 				{
 					bCheck = false;
 					break;
 				}
 
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
 					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V1R))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
 					FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
 				{
 					bCheck = false;
@@ -241,28 +241,28 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 			/*충돌하는 방이 있는지 확인*/
 			for (int i = 0; i < RoomArray.Num(); i++)
 			{
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
 					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
 					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V1R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
 					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 				{
@@ -270,28 +270,28 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					break;
 				}
 
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
 					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
 					FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 				{
 					bCheck = false;
 					break;
 				}
-				if (GetIntersectPoint(FVector(Data.X, Data.Y, 0), Data.V2R,
+				if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
 					FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 				{
@@ -327,21 +327,21 @@ FALGraph MapGeneratorSys::GetGraph()
 	return graph;
 }
 
-bool MapGeneratorSys::GetIntersectPoint(const FVector & AP1, const FVector & AP2, const FVector & BP1, const FVector & BP2)
+bool MapGeneratorSys::IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2)
 {
-	double t;
-	double s;
-	double under = (BP2.Y - BP1.Y)*(AP2.X - AP1.X) - (BP2.X - BP1.X)*(AP2.Y - AP1.Y);
-	if (under == 0) return false;
+	float den = (_EP2.Y - _SP2.Y)*(_EP1.X - _SP1.X) - (_EP2.X - _SP2.X)*(_EP1.Y - _SP1.Y);
+	if (den == 0) return false;
 
-	double _t = (BP2.X - BP1.X)*(AP1.Y - BP1.Y) - (BP2.Y - BP1.Y)*(AP1.X - BP1.X);
-	double _s = (AP2.X - AP1.X)*(AP1.Y - BP1.Y) - (AP2.Y - AP1.Y)*(AP1.X - BP1.X);
+	float p1 = (_EP2.X - _SP2.X)*(_SP1.Y - _SP2.Y) - (_EP2.Y - _SP2.Y)*(_SP1.X - _SP2.X);
+	float p2 = (_EP1.X - _SP1.X)*(_SP1.Y - _SP2.Y) - (_EP1.Y - _SP1.Y)*(_SP1.X - _SP2.X);
 
-	t = _t / under;
-	s = _s / under;
+	float op1 = p1 / den;
+	float op2 = p2 / den;
 
-	if (t<0.0 || t>1.0 || s<0.0 || s>1.0) return false;
-	if (_t == 0 && _s == 0) return false;
+	if (op1 < 0.0 || op1 > 1.0 || op2 < 0.0 || op2 > 1.0) 
+		return false;
+	if (p1 == 0 && p2 == 0) 
+		return false;
 
 	return true;
 }

@@ -50,5 +50,11 @@ public:
 	UPROPERTY()
 		TArray<FMeshData> MeshDataArr;
 
+	UPROPERTY()
+		int32 SX;
+
+	UPROPERTY()
+		int32 SY;
+
 	int16 MeshDataIndex = 0; //MeshDataArr¿« Index∏¶ ∞°∏£≈¥
 };

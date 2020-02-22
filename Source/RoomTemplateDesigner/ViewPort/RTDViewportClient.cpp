@@ -117,6 +117,9 @@ void FRTDViewportClient::CreateWalls(int _x, int _y)
 	PreviewScene->AddComponent(actor[IGCObject->MeshDataArr[0].Index], Transform);
 	IGCObject->ActorData[IGCObject->MeshDataArr[0].Index].ActorData = actor[IGCObject->MeshDataArr[0].Index]->PerInstanceSMData;
 
+	IGCObject->SX = _x;
+	IGCObject->SY = _y;
+
 	UE_LOG(LogTemp, Log, TEXT("%d %d"), _x, _y);
 }
 

@@ -21,7 +21,7 @@ public:
 	FALGraph GetGraph();
 
 protected:
-	bool GetIntersectPoint(const FVector& AP1, const FVector& AP2, const FVector& BP1, const FVector& BP2);
+	bool IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2);
 
 protected:
 	FALGraph graph;
