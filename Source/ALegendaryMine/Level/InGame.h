@@ -3,6 +3,7 @@
 #pragma once
 
 #include "System/MapGeneratorSys/MapGeneratorSys.h"
+#include "MyGameInstance.h"
 
 #include "CoreMinimal.h"
 #include "Engine/LevelScriptActor.h"
@@ -20,9 +21,12 @@ public:
 	AInGame();
 	~AInGame();
 
+	UMyGameInstance * GetMyGameInstance();
+
 protected:
 	virtual void BeginPlay();
 
 protected:
 	MapGeneratorSys * Mapgen;
+	UMyGameInstance * MyGameInstance;
 };

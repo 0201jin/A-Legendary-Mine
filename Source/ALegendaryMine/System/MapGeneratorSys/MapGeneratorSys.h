@@ -13,7 +13,7 @@
 class ALEGENDARYMINE_API MapGeneratorSys
 {
 public:
-	MapGeneratorSys();
+	MapGeneratorSys(class AInGame * _InGameLevel);
 	~MapGeneratorSys();
 
 	void MapGen(int _Roomsize);
@@ -27,8 +27,12 @@ protected:
 protected:
 	FALGraph graph;
 
+	class AInGame * InGameLevel;
+	class UMyGameInstance * GameInstance;
+
 	TArray<FRoomData> RoomArray;
 	TArray<FRoadData> RoadArray;
 
 	TArray<TArray<UMyCustomAsset*>> TemplateArray;
+	TArray<class ARoomTemplateActor*> TemplateActorArray;
 };

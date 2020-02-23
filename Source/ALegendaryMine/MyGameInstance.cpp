@@ -14,6 +14,8 @@ UMyGameInstance::UMyGameInstance()
 
 void UMyGameInstance::Init()
 {
+	Super::Init();
+
 	for (int i = 0; i < TemplateDataTable.Num(); i++)
 	{
 		RoomTemplateData.Add(TArray<class UMyCustomAsset*>());
@@ -30,6 +32,8 @@ void UMyGameInstance::Init()
 			{
 				RoomTemplateRSTableRow->Template->IsBossRoom = RoomTemplateRSTableRow->IsBossRoom;
 				RoomTemplateData[i].Add(RoomTemplateRSTableRow->Template);
+
+				UE_LOG(LogTemp, Log, TEXT("RoomTemplate"));
 			}
 		}
 	}

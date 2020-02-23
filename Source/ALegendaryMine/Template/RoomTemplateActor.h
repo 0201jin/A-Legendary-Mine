@@ -11,6 +11,9 @@ UCLASS()
 class ALEGENDARYMINE_API ARoomTemplateActor : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	TArray<UInstancedStaticMeshComponent*> InstanceActor;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -29,5 +32,5 @@ public:
 protected:
 	UMyCustomAsset* MyCustomAsset;
 
-	TArray<UInstancedStaticMeshComponent*> InstanceActor;
+	
 };

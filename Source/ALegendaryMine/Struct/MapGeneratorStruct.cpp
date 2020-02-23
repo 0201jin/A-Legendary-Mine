@@ -411,7 +411,6 @@ bool VisitVertex(FALGraph * _pg, int _visitV)
 	{
 		_pg->VisitInfo[_visitV] = 1;
 
-		UE_LOG(LogTemp, Log, TEXT("%d"), _visitV);
 		return true;
 	}
 

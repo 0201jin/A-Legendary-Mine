@@ -2,9 +2,13 @@
 
 
 #include "MapGeneratorSys.h"
+#include "Level/InGame.h"
+#include "Template/RoomTemplateActor.h"
 
-MapGeneratorSys::MapGeneratorSys()
+MapGeneratorSys::MapGeneratorSys(class AInGame * _InGameLevel)
 {
+	InGameLevel = _InGameLevel;
+	GameInstance = InGameLevel->GetMyGameInstance();
 }
 
 MapGeneratorSys::~MapGeneratorSys()
@@ -15,12 +19,25 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 {
 	for (int i = 0; i < _Roomsize; i++)
 	{
+		int RandomIndex = (rand() % GameInstance->RoomTemplateData[0].Num());
+
 		FRoomData Data;
 
 		Data.X = 0;
 		Data.Y = 0;
-		Data.SX = ((rand() % 30) + 10) * 100;
-		Data.SY = ((rand() % 30) + 10) * 100;
+		Data.SX = GameInstance->RoomTemplateData[0][RandomIndex]->SX * 100;
+		Data.SY = GameInstance->RoomTemplateData[0][RandomIndex]->SY * 100;
+		//Data.SX = ((rand() % 30) + 10) * 100;
+		//Data.SY = ((rand() % 30) + 10) * 100;
+
+		TemplateActorArray.Add(
+			InGameLevel->GetWorld()->SpawnActor<ARoomTemplateActor>(
+			ARoomTemplateActor::StaticClass(),
+			FTransform(FRotator(0, 0, 0),
+				FVector(Data.X, Data.Y, 0),
+				FVector(1, 1, 1))));
+
+		TemplateActorArray[i]->SetAsset(GameInstance->RoomTemplateData[0][RandomIndex]);
 
 		RoomArray.Add(Data);
 	}
@@ -57,7 +74,6 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 			if (Check)
 			{
-				UE_LOG(LogTemp, Log, TEXT("%d"), i);
 				break;
 			}
 		}
