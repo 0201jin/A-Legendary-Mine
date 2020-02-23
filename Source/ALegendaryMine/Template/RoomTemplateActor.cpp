@@ -24,15 +24,17 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 		UStaticMesh* ISMStaticMesh = LoadObject<UStaticMesh>(NULL, *MyCustomAsset->ActorData[i].Meshdata, NULL, LOAD_None, NULL);
 		UInstancedStaticMeshComponent* ISM = NewObject<UInstancedStaticMeshComponent>(this, TEXT("Template"));
 		InstanceActor.Add(ISM);
+		InstanceActor[i]->OnComponentCreated();
 		InstanceActor[i]->RegisterComponent();
+		if (InstanceActor[i]->bWantsInitializeComponent) InstanceActor[i]->InitializeComponent();
 		InstanceActor[i]->AttachTo(RootComponent);
 
 		InstanceActor[i]->SetStaticMesh(ISMStaticMesh);
-		InstanceActor[i]->PerInstanceSMData = MyCustomAsset->ActorData[i].ActorData;
 
-		InstanceActor[i]->UpdateInstanceTransform(0, FTransform::Identity, true, true);
-
-		InstanceActor[i]->MarkRenderStateDirty();
+		for (int j = 0; j < MyCustomAsset->ActorData[i].ActorData.Num(); j++)
+		{
+			InstanceActor[i]->AddInstanceWorldSpace(FTransform(MyCustomAsset->ActorData[i].ActorData[j].Transform));
+		}
 	}
 }
 
