@@ -134,7 +134,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 			Data.SY = (RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY) - RoomArray[edge.Vertex1].Y;
 		}
 
-		TArray<FVector> RoadLo;
+		TArray<FRoadData> RoadLo;
 
 		int wi = 0;
 
@@ -160,17 +160,81 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					!(V1X <= x && V1X + V1SX >= x && V1Y <= y && V1Y + V1SY >= y) &&
 					!(V2X <= x && V2X + V2SX >= x && V2Y <= y && V2Y + V2SY >= y))
 				{
-					RoadLo.Add(FVector(x, y, 0));
+					FRoadData Data;
+					Data.V1 = edge.Vertex1;
+					Data.V2 = edge.Vertex2;
+					Data.X = x;
+					Data.Y = y;
+
+					if (RoomArray[Data.V1].X < Data.X &&
+						RoomArray[Data.V1].X + RoomArray[Data.V1].SX > Data.X)
+					{
+						if (RoomArray[Data.V1].Y > Data.Y) //길을 오른쪽으로
+						{
+							Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y - 100, 0);
+						}
+						else //길을 왼쪽으로
+						{
+							Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY + 100, 0);
+						}
+					}
+					else if (RoomArray[Data.V1].Y < Data.Y &&
+						RoomArray[Data.V1].Y + RoomArray[Data.V1].SY > Data.Y)
+					{
+						if (RoomArray[Data.V1].X > Data.X) //길을 위로
+						{
+							Data.V1R = FVector(RoomArray[edge.Vertex1].X - 100, y, 0);
+						}
+						else //길을 아래로
+						{
+							Data.V1R = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX + 100, y, 0);
+						}
+					}
+
+					if (RoomArray[Data.V2].X < Data.X &&
+						RoomArray[Data.V2].X + RoomArray[Data.V2].SX > Data.X)
+					{
+						if (RoomArray[Data.V2].Y > Data.Y) //길을 오른쪽으로
+						{
+							Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y - 100, 0);
+						}
+						else //길을 왼쪽을 
+						{
+							Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY + 100, 0);
+						}
+					}
+					else if (RoomArray[Data.V2].Y < Data.Y &&
+						RoomArray[Data.V2].Y + RoomArray[Data.V2].SY > Data.Y)
+					{
+						if (RoomArray[Data.V2].X > Data.X) //길을 위로
+						{
+							Data.V2R = FVector(RoomArray[edge.Vertex2].X - 100, y, 0);
+						}
+						else //길을 아래로
+						{
+							Data.V2R = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX + 100, y, 0);
+						}
+					}
+
+					RoadLo.Add(Data);
 				}
 				y += 100;
 			}
 			x += 100;
 		}
 
+		RoadLo.Sort([](const FRoadData &A, const FRoadData &B)
+		{
+			float ADis = FVector::Dist(FVector(A.X, A.Y, 0), A.V1R) + FVector::Dist(FVector(A.X, A.Y, 0), A.V2R);
+			float BDis = FVector::Dist(FVector(B.X, B.Y, 0), B.V1R) + FVector::Dist(FVector(B.X, B.Y, 0), B.V2R);
+
+			return ADis < BDis;
+		});
+
 		bool bCreateRoad = false;
 
 		if (RoadLo.Num() > 0)
-			while (wi++ < RoadLo.Num())
+			while (wi < RoadLo.Num())
 			{
 				/*
 				랜덤으로 뽑아서 길목 조건에 충족하는지 확인
@@ -179,10 +243,10 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 				int Why = 0;
 				bool bCheck = true;
-				int RoadIndex = rand() % RoadLo.Num();
+				//int RoadIndex = rand() % RoadLo.Num();
 
-				int x = RoadLo[RoadIndex].X;
-				int y = RoadLo[RoadIndex].Y;
+				int x = RoadLo[wi].X;
+				int y = RoadLo[wi].Y;
 
 				for (int i = 0; i < RoomArray.Num(); i++)
 				{
@@ -205,74 +269,38 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					}
 				}
 
-				FRoadData Data;
+				/*FRoadData Data;
 				Data.V1 = edge.Vertex1;
 				Data.V2 = edge.Vertex2;
 				Data.X = x;
-				Data.Y = y;
+				Data.Y = y;*/
 
 				bool ShortRoadV1 = false;
 				bool ShortRoadV2 = false;
 
-				if (RoomArray[Data.V1].X < Data.X &&
-					RoomArray[Data.V1].X + RoomArray[Data.V1].SX > Data.X)
+				if (RoomArray[RoadLo[wi].V1].X < RoadLo[wi].X &&
+					RoomArray[RoadLo[wi].V1].X + RoomArray[RoadLo[wi].V1].SX > RoadLo[wi].X)
 				{
-					if (RoomArray[Data.V1].Y > Data.Y) //길을 오른쪽으로
-					{
-						Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y - 100, 0);
-					}
-					else //길을 왼쪽으로
-					{
-						Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY + 100, 0);
-					}
-
-					if (int(Data.V1R.Y) == Data.Y)
+					if (int(RoadLo[wi].V1R.Y) == RoadLo[wi].Y)
 						ShortRoadV1 = true;
 				}
-				else if (RoomArray[Data.V1].Y < Data.Y &&
-					RoomArray[Data.V1].Y + RoomArray[Data.V1].SY > Data.Y)
+				else if (RoomArray[RoadLo[wi].V1].Y < RoadLo[wi].Y &&
+					RoomArray[RoadLo[wi].V1].Y + RoomArray[RoadLo[wi].V1].SY > RoadLo[wi].Y)
 				{
-					if (RoomArray[Data.V1].X > Data.X) //길을 위로
-					{
-						Data.V1R = FVector(RoomArray[edge.Vertex1].X - 100, y, 0);
-					}
-					else //길을 아래로
-					{
-						Data.V1R = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX + 100, y, 0);
-					}
-
-					if (int(Data.V1R.X) == Data.X)
+					if (int(RoadLo[wi].V1R.X) == RoadLo[wi].X)
 						ShortRoadV1 = true;
 				}
 
-				if (RoomArray[Data.V2].X < Data.X &&
-					RoomArray[Data.V2].X + RoomArray[Data.V2].SX > Data.X)
+				if (RoomArray[RoadLo[wi].V2].X < RoadLo[wi].X &&
+					RoomArray[RoadLo[wi].V2].X + RoomArray[RoadLo[wi].V2].SX > RoadLo[wi].X)
 				{
-					if (RoomArray[Data.V2].Y > Data.Y) //길을 오른쪽으로
-					{
-						Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y - 100, 0);
-					}
-					else //길을 왼쪽을 
-					{
-						Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY + 100, 0);
-					}
-
-					if (int(Data.V2R.Y) == Data.Y)
+					if (int(RoadLo[wi].V2R.Y) == RoadLo[wi].Y)
 						ShortRoadV2 = true;
 				}
-				else if (RoomArray[Data.V2].Y < Data.Y &&
-					RoomArray[Data.V2].Y + RoomArray[Data.V2].SY > Data.Y)
+				else if (RoomArray[RoadLo[wi].V2].Y < RoadLo[wi].Y &&
+					RoomArray[RoadLo[wi].V2].Y + RoomArray[RoadLo[wi].V2].SY > RoadLo[wi].Y)
 				{
-					if (RoomArray[Data.V2].X > Data.X) //길을 위로
-					{
-						Data.V2R = FVector(RoomArray[edge.Vertex2].X - 100, y, 0);
-					}
-					else //길을 아래로
-					{
-						Data.V2R = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX + 100, y, 0);
-					}
-
-					if (int(Data.V2R.X) == Data.X)
+					if (int(RoadLo[wi].V2R.X) == RoadLo[wi].X)
 						ShortRoadV2 = true;
 				}
 
@@ -283,14 +311,14 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					{
 						if (!ShortRoadV1)
 						{
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V1R,
 								FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V1R))
 							{
 								Why = 2;
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V1R,
 								FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
 							{
 								Why = 2;
@@ -301,14 +329,14 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 						if (!ShortRoadV2)
 						{
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V2R,
 								FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V1R))
 							{
 								Why = 2;
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V2R,
 								FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
 							{
 								Why = 2;
@@ -326,19 +354,19 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					{
 						if (!ShortRoadV1)
 						{
-							int MinX = Data.X;
-							int MinY = Data.Y;
+							int MinX = RoadLo[wi].X;
+							int MinY = RoadLo[wi].Y;
 							int XABS = abs(MinX - RoadArray[i].V1R.X);
 							int YABS = abs(MinY - RoadArray[i].V1R.Y);
 
-							if (Data.X > RoadArray[i].V1R.X)
+							if (RoadLo[wi].X > RoadArray[i].V1R.X)
 								MinX = RoadArray[i].V1R.X;
-							if (Data.Y > RoadArray[i].V1R.Y)
+							if (RoadLo[wi].Y > RoadArray[i].V1R.Y)
 								MinY = RoadArray[i].V1R.Y;
 
 							for (int j = 0; j < XABS; j++)
 							{
-								if (MinX + j == Data.X && RoadArray[i].V1R.Y == Data.Y)
+								if (MinX + j == RoadLo[wi].X && RoadArray[i].V1R.Y == RoadLo[wi].Y)
 								{
 									bCheck = false;
 									break;
@@ -347,7 +375,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 							for (int j = 0; j < YABS; j++)
 							{
-								if (MinY + j == Data.Y && RoadArray[i].V1R.X == Data.X)
+								if (MinY + j == RoadLo[wi].Y && RoadArray[i].V1R.X == RoadLo[wi].X)
 								{
 									bCheck = false;
 									break;
@@ -357,19 +385,19 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 						if (!ShortRoadV2)
 						{
-							int MinX = Data.X;
-							int MinY = Data.Y;
+							int MinX = RoadLo[wi].X;
+							int MinY = RoadLo[wi].Y;
 							int XABS = abs(MinX - RoadArray[i].V2R.X);
 							int YABS = abs(MinY - RoadArray[i].V2R.Y);
 
-							if (Data.X > RoadArray[i].V2R.X)
+							if (RoadLo[wi].X > RoadArray[i].V2R.X)
 								MinX = RoadArray[i].V2R.X;
-							if (Data.Y > RoadArray[i].V2R.Y)
+							if (RoadLo[wi].Y > RoadArray[i].V2R.Y)
 								MinY = RoadArray[i].V2R.Y;
 
 							for (int j = 0; j < XABS; j++)
 							{
-								if (MinX + j == Data.X && RoadArray[i].V2R.Y == Data.Y)
+								if (MinX + j == RoadLo[wi].X && RoadArray[i].V2R.Y == RoadLo[wi].Y)
 								{
 									bCheck = false;
 									break;
@@ -378,7 +406,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 							for (int j = 0; j < YABS; j++)
 							{
-								if (MinY + j == Data.Y && RoadArray[i].V2R.X == Data.X)
+								if (MinY + j == RoadLo[wi].Y && RoadArray[i].V2R.X == RoadLo[wi].X)
 								{
 									bCheck = false;
 									break;
@@ -396,7 +424,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					{
 						if (!ShortRoadV1)
 						{
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V1R,
 								FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
 							{
@@ -404,7 +432,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V1R,
 								FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 								FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
 							{
@@ -412,7 +440,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V1R,
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 							{
@@ -420,7 +448,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V1R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V1R,
 								FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 							{
@@ -432,7 +460,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 						if (!ShortRoadV2)
 						{
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V2R,
 								FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
 							{
@@ -440,7 +468,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V2R,
 								FVector(RoomArray[i].X, RoomArray[i].Y, 0),
 								FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
 							{
@@ -448,7 +476,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V2R,
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 							{
@@ -456,7 +484,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-							if (IntersectLine(FVector(Data.X, Data.Y, 0), Data.V2R,
+							if (IntersectLine(FVector(RoadLo[wi].X, RoadLo[wi].Y, 0), RoadLo[wi].V2R,
 								FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
 								FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
 							{
@@ -470,15 +498,14 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 				if (bCheck)
 				{
-					RoadArray.Add(Data);
+					RoadArray.Add(RoadLo[wi]);
 
 					bCreateRoad = true;
 
-					//UE_LOG(LogTemp, Log, TEXT("%s"), ShortRoadV1 ? *FString("true") : *FString("false"));
-					//UE_LOG(LogTemp, Log, TEXT("%s"), ShortRoadV2 ? *FString("true") : *FString("false"));
-
 					break;
 				}
+
+				wi++;
 			}
 
 		if (!bCreateRoad)
