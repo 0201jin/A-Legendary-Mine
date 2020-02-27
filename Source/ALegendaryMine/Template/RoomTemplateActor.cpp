@@ -7,7 +7,7 @@
 // Sets default values
 ARoomTemplateActor::ARoomTemplateActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -38,11 +38,39 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 	}
 }
 
+void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
+{
+	bool bCheck = true;
+
+	for (int i = 0; i < MyCustomAsset->ActorData[0].ActorData.Num(); i++)
+	{
+		FTransform InstanceTrans = FTransform::Identity;
+		InstanceActor[0]->GetInstanceTransform(i, InstanceTrans, true);
+		if (InstanceTrans.GetLocation() == _Lo)
+		{
+			InstanceActor[0]->RemoveInstance(i);
+			bCheck = false;
+		}
+	}
+
+	if (bCheck)
+		return;
+
+	if (_RoadLo.X == _Lo.X)
+	{
+		CreateRoad(_RoadLo, FVector(_Lo.X, _Lo.Y + 100, 0));
+	}
+	else if(_RoadLo.Y == _Lo.Y)
+	{
+		CreateRoad(_RoadLo, FVector(_Lo.X + 100, _Lo.Y, 0));
+	}
+}
+
 // Called when the game starts or when spawned
 void ARoomTemplateActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

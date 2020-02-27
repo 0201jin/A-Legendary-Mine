@@ -17,6 +17,7 @@ public:
 	ARoomTemplateActor();
 
 	void SetAsset(UMyCustomAsset* _MyCustomAsset);
+	void CreateRoad(FVector _RoadLo, FVector _Lo);
 
 protected:
 	// Called when the game starts or when spawned

@@ -126,14 +126,14 @@ void FRTDViewportClient::CreateWalls(int _x, int _y)
 void FRTDViewportClient::Tick(float DeltaSeconds)
 {
 	if (bW)
-		MoveViewportCamera(GetViewRotation().Vector() * 10, FRotator(0, 0, 0));
+		MoveViewportCamera(GetViewRotation().Vector().ToOrientationQuat().GetForwardVector() * 10, FRotator(0, 0, 0));
 	if (bS)
-		MoveViewportCamera(GetViewRotation().Vector() * -10, FRotator(0, 0, 0));
+		MoveViewportCamera(GetViewRotation().Vector().ToOrientationQuat().GetForwardVector() * -10, FRotator(0, 0, 0));
 	if (bA)
 		MoveViewportCamera(GetViewRotation().Vector().ToOrientationQuat().GetRightVector() * -10, FRotator(0, 0, 0));
 	if (bD)
 		MoveViewportCamera(GetViewRotation().Vector().ToOrientationQuat().GetRightVector() * 10, FRotator(0, 0, 0));
-
+	
 	Viewport->Draw();
 
 	FEditorViewportClient::Tick(DeltaSeconds);
@@ -334,7 +334,7 @@ bool FRTDViewportClient::InputAxis(FViewport * Viewport, int32 ControllerId, FKe
 		if(Key == EKeys::MouseX)
 			MoveViewportCamera(FVector(0, 0, 0), FRotator(0, Delta / 2, 0));
 
-		if(Key == EKeys::MouseY)
+		if (Key == EKeys::MouseY)
 			MoveViewportCamera(FVector(0, 0, 0), FRotator(Delta / 2, 0, 0));
 	}
 

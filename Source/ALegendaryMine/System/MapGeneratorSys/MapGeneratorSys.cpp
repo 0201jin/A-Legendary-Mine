@@ -172,10 +172,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 						if (RoomArray[Data.V1].Y > Data.Y) //길을 오른쪽으로
 						{
 							Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y - 100, 0);
+							Data.V1RF = FVector(x, RoomArray[edge.Vertex1].Y, 0);
 						}
 						else //길을 왼쪽으로
 						{
 							Data.V1R = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY + 100, 0);
+							Data.V1RF = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY, 0);
 						}
 					}
 					else if (RoomArray[Data.V1].Y < Data.Y &&
@@ -184,10 +186,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 						if (RoomArray[Data.V1].X > Data.X) //길을 위로
 						{
 							Data.V1R = FVector(RoomArray[edge.Vertex1].X - 100, y, 0);
+							Data.V1RF = FVector(RoomArray[edge.Vertex1].X, y, 0);
 						}
 						else //길을 아래로
 						{
 							Data.V1R = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX + 100, y, 0);
+							Data.V1RF = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX, y, 0);
 						}
 					}
 
@@ -197,10 +201,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 						if (RoomArray[Data.V2].Y > Data.Y) //길을 오른쪽으로
 						{
 							Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y - 100, 0);
+							Data.V2RF = FVector(x, RoomArray[edge.Vertex2].Y, 0);
 						}
 						else //길을 왼쪽을 
 						{
 							Data.V2R = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY + 100, 0);
+							Data.V2RF = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY, 0);
 						}
 					}
 					else if (RoomArray[Data.V2].Y < Data.Y &&
@@ -209,10 +215,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 						if (RoomArray[Data.V2].X > Data.X) //길을 위로
 						{
 							Data.V2R = FVector(RoomArray[edge.Vertex2].X - 100, y, 0);
+							Data.V2RF = FVector(RoomArray[edge.Vertex2].X, y, 0);
 						}
 						else //길을 아래로
 						{
 							Data.V2R = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX + 100, y, 0);
+							Data.V2RF = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX, y, 0);
 						}
 					}
 
@@ -325,6 +333,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
+
+							if (abs(RoadLo[wi].X - RoadArray[i].X) <= 100 || abs(RoadLo[wi].Y - RoadArray[i].Y) <= 100)
+							{
+								bCheck = false;
+								break;
+							}
 						}
 
 						if (!ShortRoadV2)
@@ -340,6 +354,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								FVector(RoadArray[i].X, RoadArray[i].Y, 0), RoadArray[i].V2R))
 							{
 								Why = 2;
+								bCheck = false;
+								break;
+							}
+
+							if (abs(RoadLo[wi].X - RoadArray[i].X) <= 100 || abs(RoadLo[wi].Y - RoadArray[i].Y) <= 100)
+							{
 								bCheck = false;
 								break;
 							}
@@ -600,6 +620,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 	for (int i = 0; i < eidx; i++)
 		PEnqueue(&(graph.Queue), recvEdge[i]);
+
+	for (int i = 0; i < RoadArray.Num(); i++)
+	{
+		TemplateActorArray[RoadArray[i].V1]->CreateRoad(RoadArray[i].V1R, RoadArray[i].V1RF);
+		TemplateActorArray[RoadArray[i].V2]->CreateRoad(RoadArray[i].V2R, RoadArray[i].V2RF);
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("END"));
 }

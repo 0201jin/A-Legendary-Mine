@@ -13,7 +13,7 @@ struct FRoomData
 {
 	GENERATED_USTRUCT_BODY()
 
-		int X = 0;
+	int X = 0;
 	int Y = 0;
 
 	int SX = 0;
@@ -34,9 +34,11 @@ struct FRoadData
 
 	int V1 = 0;
 	FVector V1R = FVector();
+	FVector V1RF = FVector();
 
 	int V2 = 0;
 	FVector V2R = FVector();
+	FVector V2RF = FVector();
 };
 
 USTRUCT(Atomic)
