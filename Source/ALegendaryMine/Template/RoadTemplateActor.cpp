@@ -5,7 +5,7 @@
 // Sets default values
 ARoadTemplateActor::ARoadTemplateActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -32,7 +32,61 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 	FVector Road = FVector(RoadData.X, RoadData.Y, 0);
 
 	Floor->AddInstanceWorldSpace(FTransform(Road));
-	
+
+	bool bWalls[4];
+
+	if (RoadData.X == RoadData.V1RF.X)
+	{
+		if (RoadData.Y < RoadData.V1RF.Y)
+		{
+			bWalls[1] = true;
+		}
+		else
+		{
+			bWalls[3] = true;
+		}
+	}
+	else if (RoadData.Y == RoadData.V1RF.Y)
+	{
+		if (RoadData.X < RoadData.V1RF.X)
+		{
+			bWalls[0] = true;
+		}
+		else
+		{
+			bWalls[2] = true;
+		}
+	}
+
+	if (RoadData.X == RoadData.V2RF.X)
+	{
+		if (RoadData.Y < RoadData.V2RF.Y)
+		{
+			bWalls[1] = true;
+		}
+		else
+		{
+			bWalls[3] = true;
+		}
+	}
+	else if (RoadData.Y == RoadData.V2RF.Y)
+	{
+		if (RoadData.X < RoadData.V2RF.X)
+		{
+			bWalls[0] = true;
+		}
+		else
+		{
+			bWalls[2] = true;
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (!bWalls[i])
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Road, FVector(1, 1, 1)));
+	}
+
 	CreateRoad(Road, Road + (RoadData.V1RF - RoadData.V1R));
 	CreateRoad(Road, Road + (RoadData.V2RF - RoadData.V2R));
 }
@@ -41,7 +95,7 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 void ARoadTemplateActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
