@@ -4,6 +4,7 @@
 #include "MapGeneratorSys.h"
 #include "Level/InGame.h"
 #include "Template/RoomTemplateActor.h"
+#include "Template/RoadTemplateActor.h"
 
 MapGeneratorSys::MapGeneratorSys(class AInGame * _InGameLevel)
 {
@@ -17,17 +18,19 @@ MapGeneratorSys::~MapGeneratorSys()
 
 void MapGeneratorSys::MapGen(int _Roomsize)
 {
+	int iStage = 0;
+
 	for (int i = 0; i < _Roomsize; i++)
 	{
 		int RandomIndex = (rand() % GameInstance->RoomTemplateData[0].Num());
 
 		FRoomData Data;
 
+		Data.SX = (GameInstance->RoomTemplateData[iStage][RandomIndex]->SX - 1) * 100;
+		Data.SY = (GameInstance->RoomTemplateData[iStage][RandomIndex]->SY - 1) * 100;
 		Data.X = 0;
 		Data.Y = 0;
-		Data.SX = (GameInstance->RoomTemplateData[0][RandomIndex]->SX - 1) * 100;
-		Data.SY = (GameInstance->RoomTemplateData[0][RandomIndex]->SY - 1) * 100;
-
+		
 		TemplateActorArray.Add(
 			InGameLevel->GetWorld()->SpawnActor<ARoomTemplateActor>(
 				ARoomTemplateActor::StaticClass(),
@@ -35,7 +38,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					FVector(Data.X, Data.Y, 0),
 					FVector(1, 1, 1))));
 
-		TemplateActorArray[i]->SetAsset(GameInstance->RoomTemplateData[0][RandomIndex]);
+		TemplateActorArray[i]->SetAsset(GameInstance->RoomTemplateData[iStage][RandomIndex]);
 
 		RoomArray.Add(Data);
 	}
@@ -240,6 +243,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 		});
 
 		bool bCreateRoad = false;
+		int Why = 0;
 
 		if (RoadLo.Num() > 0)
 			while (wi < RoadLo.Num())
@@ -248,8 +252,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 				랜덤으로 뽑아서 길목 조건에 충족하는지 확인
 				v1.x & v2.y || v1.y & v2.x || v1.x & v2.x || v1.y & v2.y
 				*/
+				Why = 0;
 
-				int Why = 0;
 				bool bCheck = true;
 				//int RoadIndex = rand() % RoadLo.Num();
 
@@ -276,12 +280,6 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 						break;
 					}
 				}
-
-				/*FRoadData Data;
-				Data.V1 = edge.Vertex1;
-				Data.V2 = edge.Vertex2;
-				Data.X = x;
-				Data.Y = y;*/
 
 				bool ShortRoadV1 = false;
 				bool ShortRoadV2 = false;
@@ -339,7 +337,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 								bCheck = false;
 								break;
 							}
-						}
+						} 
 
 						if (!ShortRoadV2)
 						{
@@ -530,9 +528,24 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 		if (!bCreateRoad)
 		{
+			bool bFind = false;
+			switch (Why)
+			{
+			case 1:
+				UE_LOG(LogTemp, Log, TEXT("Road"));
+				break;
+				
+			case 2:
+				UE_LOG(LogTemp, Log, TEXT("Collision Road"));
+				break;
+
+			case 3:
+				UE_LOG(LogTemp, Log, TEXT("Collision Room"));
+				break;
+			}
 			//방이 연결되었는지 확인하고 연결이 안됬으면 길을 새로 연결.
 			RemoveEdge(&graph, edge.Vertex1, edge.Vertex2);
-			UE_LOG(LogTemp, Log, TEXT("Delete Road"));
+			UE_LOG(LogTemp, Log, TEXT("Delete Road %d %d"), edge.Vertex1, edge.Vertex2);
 
 			if (!IsConnvertex(&graph, edge.Vertex1, edge.Vertex2))
 			{
@@ -578,7 +591,12 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					}
 
 					if (MinDis != 999999)
+					{
 						AddEdge(&graph, VertexIndex, edge.Vertex2, (int)MinDis);
+						UE_LOG(LogTemp, Log, TEXT("Recover Road %d %d"), edge.Vertex1, VertexIndex);
+						UE_LOG(LogTemp, Log, TEXT(" "));
+						bFind = true;
+					}
 				}
 				else
 				{
@@ -606,10 +624,46 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					}
 
 					if (MinDis != 999999)
+					{
 						AddEdge(&graph, edge.Vertex1, VertexIndex, (int)MinDis);
+						UE_LOG(LogTemp, Log, TEXT("Recover Road %d %d"), edge.Vertex1, VertexIndex);
+						UE_LOG(LogTemp, Log, TEXT(" "));
+						bFind = true;
+					}
+				}
+			}
+
+			if (!bFind)
+			{
+				//다른 연결 지점을 찾는다.
+				float MinDis = 999999;
+				int VertexIndex1 = 0;
+				int VertexIndex2 = 0;
+
+				for (int i = 0; i < (&graph)->NumV; i++)
+				{
+					for (int j = 0; j < (&graph)->NumV; j++)
+					{
+						if (i != j && !CheckEdge[i][j] && !IsConnvertex(&graph, i, j))
+						{
+							float dis = FVector::Dist(FVector(RoomArray[i].X, RoomArray[i].Y, 0), FVector(RoomArray[edge.Vertex1].X, RoomArray[edge.Vertex1].Y, 0));
+
+							if (MinDis > dis)
+							{
+								MinDis = dis;
+								VertexIndex1 = i;
+								VertexIndex2 = j;
+							}
+						}
+					}
 				}
 
-				UE_LOG(LogTemp, Log, TEXT("Recover Road"));
+				if (MinDis != 999999)
+				{
+					AddEdge(&graph, VertexIndex1, VertexIndex2, (int)MinDis);
+					UE_LOG(LogTemp, Log, TEXT("ReFind Road %d %d"), VertexIndex1, VertexIndex2);
+					UE_LOG(LogTemp, Log, TEXT(" "));
+				}
 			}
 		}
 		else
@@ -623,6 +677,17 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 	for (int i = 0; i < RoadArray.Num(); i++)
 	{
+		RoadTemplateActorArray.Add(
+			InGameLevel->GetWorld()->SpawnActor<ARoadTemplateActor>(
+				ARoadTemplateActor::StaticClass(),
+				FTransform(FRotator(0, 0, 0),
+					FVector(RoadArray[i].X, RoadArray[i].Y, 0),
+					FVector(1, 1, 1))));
+
+		int RandomIndex = (rand() % GameInstance->RoadTemplateData[iStage].Num());
+
+		RoadTemplateActorArray[i]->SetRoadMeshData(GameInstance->RoadTemplateData[iStage][RandomIndex], RoadArray[i]);
+
 		TemplateActorArray[RoadArray[i].V1]->CreateRoad(RoadArray[i].V1R, RoadArray[i].V1RF);
 		TemplateActorArray[RoadArray[i].V2]->CreateRoad(RoadArray[i].V2R, RoadArray[i].V2RF);
 	}

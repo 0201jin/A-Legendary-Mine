@@ -25,6 +25,16 @@ struct FRoomData
 };
 
 USTRUCT(Atomic)
+struct FRoadMeshData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UStaticMesh * Floor = nullptr;
+	UStaticMesh * Walls = nullptr;
+	UStaticMesh * Doors = nullptr;
+};
+
+USTRUCT(Atomic)
 struct FRoadData
 {
 	GENERATED_USTRUCT_BODY()

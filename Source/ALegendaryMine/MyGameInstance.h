@@ -3,6 +3,9 @@
 #pragma once
 
 #include "DataTable/TemplateDataTable.h"
+#include "DataTable/RoadTemplateDataTable.h"
+
+#include "Struct/MapGeneratorStruct.h"
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
@@ -24,7 +27,9 @@ protected:
 
 protected:
 	TArray<class UDataTable *> TemplateDataTable;
+	TArray<class UDataTable *> RoadTemplateDataTable;
 
 public:
 	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
+	TArray<TArray<FRoadMeshData>> RoadTemplateData;
 };

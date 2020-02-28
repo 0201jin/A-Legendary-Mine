@@ -35,4 +35,5 @@ protected:
 
 	TArray<TArray<UMyCustomAsset*>> TemplateArray;
 	TArray<class ARoomTemplateActor*> TemplateActorArray;
+	TArray<class ARoadTemplateActor*> RoadTemplateActorArray;
 };

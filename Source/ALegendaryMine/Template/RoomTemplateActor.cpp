@@ -8,7 +8,7 @@
 ARoomTemplateActor::ARoomTemplateActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
@@ -58,11 +58,11 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 
 	if (_RoadLo.X == _Lo.X)
 	{
-		CreateRoad(_RoadLo, FVector(_Lo.X, _Lo.Y + 100, 0));
+		CreateRoad(_Lo, FVector(_Lo.X, _Lo.Y + (_Lo.Y - _RoadLo.Y), 0));
 	}
 	else if(_RoadLo.Y == _Lo.Y)
 	{
-		CreateRoad(_RoadLo, FVector(_Lo.X + 100, _Lo.Y, 0));
+		CreateRoad(_Lo, FVector(_Lo.X + (_Lo.X - _RoadLo.X), _Lo.Y, 0));
 	}
 }
 
@@ -72,11 +72,3 @@ void ARoomTemplateActor::BeginPlay()
 	Super::BeginPlay();
 
 }
-
-// Called every frame
-void ARoomTemplateActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
