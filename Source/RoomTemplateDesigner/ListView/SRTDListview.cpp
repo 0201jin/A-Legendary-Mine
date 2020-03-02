@@ -100,6 +100,7 @@ UObject * SRTDListview::GetFreference() const
 void SRTDListview::ListItemClick(TSharedPtr<FMeshData> SelectItem)
 {
 	AssetData->MeshDataIndex = SelectItem->ArrayIndex;
+	AssetData->bSelectActor = false;
 }
 
 TSharedRef<ITableRow> SRTDListview::OnGenerateRowForList(TSharedPtr<FMeshData> Item, const TSharedRef<STableViewBase>& OwnerTable)

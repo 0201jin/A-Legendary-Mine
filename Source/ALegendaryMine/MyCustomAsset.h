@@ -36,6 +36,30 @@ struct FMeshData
 		int16 Index = -1; //ISMData를 가르키는 Index
 };
 
+USTRUCT(Atomic)
+struct FAData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+		FString MeshData;
+
+	UPROPERTY()
+		FTransform MeshTransform;
+};
+
+USTRUCT(Atomic)
+struct FActorData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+		FString MeshData;
+
+	UPROPERTY()
+		int16 ArrayIndex = 0;
+};
+
 UCLASS()
 class ALEGENDARYMINE_API UMyCustomAsset : public UObject
 {
@@ -51,6 +75,12 @@ public:
 		TArray<FMeshData> MeshDataArr;
 
 	UPROPERTY()
+		TArray<FAData> ActorArr;
+
+	UPROPERTY()
+		TArray<FActorData> ActorDataArr;
+
+	UPROPERTY()
 		int32 SX;
 
 	UPROPERTY()
@@ -59,5 +89,8 @@ public:
 	UPROPERTY()
 		bool IsBossRoom;
 
+	bool bSelectActor = false;
+
 	int16 MeshDataIndex = 0; //MeshDataArr의 Index를 가르킴
+	int16 ActorDataIndex = 0;
 };

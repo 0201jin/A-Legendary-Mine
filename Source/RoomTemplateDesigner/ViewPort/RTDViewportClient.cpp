@@ -32,8 +32,7 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	SetViewRotation(FRotator(-90.0f, 0.0f, 0.0f));
 	SetViewLocationForOrbiting(FVector::ZeroVector, 500.0f);
 
-	UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"), NULL, LOAD_None, NULL);
-	UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(NULL, TEXT("/Engine/EditorMeshes/ColorCalibrator/M_ChromeBall.M_ChromeBall"), NULL, LOAD_None, NULL);
+	UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Template/Box.Box'"), NULL, LOAD_None, NULL);
 
 	MeshActor = NewObject<UStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient);
 	MeshActor->SetStaticMesh(StaticMesh);
@@ -48,7 +47,7 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	if (IGCObject->MeshDataArr.Num() == 0)
 	{
 		FMeshData data;
-		data.MeshData = "StaticMesh'/Engine/BasicShapes/Cube.Cube'"; //검은색 기둥 넣기
+		data.MeshData = "StaticMesh'/Game/Template/BlackWall.BlackWall'"; //검은색 기둥 넣기
 
 		IGCObject->MeshDataArr.Add(data);
 	}
@@ -64,6 +63,13 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 		Transform.SetRotation(FQuat(0, 0, 0, 0));
 
 		PreviewScene->AddComponent(actor[i], Transform);
+	}
+
+	for (int i = 0; IGCObject->ActorArr.Num() > i; i++)
+	{
+		UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *IGCObject->ActorArr[i].MeshData, NULL, LOAD_None, NULL);
+		
+		PreviewScene->GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform);
 	}
 }
 
@@ -253,88 +259,15 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 		{
 			FVector WorldLocation = MeshActor->GetRelativeLocation();
 
-			if (IGCObject->MeshDataArr.Num() > 0)
+			if (!IGCObject->bSelectActor)
 			{
-				if (!bShift)
+				if (IGCObject->MeshDataArr.Num() > 0)
 				{
-					if (IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index == -1)
+					if (!bShift)
 					{
-						UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData, NULL, LOAD_None, NULL);
-						ActorIndex = IGCObject->ActorData.Num();
-
-						actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
-						actor[ActorIndex]->SetStaticMesh(StaticMesh);
-
-						IGCObject->ActorData.Add(FISMData());
-						IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
-						IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
-
-						IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
-
-						FTransform Transform = FTransform::Identity;
-						Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
-						Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
-						actor[ActorIndex]->AddInstanceWorldSpace(Transform);
-
-						Transform.SetRotation(FQuat(0, 0, 0, 0));
-						PreviewScene->AddComponent(actor[ActorIndex], Transform);
-					}
-					else
-					{
-						ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
-
-						FTransform Transform = FTransform::Identity;
-						Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
-						Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
-						actor[ActorIndex]->AddInstanceWorldSpace(Transform);
-
-						IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
-					}
-				}
-				else
-				{
-					if (iClickCount < 2)
-					{
-						if (iClickCount == 0)
-							ClickV1 = WorldLocation;
-						else
-							ClickV2 = WorldLocation;
-
-						iClickCount++;
-					}
-
-					if (iClickCount >= 2)
-					{
-						int LX = ClickV1.X;
-						int LY = ClickV1.Y;
-						int LZ = ClickV1.Z;
-
-						int SX = ClickV2.X;
-						int SY = ClickV2.Y;
-						int SZ = ClickV2.Z;
-
-						if (ClickV1.X < ClickV2.X)
-						{
-							LX = ClickV2.X;
-							SX = ClickV1.X;
-						}
-
-						if (ClickV1.Y < ClickV2.Y)
-						{
-							LY = ClickV2.Y;
-							SY = ClickV1.Y;
-						}
-
-						if (ClickV1.Z < ClickV2.Z)
-						{
-							LZ = ClickV2.Z;
-							SZ = ClickV1.Z;
-						}
-
 						if (IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index == -1)
 						{
 							UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData, NULL, LOAD_None, NULL);
-
 							ActorIndex = IGCObject->ActorData.Num();
 
 							actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
@@ -347,40 +280,145 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 							IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
 
 							FTransform Transform = FTransform::Identity;
+							Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+							Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+							actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+
+							Transform.SetRotation(FQuat(0, 0, 0, 0));
 							PreviewScene->AddComponent(actor[ActorIndex], Transform);
-
-							UE_LOG(LogTemp, Log, TEXT("Obj Spawn"));
 						}
-
-						ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
-
-						for (int x = SX; x <= LX;)
+						else
 						{
-							for (int y = SY; y <= LY;)
-							{
-								for (int z = SZ; z <= LZ;)
-								{
-									FTransform Transform = FTransform::Identity;
-									Transform.SetLocation(FVector(x, y, z));
-									Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
-									actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+							ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
 
-									UE_LOG(LogTemp, Log, TEXT("%d %d %d"), x, y, z);
+							FTransform Transform = FTransform::Identity;
+							Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+							Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+							actor[ActorIndex]->AddInstanceWorldSpace(Transform);
 
-									z += 100;
-								}
-								y += 100;
-							}
-							x += 100;
+							IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+						}
+					}
+					else
+					{
+						if (iClickCount < 2)
+						{
+							if (iClickCount == 0)
+								ClickV1 = WorldLocation;
+							else
+								ClickV2 = WorldLocation;
+
+							iClickCount++;
 						}
 
-						UE_LOG(LogTemp, Log, TEXT("END"));
+						if (iClickCount >= 2)
+						{
+							int LX = ClickV1.X;
+							int LY = ClickV1.Y;
+							int LZ = ClickV1.Z;
 
-						IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+							int SX = ClickV2.X;
+							int SY = ClickV2.Y;
+							int SZ = ClickV2.Z;
 
-						bShift = false;
-						iClickCount = 0;
+							if (ClickV1.X < ClickV2.X)
+							{
+								LX = ClickV2.X;
+								SX = ClickV1.X;
+							}
+
+							if (ClickV1.Y < ClickV2.Y)
+							{
+								LY = ClickV2.Y;
+								SY = ClickV1.Y;
+							}
+
+							if (ClickV1.Z < ClickV2.Z)
+							{
+								LZ = ClickV2.Z;
+								SZ = ClickV1.Z;
+							}
+
+							if (IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index == -1)
+							{
+								UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData, NULL, LOAD_None, NULL);
+
+								ActorIndex = IGCObject->ActorData.Num();
+
+								actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
+								actor[ActorIndex]->SetStaticMesh(StaticMesh);
+
+								IGCObject->ActorData.Add(FISMData());
+								IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+								IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
+
+								IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
+
+								FTransform Transform = FTransform::Identity;
+								PreviewScene->AddComponent(actor[ActorIndex], Transform);
+
+								UE_LOG(LogTemp, Log, TEXT("Obj Spawn"));
+							}
+
+							ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
+
+							for (int x = SX; x <= LX;)
+							{
+								for (int y = SY; y <= LY;)
+								{
+									for (int z = SZ; z <= LZ;)
+									{
+										FTransform Transform = FTransform::Identity;
+										Transform.SetLocation(FVector(x, y, z));
+										Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+										actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+
+										UE_LOG(LogTemp, Log, TEXT("%d %d %d"), x, y, z);
+
+										z += 100;
+									}
+									y += 100;
+								}
+								x += 100;
+							}
+
+							UE_LOG(LogTemp, Log, TEXT("END"));
+
+							IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+
+							bShift = false;
+							iClickCount = 0;
+						}
 					}
+				}
+			}
+			else
+			{
+				UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *IGCObject->ActorDataArr[IGCObject->ActorDataIndex].MeshData, NULL, LOAD_None, NULL);
+
+				if (StaticMesh1)
+				{
+					Actors.Add(NewObject<AActor>(GetTransientPackage(), NAME_None, RF_Transient));
+
+					ActorIndex = Actors.Num() - 1;
+
+					FTransform Transform = FTransform::Identity;
+					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+					Actors[ActorIndex]->ApplyWorldOffset(Transform.GetLocation(), true);
+
+					Transform.SetRotation(FQuat(0, 0, 0, 0));
+					//PreviewScene->AddComponent(Actors[ActorIndex], Transform);
+					PreviewScene->GetWorld()->SpawnActor<AActor>(
+						StaticMesh1->GeneratedClass, Transform);
+
+					FAData Data;
+					Data.MeshData = IGCObject->ActorDataArr[IGCObject->ActorDataIndex].MeshData;
+					Data.MeshTransform = Transform;
+
+					IGCObject->ActorArr.Add(Data);
+
+					UE_LOG(LogTemp, Log, TEXT("Actor %s"), *IGCObject->ActorDataArr[IGCObject->ActorDataIndex].MeshData);
 				}
 			}
 		}

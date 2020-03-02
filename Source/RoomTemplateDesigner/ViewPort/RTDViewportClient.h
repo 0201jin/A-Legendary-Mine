@@ -36,6 +36,7 @@ private:
 	class UStaticMeshComponent * MeshActor;
 
 	TArray<UInstancedStaticMeshComponent*> actor;
+	TArray<AActor*> Actors;
 
 	bool bW, bA, bS, bD, bRB, bShift;
 

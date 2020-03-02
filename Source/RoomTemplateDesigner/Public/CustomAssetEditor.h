@@ -41,15 +41,18 @@ public:
 private:
 	TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_Listview(const FSpawnTabArgs& Args);
+	TSharedRef<SDockTab> SpawnTab_ActorListView(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_RoomSize(const FSpawnTabArgs& Args);
 
 private:
 	TSharedPtr<class SRoomSizeWidget> RoomSize;
 	TSharedPtr<class SRTDViewport> Viewport;
 	TSharedPtr<class SRTDListview> Listview;
+	TSharedPtr<class SRTDActorListView> ActorListView;
 
 	static const FName ViewportTabId;
 	static const FName ListviewTabId;
+	static const FName ActorListViewTabId;
 	static const FName RoomSizeId;
 
 	UMyCustomAsset* CustomAsset;
