@@ -12,6 +12,16 @@ APlayerPawn::APlayerPawn()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("CharacterMesh");
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동
+	GetCharacterMovement()->JumpZVelocity = 0.0f;
+	GetCharacterMovement()->MaxStepHeight = 60.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 500;
+	GetCharacterMovement()->AirControl = 0.0f;
+	GetCharacterMovement()->GroundFriction = 100.0f;
 }
 
 // Called when the game starts or when spawned
@@ -28,10 +38,14 @@ void APlayerPawn::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APlayerPawn::FB_Move(float _value)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	AddMovementInput(Direction, _value);
 }
 
+void APlayerPawn::LR_Move(float _value)
+{
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	AddMovementInput(Direction, _value);
+}

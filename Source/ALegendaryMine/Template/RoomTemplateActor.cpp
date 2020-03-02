@@ -21,11 +21,13 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 
 	for (int i = 0; i < MyCustomAsset->ActorData.Num(); i++)
 	{
+		FString ISMName = FString::FromInt(i);
 		UStaticMesh* ISMStaticMesh = LoadObject<UStaticMesh>(NULL, *MyCustomAsset->ActorData[i].Meshdata, NULL, LOAD_None, NULL);
-		UInstancedStaticMeshComponent* ISM = NewObject<UInstancedStaticMeshComponent>(this, TEXT("Template"));
+		UInstancedStaticMeshComponent* ISM = NewObject<UInstancedStaticMeshComponent>(this, *ISMName);
 		InstanceActor.Add(ISM);
 		InstanceActor[i]->OnComponentCreated();
 		InstanceActor[i]->RegisterComponent();
+
 		if (InstanceActor[i]->bWantsInitializeComponent) InstanceActor[i]->InitializeComponent();
 		InstanceActor[i]->AttachTo(RootComponent);
 

@@ -133,7 +133,7 @@ void FRTDViewportClient::Tick(float DeltaSeconds)
 		MoveViewportCamera(GetViewRotation().Vector().ToOrientationQuat().GetRightVector() * -10, FRotator(0, 0, 0));
 	if (bD)
 		MoveViewportCamera(GetViewRotation().Vector().ToOrientationQuat().GetRightVector() * 10, FRotator(0, 0, 0));
-	
+
 	Viewport->Draw();
 
 	FEditorViewportClient::Tick(DeltaSeconds);
@@ -165,7 +165,7 @@ void FRTDViewportClient::MouseMove(FViewport * Viewport, int32 x, int32 y)
 	if (result.GetComponent() != nullptr)
 	{
 		UInstancedStaticMeshComponent* ISM = Cast<UInstancedStaticMeshComponent>(result.GetComponent());
-		
+
 		FTransform Transform = FTransform::Identity;
 		ISM->GetInstanceTransform(result.Item, Transform);
 
@@ -205,6 +205,11 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 		{
 			bRB = false;
 		}
+
+		else if (EventArgs.Key == EKeys::LeftShift)
+		{
+			bShift = false;
+		}
 	}
 
 	else if (EventArgs.Event == EInputEvent::IE_Pressed)
@@ -239,47 +244,143 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 			bRB = true;
 		}
 
+		else if (EventArgs.Key == EKeys::LeftShift)
+		{
+			bShift = true;
+		}
+
 		else if (EventArgs.Key == EKeys::LeftMouseButton)
 		{
 			FVector WorldLocation = MeshActor->GetRelativeLocation();
 
 			if (IGCObject->MeshDataArr.Num() > 0)
 			{
-				if (IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index == -1)
+				if (!bShift)
 				{
-					UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData, NULL, LOAD_None, NULL);
-					UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(NULL, TEXT("/Engine/EditorMeshes/ColorCalibrator/M_ChromeBall.M_ChromeBall"), NULL, LOAD_None, NULL);
+					if (IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index == -1)
+					{
+						UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData, NULL, LOAD_None, NULL);
+						ActorIndex = IGCObject->ActorData.Num();
 
-					ActorIndex = IGCObject->ActorData.Num();
+						actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
+						actor[ActorIndex]->SetStaticMesh(StaticMesh);
 
-					actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
-					actor[ActorIndex]->SetStaticMesh(StaticMesh);
-					actor[ActorIndex]->SetMaterial(0, BaseMaterial);
+						IGCObject->ActorData.Add(FISMData());
+						IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+						IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
 
-					IGCObject->ActorData.Add(FISMData());
-					IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
-					IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
-					
-					IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
+						IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
 
-					FTransform Transform = FTransform::Identity;
-					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
-					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
-					actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+						FTransform Transform = FTransform::Identity;
+						Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+						Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+						actor[ActorIndex]->AddInstanceWorldSpace(Transform);
 
-					Transform.SetRotation(FQuat(0, 0, 0, 0));
-					PreviewScene->AddComponent(actor[ActorIndex], Transform);
+						Transform.SetRotation(FQuat(0, 0, 0, 0));
+						PreviewScene->AddComponent(actor[ActorIndex], Transform);
+					}
+					else
+					{
+						ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
+
+						FTransform Transform = FTransform::Identity;
+						Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+						Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+						actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+
+						IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+					}
 				}
 				else
 				{
-					ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
+					if (iClickCount < 2)
+					{
+						if (iClickCount == 0)
+							ClickV1 = WorldLocation;
+						else
+							ClickV2 = WorldLocation;
 
-					FTransform Transform = FTransform::Identity;
-					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
-					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
-					actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+						iClickCount++;
+					}
 
-					IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+					if (iClickCount >= 2)
+					{
+						int LX = ClickV1.X;
+						int LY = ClickV1.Y;
+						int LZ = ClickV1.Z;
+
+						int SX = ClickV2.X;
+						int SY = ClickV2.Y;
+						int SZ = ClickV2.Z;
+
+						if (ClickV1.X < ClickV2.X)
+						{
+							LX = ClickV2.X;
+							SX = ClickV1.X;
+						}
+
+						if (ClickV1.Y < ClickV2.Y)
+						{
+							LY = ClickV2.Y;
+							SY = ClickV1.Y;
+						}
+
+						if (ClickV1.Z < ClickV2.Z)
+						{
+							LZ = ClickV2.Z;
+							SZ = ClickV1.Z;
+						}
+
+						if (IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index == -1)
+						{
+							UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData, NULL, LOAD_None, NULL);
+
+							ActorIndex = IGCObject->ActorData.Num();
+
+							actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
+							actor[ActorIndex]->SetStaticMesh(StaticMesh);
+
+							IGCObject->ActorData.Add(FISMData());
+							IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+							IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
+
+							IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
+
+							FTransform Transform = FTransform::Identity;
+							PreviewScene->AddComponent(actor[ActorIndex], Transform);
+
+							UE_LOG(LogTemp, Log, TEXT("Obj Spawn"));
+						}
+
+						ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
+
+						for (int x = SX; x <= LX;)
+						{
+							for (int y = SY; y <= LY;)
+							{
+								for (int z = SZ; z <= LZ;)
+								{
+									FTransform Transform = FTransform::Identity;
+									Transform.SetLocation(FVector(x, y, z));
+									Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
+									actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+
+									UE_LOG(LogTemp, Log, TEXT("%d %d %d"), x, y, z);
+
+									z += 100;
+								}
+								y += 100;
+							}
+							x += 100;
+						}
+
+						UE_LOG(LogTemp, Log, TEXT("END"));
+
+						IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+
+						bShift = false;
+						iClickCount = 0;
+					}
 				}
 			}
 		}
@@ -331,7 +432,7 @@ bool FRTDViewportClient::InputAxis(FViewport * Viewport, int32 ControllerId, FKe
 
 	if (bRB)
 	{
-		if(Key == EKeys::MouseX)
+		if (Key == EKeys::MouseX)
 			MoveViewportCamera(FVector(0, 0, 0), FRotator(0, Delta / 2, 0));
 
 		if (Key == EKeys::MouseY)

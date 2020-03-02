@@ -2,12 +2,12 @@
 
 #include "ALegendaryMineGameModeBase.h"
 #include "Player/MyPlayerController.h"
-#include "Player/PlayerPawn.h"
+#include "Player/Adventurer/Adventurer.h"
 
 AALegendaryMineGameModeBase::AALegendaryMineGameModeBase()
 {
-	//DefaultPawnClass = APlayerPawn::StaticClass();
-	//PlayerControllerClass = AMyPlayerController::StaticClass();
+	DefaultPawnClass = AAdventurer::StaticClass();
+	PlayerControllerClass = AMyPlayerController::StaticClass();
 	//HUDClass = AMyHUD::StaticClass();
 	//GameStateClass = AMyGameStateBase::StaticClass();
 }

@@ -29,7 +29,10 @@ void AInGame::BeginPlay()
 
 	Mapgen = new MapGeneratorSys(this);
 
-	Mapgen->MapGen(28);
+	Mapgen->MapGen(8);
+
+	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(0, 0, 100));
+
 	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 
 	for (int i = 0; i < RoomArray.Num(); i++)

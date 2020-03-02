@@ -37,7 +37,9 @@ private:
 
 	TArray<UInstancedStaticMeshComponent*> actor;
 
-	bool bW, bA, bS, bD, bRB;
+	bool bW, bA, bS, bD, bRB, bShift;
 
+	int iClickCount = 0;
+	FVector ClickV1, ClickV2;
 	int ActorIndex = 0;
 };
