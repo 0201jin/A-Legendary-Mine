@@ -2,6 +2,11 @@
 
 #include "RoadTemplateActor.h"
 
+#define WR 0
+#define WL 2
+#define WF 3
+#define WB 1
+
 // Sets default values
 ARoadTemplateActor::ARoadTemplateActor()
 {
@@ -39,22 +44,22 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 	{
 		if (RoadData.Y < RoadData.V1RF.Y)
 		{
-			bWalls[1] = true;
+			bWalls[WR] = true;
 		}
 		else
 		{
-			bWalls[3] = true;
+			bWalls[WL] = true;
 		}
 	}
 	else if (RoadData.Y == RoadData.V1RF.Y)
 	{
 		if (RoadData.X < RoadData.V1RF.X)
 		{
-			bWalls[0] = true;
+			bWalls[WF] = true;
 		}
 		else
 		{
-			bWalls[2] = true;
+			bWalls[WB] = true;
 		}
 	}
 
@@ -62,22 +67,22 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 	{
 		if (RoadData.Y < RoadData.V2RF.Y)
 		{
-			bWalls[1] = true;
+			bWalls[WR] = true;
 		}
 		else
 		{
-			bWalls[3] = true;
+			bWalls[WL] = true;
 		}
 	}
 	else if (RoadData.Y == RoadData.V2RF.Y)
 	{
 		if (RoadData.X < RoadData.V2RF.X)
 		{
-			bWalls[0] = true;
+			bWalls[WF] = true;
 		}
 		else
 		{
-			bWalls[2] = true;
+			bWalls[WB] = true;
 		}
 	}
 
@@ -132,13 +137,13 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 
 	if (_Road.X == _Lo.X)
 	{
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), _Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 180, 0), _Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), _Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), _Lo, FVector(1, 1, 1)));
 	}
 	else if (_Road.Y == _Lo.Y)
 	{
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90, 0), _Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 270, 0), _Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), _Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), _Lo, FVector(1, 1, 1)));
 	}
 
 	if (_Road.X == _Lo.X)

@@ -27,4 +27,5 @@ protected:
 	UMyCustomAsset* MyCustomAsset;
 
 	TArray<UInstancedStaticMeshComponent*> InstanceActor;
+	TArray<AActor*> ActorArr;
 };

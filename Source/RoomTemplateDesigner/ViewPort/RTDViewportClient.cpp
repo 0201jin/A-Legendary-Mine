@@ -69,7 +69,7 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	{
 		UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *IGCObject->ActorArr[i].MeshData, NULL, LOAD_None, NULL);
 		
-		PreviewScene->GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform);
+		Actors.Add(PreviewScene->GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform));
 	}
 }
 
@@ -158,14 +158,14 @@ void FRTDViewportClient::MouseMove(FViewport * Viewport, int32 x, int32 y)
 
 	FRotator DiRo = ((Direction + Location) - Location).Rotation();
 	double C = ((-1 * DiRo.Pitch) / 180) * PI;
-	float BC = Location.Z / sin(C);
+	float BC = (Location.Z - MeshActor->GetRelativeLocation().Z) / sin(C);
 
 	FVector WorldLocation = (Direction * BC) + Location;
 	WorldLocation.X = int(WorldLocation.X / 100) * 100;
 	WorldLocation.Y = int(WorldLocation.Y / 100) * 100;
-	WorldLocation.Z = int(WorldLocation.Z / 100) * 100;
+	WorldLocation.Z = MeshActor->GetRelativeLocation().Z;//int(WorldLocation.Z / 100) * 100;
 
-	FHitResult result;
+	/*FHitResult result;
 	GetWorld()->LineTraceSingleByChannel(result, Location, WorldLocation, ECollisionChannel::ECC_WorldDynamic);
 
 	if (result.GetComponent() != nullptr)
@@ -176,7 +176,7 @@ void FRTDViewportClient::MouseMove(FViewport * Viewport, int32 x, int32 y)
 		ISM->GetInstanceTransform(result.Item, Transform);
 
 		WorldLocation.Z = Transform.GetLocation().Z + 100;
-	}
+	}*/
 
 	MeshActor->SetWorldLocation(WorldLocation);
 
@@ -253,6 +253,16 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 		else if (EventArgs.Key == EKeys::LeftShift)
 		{
 			bShift = true;
+		}
+
+		else if (EventArgs.Key == EKeys::One)
+		{
+			MeshActor->AddWorldOffset(FVector(0, 0, 100));
+		}
+		
+		else if (EventArgs.Key == EKeys::Two)
+		{
+			MeshActor->AddWorldOffset(FVector(0, 0, -100));
 		}
 
 		else if (EventArgs.Key == EKeys::LeftMouseButton)
@@ -398,19 +408,16 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 
 				if (StaticMesh1)
 				{
-					Actors.Add(NewObject<AActor>(GetTransientPackage(), NAME_None, RF_Transient));
-
-					ActorIndex = Actors.Num() - 1;
-
 					FTransform Transform = FTransform::Identity;
 					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
 					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
-					Actors[ActorIndex]->ApplyWorldOffset(Transform.GetLocation(), true);
 
-					Transform.SetRotation(FQuat(0, 0, 0, 0));
-					//PreviewScene->AddComponent(Actors[ActorIndex], Transform);
-					PreviewScene->GetWorld()->SpawnActor<AActor>(
-						StaticMesh1->GeneratedClass, Transform);
+					Actors.Add(PreviewScene->GetWorld()->SpawnActor<AActor>(
+						StaticMesh1->GeneratedClass, Transform));
+
+					ActorIndex = Actors.Num() - 1;
+
+					Actors[ActorIndex]->ApplyWorldOffset(Transform.GetLocation(), true);
 
 					FAData Data;
 					Data.MeshData = IGCObject->ActorDataArr[IGCObject->ActorDataIndex].MeshData;
@@ -431,30 +438,58 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 
 			FRotator DiRo = ((Direction + Location) - Location).Rotation();
 			double C = ((-1 * DiRo.Pitch) / 180) * PI;
-			float BC = Location.Z / sin(C);
+			float BC = (Location.Z - MeshActor->GetRelativeLocation().Z) / sin(C);
 
 			FVector WorldLocation = (Direction * BC) + Location;
 			WorldLocation.X = int(WorldLocation.X / 100) * 100;
 			WorldLocation.Y = int(WorldLocation.Y / 100) * 100;
-			WorldLocation.Z = int(WorldLocation.Z / 100) * 100;
+			WorldLocation.Z = MeshActor->GetRelativeLocation().Z; //int(WorldLocation.Z / 100) * 100;
 
 			FHitResult result;
 			GetWorld()->LineTraceSingleByChannel(result, Location, WorldLocation, ECollisionChannel::ECC_WorldDynamic);
 
 			if (result.GetComponent() != nullptr)
 			{
-				int Index = 0;
-				for (int i = 0; i < actor.Num(); i++)
+				int Index = -1;
+
+				if (actor.Num() > 0)
 				{
-					if (Cast<UInstancedStaticMeshComponent>(result.GetComponent()) == actor[i])
+					for (int i = 0; i < actor.Num(); i++)
 					{
-						Index = i;
-						break;
+						if (Cast<UInstancedStaticMeshComponent>(result.GetComponent()) == actor[i])
+						{
+							Index = i;
+							break;
+						}
+					}
+
+					if (Index != -1)
+					{
+						actor[Index]->RemoveInstance(result.Item);
+						IGCObject->ActorData[Index].ActorData = actor[Index]->PerInstanceSMData;
 					}
 				}
 
-				actor[Index]->RemoveInstance(result.Item);
-				IGCObject->ActorData[Index].ActorData = actor[Index]->PerInstanceSMData;
+				if (Actors.Num() > 0)
+				{
+					Index = -1;
+
+					for (int i = 0; i < Actors.Num(); i++)
+					{
+						if (Cast<AActor>(result.GetActor()) == Actors[i])
+						{
+							Index = i;
+							break;
+						}
+					}
+
+					if (Index != -1)
+					{
+						Actors[Index]->Destroy();
+						Actors.RemoveAt(Index);
+						IGCObject->ActorArr.RemoveAt(Index);
+					}
+				}
 
 				Viewport->Draw();
 			}
