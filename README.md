@@ -1,4 +1,4 @@
 # A-Legendary-Mine
-A Legendary Mine
-
-Yeaha~
+RTD로 방을 꾸밀때.
+벽은 기둥과 같은 위치에 배치를 한다.
+바닥은 높이 -1위치에 배치한다.
