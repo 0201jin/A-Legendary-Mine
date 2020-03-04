@@ -8,6 +8,9 @@
 #include "MyCustomAsset.h"
 #include "EngineUtils.h"
 
+#include "Components/DirectionalLightComponent.h"
+#include "Components/SkyLightComponent.h"
+
 #include "EditorStyleSet.h"
 #include "Editor/EditorPerProjectUserSettings.h"
 #include "AssetViewerSettings.h"
@@ -26,7 +29,12 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 
 	SetViewMode(VMI_Lit);
 
-	AdvancedPreviewScene = static_cast<FPreviewScene*>(PreviewScene);
+	AdvancedPreviewScene = static_cast<FAdvancedPreviewScene*>(PreviewScene);
+
+	UTextureCube * Cube = LoadObject<UTextureCube>(NULL, TEXT("TextureCube'/Engine/EngineResources/GrayLightTextureCube.GrayLightTextureCube'"), NULL, LOAD_None, NULL);
+
+	AdvancedPreviewScene->SetLightDirection(FRotator(-90, -90, 0));
+	AdvancedPreviewScene->SetSkyCubemap(Cube);
 
 	SetViewLocation(FVector(0.0f, 0.0f, 500.0f));
 	SetViewRotation(FRotator(-90.0f, 0.0f, 0.0f));
@@ -40,9 +48,10 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 
 	FTransform Transform = FTransform::Identity;
 	Transform.SetLocation(FVector(0, 0, 0));
-	PreviewScene->AddComponent(MeshActor, Transform);
+	AdvancedPreviewScene->AddComponent(MeshActor, Transform);
 
 	actor.Empty();
+	Actors.Empty();
 
 	if (IGCObject->MeshDataArr.Num() == 0)
 	{
@@ -62,14 +71,14 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 
 		Transform.SetRotation(FQuat(0, 0, 0, 0));
 
-		PreviewScene->AddComponent(actor[i], Transform);
+		AdvancedPreviewScene->AddComponent(actor[i], Transform);
 	}
 
 	for (int i = 0; IGCObject->ActorArr.Num() > i; i++)
 	{
 		UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *IGCObject->ActorArr[i].MeshData, NULL, LOAD_None, NULL);
 		
-		Actors.Add(PreviewScene->GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform));
+		Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform));
 	}
 }
 
@@ -120,7 +129,7 @@ void FRTDViewportClient::CreateWalls(int _x, int _y)
 
 	FTransform Transform = FTransform::Identity;
 	Transform.SetRotation(FQuat(0, 0, 0, 0));
-	PreviewScene->AddComponent(actor[IGCObject->MeshDataArr[0].Index], Transform);
+	AdvancedPreviewScene->AddComponent(actor[IGCObject->MeshDataArr[0].Index], Transform);
 	IGCObject->ActorData[IGCObject->MeshDataArr[0].Index].ActorData = actor[IGCObject->MeshDataArr[0].Index]->PerInstanceSMData;
 
 	IGCObject->SX = _x;
@@ -295,7 +304,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 							actor[ActorIndex]->AddInstanceWorldSpace(Transform);
 
 							Transform.SetRotation(FQuat(0, 0, 0, 0));
-							PreviewScene->AddComponent(actor[ActorIndex], Transform);
+							AdvancedPreviewScene->AddComponent(actor[ActorIndex], Transform);
 						}
 						else
 						{
@@ -365,7 +374,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 								IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
 
 								FTransform Transform = FTransform::Identity;
-								PreviewScene->AddComponent(actor[ActorIndex], Transform);
+								AdvancedPreviewScene->AddComponent(actor[ActorIndex], Transform);
 
 								UE_LOG(LogTemp, Log, TEXT("Obj Spawn"));
 							}
@@ -412,7 +421,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
 					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
 
-					Actors.Add(PreviewScene->GetWorld()->SpawnActor<AActor>(
+					Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AActor>(
 						StaticMesh1->GeneratedClass, Transform));
 
 					ActorIndex = Actors.Num() - 1;

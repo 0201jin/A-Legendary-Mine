@@ -31,7 +31,7 @@ private:
 	TWeakPtr<class FCustomAssetEditor> IGCEditorPtr;
 	TWeakPtr<class SRTDViewport> IGCEditorViewportPtr;
 	UMyCustomAsset* IGCObject;
-	class FPreviewScene* AdvancedPreviewScene;
+	class FAdvancedPreviewScene* AdvancedPreviewScene;
 
 	class UStaticMeshComponent * MeshActor;
 

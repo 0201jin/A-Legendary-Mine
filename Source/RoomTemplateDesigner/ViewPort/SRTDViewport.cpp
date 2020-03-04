@@ -8,7 +8,7 @@
 #define LOCTEXT_NAMESPACE "RTDViewport"
 
 SRTDViewport::SRTDViewport()
-	: PreviewScene(MakeShareable(new FPreviewScene(FPreviewScene::ConstructionValues())))
+	: PreviewScene(MakeShareable(new FAdvancedPreviewScene(FAdvancedPreviewScene::ConstructionValues())))
 {
 }
 
@@ -30,7 +30,7 @@ void SRTDViewport::AddReferencedObjects(FReferenceCollector & Collector)
 	Collector.AddReferencedObject(IGCObject);
 }
 
-TSharedRef<class FPreviewScene> SRTDViewport::GetPreviewScene()
+TSharedRef<class FAdvancedPreviewScene> SRTDViewport::GetPreviewScene()
 {
 	return PreviewScene.ToSharedRef();
 }
@@ -58,13 +58,6 @@ void SRTDViewport::Construct(const FArguments& InArgs)
 		];
 
 	OverlayTextVerticalBox->ClearChildren();
-	OverlayTextVerticalBox->AddSlot()
-		[
-			SNew(STextBlock)
-			.Text(LOCTEXT("IGCWelcomeText", "Welcome To IGC 2018"))
-		.TextStyle(FEditorStyle::Get(), TEXT("TextBlock.ShadowedText"))
-		.ColorAndOpacity(FLinearColor::Red)
-		];
 }
 
 #undef LOCTEXT_NAMESPACE

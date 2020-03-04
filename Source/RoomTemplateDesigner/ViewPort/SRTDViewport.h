@@ -28,7 +28,7 @@ public:
 
 	// FGCObject 인터페이스. U오브젝트가 아니라도 가비지컬렉션 회수 가능.
 	virtual void AddReferencedObjects(FReferenceCollector& Collector) override;
-	TSharedRef<class FPreviewScene> GetPreviewScene();
+	TSharedRef<class FAdvancedPreviewScene> GetPreviewScene();
 
 protected:
 	// 아래 함수를 구현해 뷰포트 클라이언트를 생성해주어야 한다.
@@ -37,7 +37,7 @@ protected:
 private:
 	// 부모 에디터, 프리뷰 씬, 뷰포트 클라이언트, 넘겨받은 IGC 객체. 
 	TWeakPtr<FCustomAssetEditor> IGCEditorPtr;
-	TSharedPtr<class FPreviewScene> PreviewScene;
+	TSharedPtr<class FAdvancedPreviewScene> PreviewScene;
 	TSharedPtr<class FRTDViewportClient> IGCViewportClient;
 	UMyCustomAsset* IGCObject;
 
