@@ -2,10 +2,10 @@
 
 #include "RoadTemplateActor.h"
 
-#define WR 0
-#define WL 2
-#define WF 3
-#define WB 1
+#define WR 2
+#define WL 0
+#define WF 1
+#define WB 3
 
 // Sets default values
 ARoadTemplateActor::ARoadTemplateActor()
@@ -36,9 +36,10 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 
 	FVector Road = FVector(RoadData.X, RoadData.Y, 0);
 
-	Floor->AddInstanceWorldSpace(FTransform(Road));
+	FVector FloorVector = FVector(RoadData.X, RoadData.Y, -100);
+	Floor->AddInstanceWorldSpace(FTransform(FloorVector));
 
-	bool bWalls[4];
+	bool bWalls[4] = {false, false, false, false};
 
 	if (RoadData.X == RoadData.V1RF.X)
 	{
@@ -88,8 +89,32 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 
 	for (int i = 0; i < 4; i++)
 	{
+		FVector Lo = Road;
+
+		switch (i)
+		{
+		case WL:
+			Lo.Y -= 100;
+			break;
+
+		case WF:
+			Lo.X += 100;
+			break;
+
+		case WR:
+			Lo.Y += 100;
+			break;
+		
+		case WB:
+			Lo.X -= 100;
+			break;
+		}
+
 		if (!bWalls[i])
-			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Road, FVector(1, 1, 1)));
+		{
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
+			UE_LOG(LogTemp, Log, TEXT("%s"), *GetName());
+		}
 	}
 
 	CreateRoad(Road, Road + (RoadData.V1RF - RoadData.V1R));
@@ -133,17 +158,30 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 	}
 
 	//_Lo에 길을 만든다.
-	Floor->AddInstanceWorldSpace(FTransform(_Lo));
+	FVector FloorVector = _Lo;
+	FloorVector.Z = -100;
+	Floor->AddInstanceWorldSpace(FTransform(FloorVector));
 
+	
 	if (_Road.X == _Lo.X)
 	{
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), _Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), _Lo, FVector(1, 1, 1)));
+		FVector Lo = _Lo;
+		FVector Lo1 = _Lo;
+		Lo.X += 100;
+		Lo1.X -= 100;
+
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo1, FVector(1, 1, 1)));
 	}
 	else if (_Road.Y == _Lo.Y)
 	{
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), _Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), _Lo, FVector(1, 1, 1)));
+		FVector Lo = _Lo;
+		FVector Lo1 = _Lo;
+		Lo.Y += 100;
+		Lo1.Y -= 100;
+
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));
 	}
 
 	if (_Road.X == _Lo.X)
