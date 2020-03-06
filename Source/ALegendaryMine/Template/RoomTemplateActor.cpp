@@ -69,7 +69,6 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 					if (InstanceTrans.GetLocation().X == _Lo.X &&
 						InstanceTrans.GetLocation().Y == _Lo.Y)
 					{
-						//InstanceActor[j]->RemoveInstance(k);
 						InstanceActor[j]->UpdateInstanceTransform(k, FTransform(FRotator(), FVector(0, 0, -300), FVector(0, 0, 0)), true, true, true);
 						bCheck = false;
 					}
