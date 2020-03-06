@@ -57,23 +57,23 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 	{
 		FTransform InstanceTrans = FTransform::Identity;
 		InstanceActor[0]->GetInstanceTransform(i, InstanceTrans, true);
+
 		if (InstanceTrans.GetLocation().X == _Lo.X && InstanceTrans.GetLocation().Y == _Lo.Y)
 		{
 			for (int j = 0; j < MyCustomAsset->ActorData.Num(); j++)
-			{
 				for (int k = 0; k < MyCustomAsset->ActorData[j].ActorData.Num(); k++)
 				{
 					FTransform InstanceTrans = FTransform::Identity;
 					InstanceActor[j]->GetInstanceTransform(k, InstanceTrans, true);
 
-					if (InstanceTrans.GetLocation().X == _Lo.X && InstanceTrans.GetLocation().Y == _Lo.Y && InstanceTrans.GetLocation().Z >= 0)
+					if (InstanceTrans.GetLocation().X == _Lo.X &&
+						InstanceTrans.GetLocation().Y == _Lo.Y)
 					{
-						InstanceActor[j]->RemoveInstance(k);
+						//InstanceActor[j]->RemoveInstance(k);
+						InstanceActor[j]->UpdateInstanceTransform(k, FTransform(FRotator(), FVector(0, 0, -300), FVector(0, 0, 0)), true, true, true);
+						bCheck = false;
 					}
 				}
-			}
-
-			bCheck = false;
 		}
 	}
 

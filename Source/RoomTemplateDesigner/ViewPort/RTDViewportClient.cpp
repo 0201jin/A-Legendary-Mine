@@ -67,7 +67,6 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 
 		actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
 		actor[i]->SetStaticMesh(ISMStaticMesh);
-		actor[i]->PerInstanceSMData = IGCObject->ActorData[i].ActorData;
 
 		Transform.SetRotation(FQuat(0, 0, 0, 0));
 
@@ -293,15 +292,16 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 							actor[ActorIndex]->SetStaticMesh(StaticMesh);
 
 							IGCObject->ActorData.Add(FISMData());
-							IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
-							IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
-
-							IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
 
 							FTransform Transform = FTransform::Identity;
 							Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
 							Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
 							actor[ActorIndex]->AddInstanceWorldSpace(Transform);
+
+							IGCObject->ActorData[ActorIndex].ActorData = actor[ActorIndex]->PerInstanceSMData;
+							IGCObject->ActorData[ActorIndex].Meshdata = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].MeshData;
+
+							IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
 
 							Transform.SetRotation(FQuat(0, 0, 0, 0));
 							AdvancedPreviewScene->AddComponent(actor[ActorIndex], Transform);

@@ -27,6 +27,7 @@ protected:
 	UInstancedStaticMeshComponent* Floor;
 	UInstancedStaticMeshComponent* Walls;
 	UInstancedStaticMeshComponent* Door;
+	UInstancedStaticMeshComponent* BlackWalls;
 
 	FRoadMeshData MeshData;
 	FRoadData RoadData;

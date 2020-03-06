@@ -23,6 +23,11 @@ ARoadTemplateActor::ARoadTemplateActor()
 
 	Door = NewObject<UInstancedStaticMeshComponent>(this, TEXT("Doors"));
 	Door->AttachTo(RootComponent);
+
+	BlackWalls = NewObject<UInstancedStaticMeshComponent>(this, TEXT("BlackWalls"));
+	UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Template/BlackWall.BlackWall'"), NULL, LOAD_None, NULL);
+	BlackWalls->SetStaticMesh(StaticMesh);
+	BlackWalls->AttachTo(RootComponent);
 }
 
 void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _RoadData)
@@ -112,8 +117,11 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 
 		if (!bWalls[i])
 		{
+			BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0 , 0), Lo, FVector(1, 1, 1)));
 			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
-			UE_LOG(LogTemp, Log, TEXT("%s"), *GetName());
+
+			Lo.Z += 100;
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
 		}
 	}
 
@@ -170,6 +178,14 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 		Lo.X += 100;
 		Lo1.X -= 100;
 
+		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo1, FVector(1, 1, 1)));
+
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo1, FVector(1, 1, 1)));
+
+		Lo.Z += 100;
+		Lo1.Z += 100;
 		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
 		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo1, FVector(1, 1, 1)));
 	}
@@ -180,6 +196,14 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 		Lo.Y += 100;
 		Lo1.Y -= 100;
 
+		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo1, FVector(1, 1, 1)));
+
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));
+
+		Lo.Z += 100;
+		Lo1.Z += 100;
 		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
 		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));
 	}
