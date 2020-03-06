@@ -52,7 +52,7 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 {
 	bool bCheck = true;
-
+	
 	for (int i = 0; i < MyCustomAsset->ActorData[0].ActorData.Num(); i++)
 	{
 		FTransform InstanceTrans = FTransform::Identity;
