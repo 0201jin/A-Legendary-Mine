@@ -29,7 +29,7 @@ void AInGame::BeginPlay()
 
 	Mapgen = new MapGeneratorSys(this);
 
-	Mapgen->MapGen(8);
+	Mapgen->MapGen(18);
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(0, 0, 100));
 
@@ -55,18 +55,19 @@ void AInGame::BeginPlay()
 	}
 
 	TArray<FRoadData> RoadArray = Mapgen->GetRoadArray();
-	for (int i = 0; i < RoadArray.Num(); i++)
-	{
-		DrawDebugLine(GetWorld(),
-			FVector(RoadArray[i].X, RoadArray[i].Y, 0),
-			FVector(RoadArray[i].X, RoadArray[i].Y, 0), FColor::Cyan, true, -1, 0, 100);
+	for (int fiCount = 0; fiCount < 2; fiCount++)
+		for (int i = 0; i < RoadArray.Num(); i++)
+		{
+			DrawDebugLine(GetWorld(),
+				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
+				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), FColor::Cyan, true, -1, 0, 100);
 
-		DrawDebugLine(GetWorld(),
-			FVector(RoadArray[i].X, RoadArray[i].Y, 0),
-			RoadArray[i].V1R, FColor::Green, true, -1, 0, 10);
+			DrawDebugLine(GetWorld(),
+				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
+				RoadArray[i].Data[fiCount].V1R, FColor::Green, true, -1, 0, 10);
 
-		DrawDebugLine(GetWorld(),
-			FVector(RoadArray[i].X, RoadArray[i].Y, 0),
-			RoadArray[i].V2R, FColor::Green, true, -1, 0, 10);
-	}
+			DrawDebugLine(GetWorld(),
+				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
+				RoadArray[i].Data[fiCount].V2R, FColor::Green, true, -1, 0, 10);
+		}
 }

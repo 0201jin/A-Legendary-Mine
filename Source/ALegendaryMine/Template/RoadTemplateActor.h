@@ -21,7 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void CreateRoad(FVector _Road, FVector _Lo);
+	void CreateRoad(FVector _Road, FVector _Lo, int fiCount);
 
 protected:
 	UInstancedStaticMeshComponent* Floor;

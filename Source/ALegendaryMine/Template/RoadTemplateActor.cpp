@@ -39,94 +39,102 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 	Walls->SetStaticMesh(_MeshData.Walls);
 	Door->SetStaticMesh(_MeshData.Doors);
 
-	FVector Road = FVector(RoadData.X, RoadData.Y, 0);
-
-	FVector FloorVector = FVector(RoadData.X, RoadData.Y, -100);
-	Floor->AddInstanceWorldSpace(FTransform(FloorVector));
-
-	bool bWalls[4] = {false, false, false, false};
-
-	if (RoadData.X == RoadData.V1RF.X)
+	for (int fiCount = 0; fiCount < 2; fiCount++)
 	{
-		if (RoadData.Y < RoadData.V1RF.Y)
+		FVector Road = FVector(RoadData.Data[fiCount].X, RoadData.Data[fiCount].Y, 0);
+
+		FVector FloorVector = FVector(RoadData.Data[fiCount].X, RoadData.Data[fiCount].Y, -100);
+		Floor->AddInstanceWorldSpace(FTransform(FloorVector));
+
+		bool bWalls[4] = { false, false, false, false };
+
+		if (RoadData.Data[fiCount].X == RoadData.Data[fiCount].V1RF.X)
 		{
-			bWalls[WR] = true;
+			if (RoadData.Data[fiCount].Y < RoadData.Data[fiCount].V1RF.Y)
+			{
+				bWalls[WR] = true;
+			}
+			else
+			{
+				bWalls[WL] = true;
+			}
 		}
-		else
+		else if (RoadData.Data[fiCount].Y == RoadData.Data[fiCount].V1RF.Y)
 		{
-			bWalls[WL] = true;
+			if (RoadData.Data[fiCount].X < RoadData.Data[fiCount].V1RF.X)
+			{
+				bWalls[WF] = true;
+			}
+			else
+			{
+				bWalls[WB] = true;
+			}
 		}
+
+		if (RoadData.Data[fiCount].X == RoadData.Data[fiCount].V2RF.X)
+		{
+			if (RoadData.Data[fiCount].Y < RoadData.Data[fiCount].V2RF.Y)
+			{
+				bWalls[WR] = true;
+			}
+			else
+			{
+				bWalls[WL] = true;
+			}
+		}
+		else if (RoadData.Data[fiCount].Y == RoadData.Data[fiCount].V2RF.Y)
+		{
+			if (RoadData.Data[fiCount].X < RoadData.Data[fiCount].V2RF.X)
+			{
+				bWalls[WF] = true;
+			}
+			else
+			{
+				bWalls[WB] = true;
+			}
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			FVector Lo = Road;
+
+			switch (i)
+			{
+			case WL:
+				Lo.Y -= 100;
+				break;
+
+			case WF:
+				Lo.X += 100;
+				break;
+
+			case WR:
+				Lo.Y += 100;
+				break;
+
+			case WB:
+				Lo.X -= 100;
+				break;
+			}
+
+			if (!bWalls[i] && 
+				!(Lo.X == RoadData.Data[0].X && Lo.Y == RoadData.Data[0].Y) &&
+				!(Lo.X == RoadData.Data[1].X && Lo.Y == RoadData.Data[1].Y))
+			{
+				if ((RoadData.Data[0].X == RoadData.Data[1].X || RoadData.Data[0].Y == RoadData.Data[1].Y) || fiCount == 1)
+				{
+					BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+					Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
+
+					Lo.Z += 100;
+					Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
+				}
+			}
+		}
+
+		CreateRoad(Road, Road + (RoadData.Data[fiCount].V1RF - RoadData.Data[fiCount].V1R), fiCount);
+		CreateRoad(Road, Road + (RoadData.Data[fiCount].V2RF - RoadData.Data[fiCount].V2R), fiCount);
 	}
-	else if (RoadData.Y == RoadData.V1RF.Y)
-	{
-		if (RoadData.X < RoadData.V1RF.X)
-		{
-			bWalls[WF] = true;
-		}
-		else
-		{
-			bWalls[WB] = true;
-		}
-	}
-
-	if (RoadData.X == RoadData.V2RF.X)
-	{
-		if (RoadData.Y < RoadData.V2RF.Y)
-		{
-			bWalls[WR] = true;
-		}
-		else
-		{
-			bWalls[WL] = true;
-		}
-	}
-	else if (RoadData.Y == RoadData.V2RF.Y)
-	{
-		if (RoadData.X < RoadData.V2RF.X)
-		{
-			bWalls[WF] = true;
-		}
-		else
-		{
-			bWalls[WB] = true;
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		FVector Lo = Road;
-
-		switch (i)
-		{
-		case WL:
-			Lo.Y -= 100;
-			break;
-
-		case WF:
-			Lo.X += 100;
-			break;
-
-		case WR:
-			Lo.Y += 100;
-			break;
-		
-		case WB:
-			Lo.X -= 100;
-			break;
-		}
-
-		if (!bWalls[i])
-		{
-			BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0 , 0), Lo, FVector(1, 1, 1)));
-			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
-
-			Lo.Z += 100;
-			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * i, 0), Lo, FVector(1, 1, 1)));
-		}
-	}
-
-	CreateRoad(Road, Road + (RoadData.V1RF - RoadData.V1R));
-	CreateRoad(Road, Road + (RoadData.V2RF - RoadData.V2R));
 }
 
 // Called when the game starts or when spawned
@@ -136,9 +144,9 @@ void ARoadTemplateActor::BeginPlay()
 
 }
 
-void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
+void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo, int fiCount)
 {
-	if (_Road == RoadData.V1RF)
+	if (_Road == RoadData.Data[fiCount].V1RF)
 	{
 		if (_Road.X == _Lo.X)
 		{
@@ -151,7 +159,7 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 
 		return;
 	}
-	else if (_Road == RoadData.V2RF)
+	else if (_Road == RoadData.Data[fiCount].V2RF)
 	{
 		if (_Road.X == _Lo.X)
 		{
@@ -170,28 +178,36 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 	FloorVector.Z = -100;
 	Floor->AddInstanceWorldSpace(FTransform(FloorVector));
 
-	
+	int OCount = (fiCount + 1) % 2;
+
 	if (_Road.X == _Lo.X)
 	{
 		FVector Lo = _Lo;
-		FVector Lo1 = _Lo;
-		Lo.X += 100;
-		Lo1.X -= 100;
 
-		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
-		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo1, FVector(1, 1, 1)));
+		if (RoadData.Data[fiCount].X < RoadData.Data[OCount].X)
+		{
+			Lo.X -= 100;
 
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo1, FVector(1, 1, 1)));
+			BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo, FVector(1, 1, 1)));
 
-		Lo.Z += 100;
-		Lo1.Z += 100;
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo1, FVector(1, 1, 1)));
+			Lo.Z += 100;
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WB, 0), Lo, FVector(1, 1, 1)));
+		}
+		else
+		{
+			Lo.X += 100;
+
+			BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
+
+			Lo.Z += 100;
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WF, 0), Lo, FVector(1, 1, 1)));
+		}
 	}
 	else if (_Road.Y == _Lo.Y)
 	{
-		FVector Lo = _Lo;
+		/*FVector Lo = _Lo;
 		FVector Lo1 = _Lo;
 		Lo.Y += 100;
 		Lo1.Y -= 100;
@@ -205,15 +221,37 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo)
 		Lo.Z += 100;
 		Lo1.Z += 100;
 		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));
+		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));*/
+		FVector Lo = _Lo;
+
+		if (RoadData.Data[fiCount].Y < RoadData.Data[OCount].Y)
+		{
+			Lo.Y -= 100;
+
+			BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo, FVector(1, 1, 1)));
+
+			Lo.Z += 100;
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo, FVector(1, 1, 1)));
+		}
+		else
+		{
+			Lo.Y += 100;
+
+			BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
+
+			Lo.Z += 100;
+			Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
+		}
 	}
 
 	if (_Road.X == _Lo.X)
 	{
-		CreateRoad(_Lo, FVector(_Lo.X, _Lo.Y + (_Lo.Y - _Road.Y), 0));
+		CreateRoad(_Lo, FVector(_Lo.X, _Lo.Y + (_Lo.Y - _Road.Y), 0), fiCount);
 	}
 	else if (_Road.Y == _Lo.Y)
 	{
-		CreateRoad(_Lo, FVector(_Lo.X + (_Lo.X - _Road.X), _Lo.Y, 0));
+		CreateRoad(_Lo, FVector(_Lo.X + (_Lo.X - _Road.X), _Lo.Y, 0), fiCount);
 	}
 }

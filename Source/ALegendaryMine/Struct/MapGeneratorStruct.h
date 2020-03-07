@@ -35,11 +35,11 @@ struct FRoadMeshData
 };
 
 USTRUCT(Atomic)
-struct FRoadData
+struct FRoadDataData
 {
 	GENERATED_USTRUCT_BODY()
 
-		int X = 0;
+	int X = 0;
 	int Y = 0;
 
 	int V1 = 0;
@@ -49,6 +49,14 @@ struct FRoadData
 	int V2 = 0;
 	FVector V2R = FVector();
 	FVector V2RF = FVector();
+};
+
+USTRUCT(Atomic)
+struct FRoadData
+{
+	GENERATED_USTRUCT_BODY()
+
+	TArray<FRoadDataData> Data;
 };
 
 USTRUCT(Atomic)
