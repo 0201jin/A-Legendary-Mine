@@ -61,12 +61,15 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 		IGCObject->MeshDataArr.Add(data);
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("%d"), IGCObject->ActorData.Num());
 	for (int i = 0; IGCObject->ActorData.Num() > i; i++)
 	{
 		UStaticMesh* ISMStaticMesh = LoadObject<UStaticMesh>(NULL, *IGCObject->ActorData[i].Meshdata, NULL, LOAD_None, NULL);
 
 		actor.Add(NewObject<UInstancedStaticMeshComponent>(GetTransientPackage(), NAME_None, RF_Transient));
 		actor[i]->SetStaticMesh(ISMStaticMesh);
+
+		actor[i]->PerInstanceSMData = IGCObject->ActorData[i].ActorData;
 
 		Transform.SetRotation(FQuat(0, 0, 0, 0));
 

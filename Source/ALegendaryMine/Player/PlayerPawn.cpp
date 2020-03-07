@@ -18,10 +18,22 @@ APlayerPawn::APlayerPawn()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동
 	GetCharacterMovement()->JumpZVelocity = 0.0f;
-	GetCharacterMovement()->MaxStepHeight = 60.0f;
+	GetCharacterMovement()->MaxStepHeight = 0.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 500;
 	GetCharacterMovement()->AirControl = 0.0f;
 	GetCharacterMovement()->GroundFriction = 100.0f;
+
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 350.0f;
+	CameraBoom->TargetOffset = FVector(0, 0, 700);
+	CameraBoom->ProbeSize = 0.0f;
+	CameraBoom->bUsePawnControlRotation = true;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->RelativeLocation = FVector(0, 0, 0);
+	FollowCamera->RelativeRotation = FRotator(290, 0, 0);
 }
 
 // Called when the game starts or when spawned

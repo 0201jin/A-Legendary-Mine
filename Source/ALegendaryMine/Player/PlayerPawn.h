@@ -12,6 +12,12 @@ class ALEGENDARYMINE_API APlayerPawn : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class USpringArmComponent * CameraBoom;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class UCameraComponent * FollowCamera;
+
 public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
