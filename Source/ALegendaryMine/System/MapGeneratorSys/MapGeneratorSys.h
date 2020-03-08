@@ -17,6 +17,7 @@ public:
 	~MapGeneratorSys();
 
 	void MapGen(int _Roomsize);
+	void DeleteMap();
 	TArray<FRoomData> GetRoomArray();
 	TArray<FRoadData> GetRoadArray();
 	FALGraph GetGraph();

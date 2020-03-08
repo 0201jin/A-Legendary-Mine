@@ -62,8 +62,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					if (RoomArray[i].Y > RoomArray[x].Y)
 						MinSY = RoomArray[x].SY;
 
-					if (abs(RoomArray[i].X - RoomArray[x].X) <= (MinSX + 1) &&
-						abs(RoomArray[i].Y - RoomArray[x].Y) <= (MinSY + 1))
+					if (abs(RoomArray[i].X - RoomArray[x].X) <= (MinSX + 100) &&
+						abs(RoomArray[i].Y - RoomArray[x].Y) <= (MinSY + 100))
 					{
 						RoomArray[i].X += ((rand() % 31) - 15) * 100;
 						RoomArray[i].Y += ((rand() % 31) - 15) * 100;
@@ -175,7 +175,7 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 					Data.Data[1].V2 = edge.Vertex2;
 					Data.Data[1].X = x;
 					Data.Data[1].Y = y;
-					
+
 					if (RoomArray[Data.Data[0].V1].X < Data.Data[0].X &&
 						RoomArray[Data.Data[0].V1].X + RoomArray[Data.Data[0].V1].SX > Data.Data[0].X)
 					{
@@ -284,8 +284,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 					if ((
 						(V1X < Data.Data[1].X  && V1X + V1SX > Data.Data[1].X  && V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y) ||
-						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2X < Data.Data[1].X  && V2X + V2SX > Data.Data[1].X ) ||
-						(V1X < Data.Data[1].X  && V1X + V1SX > Data.Data[1].X  && V2X < Data.Data[1].X  && V2X + V2SX > Data.Data[1].X ) ||
+						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2X < Data.Data[1].X  && V2X + V2SX > Data.Data[1].X) ||
+						(V1X < Data.Data[1].X  && V1X + V1SX > Data.Data[1].X  && V2X < Data.Data[1].X  && V2X + V2SX > Data.Data[1].X) ||
 						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y)) &&
 						!(V1X <= Data.Data[1].X  && V1X + V1SX >= Data.Data[1].X  && V1Y <= Data.Data[1].Y && V1Y + V1SY >= Data.Data[1].Y) &&
 						!(V2X <= Data.Data[1].X  && V2X + V2SX >= Data.Data[1].X  && V2Y <= Data.Data[1].Y && V2Y + V2SY >= Data.Data[1].Y))
@@ -310,12 +310,9 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 		int Why = 0;
 
 		if (RoadLo.Num() > 0)
+		{
 			while (wi < RoadLo.Num())
 			{
-				/*
-				랜덤으로 뽑아서 길목 조건에 충족하는지 확인
-				v1.x & v2.y || v1.y & v2.x || v1.x & v2.x || v1.y & v2.y
-				*/
 				Why = 0;
 
 				bool bCheck = true;
@@ -397,7 +394,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 									break;
 								}
 
-								if (abs(RoadLo[wi].Data[fiCount].X - RoadArray[i].Data[fiCount].X) <= 200 || abs(RoadLo[wi].Data[fiCount].Y - RoadArray[i].Data[fiCount].Y) <= 200)
+								if (abs(RoadLo[wi].Data[fiCount].X - RoadArray[i].Data[fiCount].X) <= 200 &&
+									abs(RoadLo[wi].Data[fiCount].Y - RoadArray[i].Data[fiCount].Y) <= 200)
 								{
 									bCheck = false;
 									break;
@@ -421,7 +419,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 									break;
 								}
 
-								if (abs(RoadLo[wi].Data[fiCount].X - RoadArray[i].Data[fiCount].X) <= 200 || abs(RoadLo[wi].Data[fiCount].Y - RoadArray[i].Data[fiCount].Y) <= 200)
+								if (abs(RoadLo[wi].Data[fiCount].X - RoadArray[i].Data[fiCount].X) <= 200 &&
+									abs(RoadLo[wi].Data[fiCount].Y - RoadArray[i].Data[fiCount].Y) <= 200)
 								{
 									bCheck = false;
 									break;
@@ -591,10 +590,16 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 				wi++;
 			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("No RoadLo"));
+		}
 
 		if (!bCreateRoad)
 		{
 			bool bFind = false;
+
 			switch (Why)
 			{
 			case 1:
@@ -609,126 +614,98 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 				UE_LOG(LogTemp, Log, TEXT("Collision Room"));
 				break;
 			}
+			//UE_LOG(LogTemp, Log, TEXT("Cant Create Road %d %d"), edge.Vertex2, edge.Vertex1);
 			//방이 연결되었는지 확인하고 연결이 안됬으면 길을 새로 연결.
 			RemoveEdge(&graph, edge.Vertex1, edge.Vertex2);
-			UE_LOG(LogTemp, Log, TEXT("Delete Road %d %d"), edge.Vertex1, edge.Vertex2);
 
 			if (!IsConnvertex(&graph, edge.Vertex1, edge.Vertex2))
 			{
 				int V1C = 0;
 				int V2C = 0;
 
+				TArray<int> V1CEArr;
+				TArray<int> V2CEArr;
+
+				V1CEArr.Add(edge.Vertex1);
+				V2CEArr.Add(edge.Vertex2);
+
 				for (int i = 0; i < (&graph)->NumV; i++)
 				{
 					if (!IsConnvertex(&graph, edge.Vertex1, i))
-					{
 						V1C++;
-					}
+					else
+						V1CEArr.Add(i);
 
 					if (!IsConnvertex(&graph, i, edge.Vertex2))
-					{
 						V2C++;
-					}
+					else
+						V2CEArr.Add(i);
 				}
 
-				if (V1C < V2C)
+				if (V1C > V2C)
 				{
-					float MinDis = 999999;
-					int VertexIndex = 0;
+					float MinDis = -1;
+					int VertexIndex1 = -1;
+					int VertexIndex2 = -1;
 
-					for (int i = 0; i < (&graph)->NumV; i++)
-					{
-						if (i != edge.Vertex1 && i != edge.Vertex2)
-						{
-							if (!IsConnvertex(&graph, i, edge.Vertex2))
-							{
-								if (!CheckEdge[i][edge.Vertex2])
+					for (int EArr = 0; EArr < V2CEArr.Num(); EArr++)
+						for (int i = 0; i < (&graph)->NumV; i++)
+							if (i != V2CEArr[EArr])
+								if (!IsConnvertex(&graph, i, V2CEArr[EArr]) && !CheckEdge[i][V2CEArr[EArr]])
 								{
-									float dis = FVector::Dist(FVector(RoomArray[i].X, RoomArray[i].Y, 0), FVector(RoomArray[edge.Vertex2].X, RoomArray[edge.Vertex2].Y, 0));
+									float dis = FVector::Dist(FVector(RoomArray[i].X, RoomArray[i].Y, 0), FVector(RoomArray[V2CEArr[EArr]].X, RoomArray[V2CEArr[EArr]].Y, 0));
 
-									if (MinDis > dis)
+									if (MinDis > dis || MinDis == -1)
 									{
 										MinDis = dis;
-										VertexIndex = i;
+										VertexIndex1 = i;
+										VertexIndex2 = V2CEArr[EArr];
 									}
 								}
-							}
-						}
-					}
 
-					if (MinDis != 999999)
+					if (MinDis != -1 && VertexIndex1 != -1 && VertexIndex2 != -1)
 					{
-						AddEdge(&graph, VertexIndex, edge.Vertex2, (int)MinDis);
-						UE_LOG(LogTemp, Log, TEXT("Recover Road %d %d"), edge.Vertex1, VertexIndex);
-						UE_LOG(LogTemp, Log, TEXT(" "));
+						AddEdge(&graph, VertexIndex1, VertexIndex2, (int)MinDis);
 						bFind = true;
 					}
 				}
 				else
 				{
-					float MinDis = 999999;
-					int VertexIndex = 0;
+					float MinDis = -1;
+					int VertexIndex1 = -1;
+					int VertexIndex2 = -1;
 
-					for (int i = 0; i < (&graph)->NumV; i++)
-					{
-						if (i != edge.Vertex1 && i != edge.Vertex2)
-						{
-							if (!IsConnvertex(&graph, edge.Vertex1, i))
-							{
-								if (!CheckEdge[edge.Vertex1][i])
+					for (int EArr = 0; EArr < V1CEArr.Num(); EArr++)
+						for (int i = 0; i < (&graph)->NumV; i++)
+							if (i != V1CEArr[EArr])
+								if (!IsConnvertex(&graph, V1CEArr[EArr], i) && !CheckEdge[V1CEArr[EArr]][i])
 								{
-									float dis = FVector::Dist(FVector(RoomArray[i].X, RoomArray[i].Y, 0), FVector(RoomArray[edge.Vertex1].X, RoomArray[edge.Vertex1].Y, 0));
+									float dis = FVector::Dist(FVector(RoomArray[i].X, RoomArray[i].Y, 0), FVector(RoomArray[V1CEArr[EArr]].X, RoomArray[V1CEArr[EArr]].Y, 0));
 
-									if (MinDis > dis)
+									if (MinDis > dis || MinDis == -1)
 									{
 										MinDis = dis;
-										VertexIndex = i;
+										VertexIndex2 = i;
+										VertexIndex1 = V1CEArr[EArr];
 									}
 								}
-							}
-						}
-					}
 
-					if (MinDis != 999999)
+					if (MinDis != -1 && VertexIndex1 != -1 && VertexIndex2 != -1)
 					{
-						AddEdge(&graph, edge.Vertex1, VertexIndex, (int)MinDis);
-						UE_LOG(LogTemp, Log, TEXT("Recover Road %d %d"), edge.Vertex1, VertexIndex);
-						UE_LOG(LogTemp, Log, TEXT(" "));
+						AddEdge(&graph, VertexIndex1, VertexIndex2, (int)MinDis);
 						bFind = true;
 					}
 				}
-			}
 
-			if (!bFind)
-			{
-				//다른 연결 지점을 찾는다.
-				float MinDis = 999999;
-				int VertexIndex1 = 0;
-				int VertexIndex2 = 0;
-
-				for (int i = 0; i < (&graph)->NumV; i++)
+				if (!bFind)
 				{
-					for (int j = 0; j < (&graph)->NumV; j++)
+					if (!CheckEdge[edge.Vertex2][edge.Vertex1])
 					{
-						if (i != j && !CheckEdge[i][j] && !IsConnvertex(&graph, i, j))
-						{
-							float dis = FVector::Dist(FVector(RoomArray[i].X, RoomArray[i].Y, 0), FVector(RoomArray[edge.Vertex1].X, RoomArray[edge.Vertex1].Y, 0));
-
-							if (MinDis > dis)
-							{
-								MinDis = dis;
-								VertexIndex1 = i;
-								VertexIndex2 = j;
-							}
-						}
+						AddEdge(&graph, edge.Vertex2, edge.Vertex1, 0);
+						bFind = true;
 					}
-				}
-
-				if (MinDis != 999999)
-				{
-					AddEdge(&graph, VertexIndex1, VertexIndex2, (int)MinDis);
-					UE_LOG(LogTemp, Log, TEXT("ReFind Road %d %d"), VertexIndex1, VertexIndex2);
-					UE_LOG(LogTemp, Log, TEXT(" "));
+					else
+						UE_LOG(LogTemp, Log, TEXT("False Road %d %d %d %d"), edge.Vertex1, edge.Vertex2, RoadArray.Num(), eidx);
 				}
 			}
 		}
@@ -760,6 +737,25 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 		}
 
 	UE_LOG(LogTemp, Log, TEXT("END"));
+}
+
+void MapGeneratorSys::DeleteMap()
+{
+	for (int i = 0; i < TemplateActorArray.Num(); i++)
+	{
+		TemplateActorArray[i]->Destroy();
+	}
+
+	for (int i = 0; i < RoadTemplateActorArray.Num(); i++)
+	{
+		RoadTemplateActorArray[i]->Destroy();
+	}
+
+	TemplateActorArray.Empty();
+	RoadTemplateActorArray.Empty();
+	RoomArray.Empty();
+	RoadArray.Empty();
+	TemplateArray.Empty();
 }
 
 TArray<FRoomData> MapGeneratorSys::GetRoomArray()

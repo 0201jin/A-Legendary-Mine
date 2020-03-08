@@ -21,6 +21,8 @@ public:
 	AInGame();
 	~AInGame();
 
+	void GenerateMap();
+
 	UMyGameInstance * GetMyGameInstance();
 
 protected:

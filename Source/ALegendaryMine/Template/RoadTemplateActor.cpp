@@ -207,21 +207,6 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo, int fiCount)
 	}
 	else if (_Road.Y == _Lo.Y)
 	{
-		/*FVector Lo = _Lo;
-		FVector Lo1 = _Lo;
-		Lo.Y += 100;
-		Lo1.Y -= 100;
-
-		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo, FVector(1, 1, 1)));
-		BlackWalls->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), Lo1, FVector(1, 1, 1)));
-
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));
-
-		Lo.Z += 100;
-		Lo1.Z += 100;
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WR, 0), Lo, FVector(1, 1, 1)));
-		Walls->AddInstanceWorldSpace(FTransform(FRotator(0, 90 * WL, 0), Lo1, FVector(1, 1, 1)));*/
 		FVector Lo = _Lo;
 
 		if (RoadData.Data[fiCount].Y < RoadData.Data[OCount].Y)
