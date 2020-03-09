@@ -19,7 +19,7 @@ APlayerPawn::APlayerPawn()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동
 	GetCharacterMovement()->JumpZVelocity = 0.0f;
 	GetCharacterMovement()->MaxStepHeight = 0.0f;
-	GetCharacterMovement()->MaxWalkSpeed = 500;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
 	GetCharacterMovement()->AirControl = 0.0f;
 	GetCharacterMovement()->GroundFriction = 100.0f;
 

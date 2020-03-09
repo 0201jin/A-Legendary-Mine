@@ -30,6 +30,7 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	SetViewMode(VMI_Lit);
 
 	AdvancedPreviewScene = static_cast<FAdvancedPreviewScene*>(PreviewScene);
+	AdvancedPreviewScene->SetFloorVisibility(false);
 
 	UTextureCube * Cube = LoadObject<UTextureCube>(NULL, TEXT("TextureCube'/Engine/EngineResources/GrayLightTextureCube.GrayLightTextureCube'"), NULL, LOAD_None, NULL);
 

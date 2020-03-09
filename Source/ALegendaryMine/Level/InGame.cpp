@@ -29,9 +29,9 @@ void AInGame::BeginPlay()
 
 	Mapgen = new MapGeneratorSys(this);
 
-	Mapgen->MapGen(18);
+	Mapgen->MapGen(8);
 
-	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(0, 0, 100));
+	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(100, 100, 100));
 
 	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 
@@ -81,7 +81,7 @@ void AInGame::GenerateMap()
 
 	Mapgen->DeleteMap();
 
-	Mapgen->MapGen(18);
+	Mapgen->MapGen(8);
 
 	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 

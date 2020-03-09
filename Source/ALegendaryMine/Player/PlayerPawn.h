@@ -32,4 +32,7 @@ public:
 
 	void FB_Move(float _value);
 	void LR_Move(float _value);
+
+protected:
+	float PlayerSpeed;
 };

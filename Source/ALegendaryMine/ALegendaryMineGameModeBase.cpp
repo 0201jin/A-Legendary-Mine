@@ -7,8 +7,8 @@
 
 AALegendaryMineGameModeBase::AALegendaryMineGameModeBase()
 {
-	//DefaultPawnClass = AAdventurer::StaticClass();
-	//PlayerControllerClass = AMyPlayerController::StaticClass();
+	DefaultPawnClass = AAdventurer::StaticClass();
+	PlayerControllerClass = AMyPlayerController::StaticClass();
 	HUDClass = AMyHUD::StaticClass();
 	//GameStateClass = AMyGameStateBase::StaticClass();
 }
