@@ -16,11 +16,13 @@ public:
 	MapGeneratorSys(class AInGame * _InGameLevel);
 	~MapGeneratorSys();
 
-	void MapGen(int _Roomsize);
+	void MapGen(int _Roomsize, int _Stage);
 	void DeleteMap();
 	TArray<FRoomData> GetRoomArray();
 	TArray<FRoadData> GetRoadArray();
 	FALGraph GetGraph();
+
+	FVector GetStartLo();
 
 protected:
 	bool IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2);

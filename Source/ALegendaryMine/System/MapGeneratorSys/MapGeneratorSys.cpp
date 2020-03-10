@@ -16,9 +16,9 @@ MapGeneratorSys::~MapGeneratorSys()
 {
 }
 
-void MapGeneratorSys::MapGen(int _Roomsize)
+void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 {
-	int iStage = 0;
+	int iStage = _Stage;
 
 	for (int i = 0; i < _Roomsize; i++)
 	{
@@ -393,13 +393,6 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 									bCheck = false;
 									break;
 								}
-
-								if (abs(RoadLo[wi].Data[fiCount].X - RoadArray[i].Data[fiCount].X) <= 200 &&
-									abs(RoadLo[wi].Data[fiCount].Y - RoadArray[i].Data[fiCount].Y) <= 200)
-								{
-									bCheck = false;
-									break;
-								}
 							}
 
 							if (!ShortRoadV2)
@@ -418,13 +411,20 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 									bCheck = false;
 									break;
 								}
+							}
 
-								if (abs(RoadLo[wi].Data[fiCount].X - RoadArray[i].Data[fiCount].X) <= 200 &&
-									abs(RoadLo[wi].Data[fiCount].Y - RoadArray[i].Data[fiCount].Y) <= 200)
-								{
-									bCheck = false;
-									break;
-								}
+							if (abs(RoadLo[wi].Data[fiCount].V2R.X - RoadArray[i].Data[fiCount].V2R.X) <= 300 &&
+								abs(RoadLo[wi].Data[fiCount].V2R.Y - RoadArray[i].Data[fiCount].V2R.Y) <= 300)
+							{
+								bCheck = false;
+								break;
+							}
+
+							if (abs(RoadLo[wi].Data[fiCount].V1R.X - RoadArray[i].Data[fiCount].V1R.X) <= 300 &&
+								abs(RoadLo[wi].Data[fiCount].V1R.Y - RoadArray[i].Data[fiCount].V1R.Y) <= 300)
+							{
+								bCheck = false;
+								break;
 							}
 						}
 					}
@@ -448,7 +448,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 								for (int j = 0; j < XABS; j++)
 								{
-									if (MinX + j == RoadLo[wi].Data[fiCount].X && RoadArray[i].Data[fiCount].V1R.Y == RoadLo[wi].Data[fiCount].Y)
+									if (MinX + j == RoadLo[wi].Data[fiCount].X && 
+										RoadArray[i].Data[fiCount].V1R.Y == RoadLo[wi].Data[fiCount].Y)
 									{
 										bCheck = false;
 										break;
@@ -457,7 +458,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 								for (int j = 0; j < YABS; j++)
 								{
-									if (MinY + j == RoadLo[wi].Data[fiCount].Y && RoadArray[i].Data[fiCount].V1R.X == RoadLo[wi].Data[fiCount].X)
+									if (MinY + j == RoadLo[wi].Data[fiCount].Y && 
+										RoadArray[i].Data[fiCount].V1R.X == RoadLo[wi].Data[fiCount].X)
 									{
 										bCheck = false;
 										break;
@@ -479,7 +481,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 								for (int j = 0; j < XABS; j++)
 								{
-									if (MinX + j == RoadLo[wi].Data[fiCount].X && RoadArray[i].Data[fiCount].V2R.Y == RoadLo[wi].Data[fiCount].Y)
+									if (MinX + j == RoadLo[wi].Data[fiCount].X && 
+										RoadArray[i].Data[fiCount].V2R.Y == RoadLo[wi].Data[fiCount].Y)
 									{
 										bCheck = false;
 										break;
@@ -488,7 +491,8 @@ void MapGeneratorSys::MapGen(int _Roomsize)
 
 								for (int j = 0; j < YABS; j++)
 								{
-									if (MinY + j == RoadLo[wi].Data[fiCount].Y && RoadArray[i].Data[fiCount].V2R.X == RoadLo[wi].Data[fiCount].X)
+									if (MinY + j == RoadLo[wi].Data[fiCount].Y && 
+										RoadArray[i].Data[fiCount].V2R.X == RoadLo[wi].Data[fiCount].X)
 									{
 										bCheck = false;
 										break;
@@ -771,6 +775,16 @@ TArray<FRoadData> MapGeneratorSys::GetRoadArray()
 FALGraph MapGeneratorSys::GetGraph()
 {
 	return graph;
+}
+
+FVector MapGeneratorSys::GetStartLo()
+{
+	FVector Lo;
+	Lo.X = RoomArray[RoomArray.Num() - 1].X + (RoomArray[RoomArray.Num() - 1].SX / 2);
+	Lo.Y = RoomArray[RoomArray.Num() - 1].Y + (RoomArray[RoomArray.Num() - 1].SY / 2);
+	Lo.Z = 100;
+
+	return Lo;
 }
 
 bool MapGeneratorSys::IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2)

@@ -29,9 +29,9 @@ void AInGame::BeginPlay()
 
 	Mapgen = new MapGeneratorSys(this);
 
-	Mapgen->MapGen(8);
+	Mapgen->MapGen(8, 0);
 
-	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(100, 100, 100));
+	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 
 	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 
@@ -81,7 +81,7 @@ void AInGame::GenerateMap()
 
 	Mapgen->DeleteMap();
 
-	Mapgen->MapGen(8);
+	Mapgen->MapGen(8, 0);
 
 	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 
@@ -111,6 +111,14 @@ void AInGame::GenerateMap()
 			DrawDebugLine(GetWorld(),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), FColor::Cyan, true, -1, 0, 100);
+
+			DrawDebugLine(GetWorld(),
+				FVector(RoadArray[i].Data[fiCount].V1R.X, RoadArray[i].Data[fiCount].V1R.Y, 0),
+				FVector(RoadArray[i].Data[fiCount].V1R.X, RoadArray[i].Data[fiCount].V1R.Y, 0), FColor::Purple, true, -1, 0, 100);
+
+			DrawDebugLine(GetWorld(),
+				FVector(RoadArray[i].Data[fiCount].V2R.X, RoadArray[i].Data[fiCount].V2R.Y, 0),
+				FVector(RoadArray[i].Data[fiCount].V2R.X, RoadArray[i].Data[fiCount].V2R.Y, 0), FColor::Purple, true, -1, 0, 100);
 
 			DrawDebugLine(GetWorld(),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
