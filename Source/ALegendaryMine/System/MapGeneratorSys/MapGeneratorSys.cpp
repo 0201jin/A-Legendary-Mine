@@ -426,6 +426,20 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 								bCheck = false;
 								break;
 							}
+
+							if (abs(RoadLo[wi].Data[fiCount].V1R.X - RoadArray[i].Data[fiCount].V2R.X) <= 300 &&
+								abs(RoadLo[wi].Data[fiCount].V1R.Y - RoadArray[i].Data[fiCount].V2R.Y) <= 300)
+							{
+								bCheck = false;
+								break;
+							}
+
+							if (abs(RoadLo[wi].Data[fiCount].V2R.X - RoadArray[i].Data[fiCount].V1R.X) <= 300 &&
+								abs(RoadLo[wi].Data[fiCount].V2R.Y - RoadArray[i].Data[fiCount].V1R.Y) <= 300)
+							{
+								bCheck = false;
+								break;
+							}
 						}
 					}
 
