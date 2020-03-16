@@ -181,6 +181,7 @@ void RemoveEdge(FALGraph * _pg, int _fromV, int _toV);
 void RemoveWayEdge(FALGraph * _pg, int _fromV, int _toV);
 void RecoverEdge(FALGraph * _pg, int _fromV, int _toV, int _weight);
 bool IsConnvertex(FALGraph * _pg, int _v1, int _v2);
+int GetRoomRoadNum(FALGraph* _pg, int _v1);
 void ShowGraphEdgeInfo(FALGraph * _pg);
 bool VisitVertex(FALGraph * _pg, int _visitV);
 void DFShowGraphVertex(FALGraph * _pg, int _startV);

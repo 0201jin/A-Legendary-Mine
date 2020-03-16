@@ -384,6 +384,12 @@ bool IsConnvertex(FALGraph * _pg, int _v1, int _v2)
 	return false;
 }
 
+int GetRoomRoadNum(FALGraph* _pg, int _v1)
+{
+	UE_LOG(LogTemp, Log, TEXT("%d %d"), _v1, LCount(&(_pg->AdjList[_v1])));
+	return LCount(&(_pg->AdjList[_v1]));
+}
+
 void ShowGraphEdgeInfo(FALGraph * _pg)
 {
 	int i;

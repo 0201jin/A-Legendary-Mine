@@ -6,7 +6,7 @@
 #include "Template/RoomTemplateActor.h"
 #include "Template/RoadTemplateActor.h"
 
-MapGeneratorSys::MapGeneratorSys(class AInGame * _InGameLevel)
+MapGeneratorSys::MapGeneratorSys(class AInGame* _InGameLevel)
 {
 	InGameLevel = _InGameLevel;
 	GameInstance = InGameLevel->GetMyGameInstance();
@@ -44,6 +44,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 	}
 
 	//방이 겹치지 않게 퍼트림
+
 	for (int i = 0; i < RoomArray.Num(); i++)
 	{
 		while (true)
@@ -101,7 +102,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 	ConKruskalMST(&graph);
 
 	/*엣지를 중심으로 길의 정점을 만드는 코드*/
-	FPQueue * copyPQ = &graph.Queue;
+	FPQueue* copyPQ = &graph.Queue;
 	FGraphEdge recvEdge[ARR_SIZE];
 	int eidx = 0;
 	FGraphEdge edge;
@@ -156,7 +157,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 			for (int y = Data.Y; y < Data.Y + Data.SY;)
 			{
 				if ((
-					(V1X < x && V1X + V1SX > x && V2Y < y && V2Y + V2SY > y) ||
+					(V1X < x && V1X + V1SX > x&& V2Y < y && V2Y + V2SY > y) ||
 					(V1Y < y && V1Y + V1SY > y && V2X < x && V2X + V2SX > x) ||
 					(V1X < x && V1X + V1SX > x && V2X < x && V2X + V2SX > x) ||
 					(V1Y < y && V1Y + V1SY > y && V2Y < y && V2Y + V2SY > y)) &&
@@ -283,12 +284,12 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 					}
 
 					if ((
-						(V1X < Data.Data[1].X  && V1X + V1SX > Data.Data[1].X  && V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y) ||
-						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2X < Data.Data[1].X  && V2X + V2SX > Data.Data[1].X) ||
-						(V1X < Data.Data[1].X  && V1X + V1SX > Data.Data[1].X  && V2X < Data.Data[1].X  && V2X + V2SX > Data.Data[1].X) ||
+						(V1X < Data.Data[1].X && V1X + V1SX > Data.Data[1].X&& V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y) ||
+						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2X < Data.Data[1].X && V2X + V2SX > Data.Data[1].X) ||
+						(V1X < Data.Data[1].X && V1X + V1SX > Data.Data[1].X && V2X < Data.Data[1].X && V2X + V2SX > Data.Data[1].X) ||
 						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y)) &&
-						!(V1X <= Data.Data[1].X  && V1X + V1SX >= Data.Data[1].X  && V1Y <= Data.Data[1].Y && V1Y + V1SY >= Data.Data[1].Y) &&
-						!(V2X <= Data.Data[1].X  && V2X + V2SX >= Data.Data[1].X  && V2Y <= Data.Data[1].Y && V2Y + V2SY >= Data.Data[1].Y))
+						!(V1X <= Data.Data[1].X && V1X + V1SX >= Data.Data[1].X && V1Y <= Data.Data[1].Y && V1Y + V1SY >= Data.Data[1].Y) &&
+						!(V2X <= Data.Data[1].X && V2X + V2SX >= Data.Data[1].X && V2Y <= Data.Data[1].Y && V2Y + V2SY >= Data.Data[1].Y))
 					{
 						RoadLo.Add(Data);
 					}
@@ -298,321 +299,323 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 			x += 100;
 		}
 
-		RoadLo.Sort([](const FRoadData &A, const FRoadData &B)
-		{
-			float ADis = FVector::Dist(FVector(A.Data[0].X, A.Data[0].Y, 0), A.Data[0].V1R) + FVector::Dist(FVector(A.Data[0].X, A.Data[0].Y, 0), A.Data[0].V2R);
-			float BDis = FVector::Dist(FVector(B.Data[0].X, B.Data[0].Y, 0), B.Data[0].V1R) + FVector::Dist(FVector(B.Data[0].X, B.Data[0].Y, 0), B.Data[0].V2R);
+		RoadLo.Sort([](const FRoadData& A, const FRoadData& B)
+			{
+				float ADis = FVector::Dist(FVector(A.Data[0].X, A.Data[0].Y, 0), A.Data[0].V1R) + FVector::Dist(FVector(A.Data[0].X, A.Data[0].Y, 0), A.Data[0].V2R);
+				float BDis = FVector::Dist(FVector(B.Data[0].X, B.Data[0].Y, 0), B.Data[0].V1R) + FVector::Dist(FVector(B.Data[0].X, B.Data[0].Y, 0), B.Data[0].V2R);
 
-			return ADis < BDis;
-		});
+				return ADis < BDis;
+			});
 
 		bool bCreateRoad = false;
 		int Why = 0;
 
-		if (RoadLo.Num() > 0)
-		{
-			while (wi < RoadLo.Num())
+		if (!((edge.Vertex1 == RoomArray.Num() - 1 || edge.Vertex1 == RoomArray.Num() - 2) &&
+			(edge.Vertex2 == RoomArray.Num() - 1 || edge.Vertex2 == RoomArray.Num() - 2)))
+			if (RoadLo.Num() > 0)
 			{
-				Why = 0;
-
-				bool bCheck = true;
-				//int RoadIndex = rand() % RoadLo.Num();
-				for (int fiCount = 0; fiCount < 2; fiCount++)
+				while (wi < RoadLo.Num())
 				{
-					int x = RoadLo[wi].Data[fiCount].X;
-					int y = RoadLo[wi].Data[fiCount].Y;
+					Why = 0;
 
-					for (int i = 0; i < RoomArray.Num(); i++)
+					bool bCheck = true;
+					//int RoadIndex = rand() % RoadLo.Num();
+					for (int fiCount = 0; fiCount < 2; fiCount++)
 					{
-						if (((RoomArray[i].X <= x && RoomArray[i].X + RoomArray[i].SX >= x) &&
-							(RoomArray[i].Y <= y && RoomArray[i].Y + RoomArray[i].SY >= y))) //충돌 범위 설정
-						{
-							Why = 1;
-							bCheck = false;
-							break;
-						}
-					}
+						int x = RoadLo[wi].Data[fiCount].X;
+						int y = RoadLo[wi].Data[fiCount].Y;
 
-					/*겹치는 길목 체크*/
-					for (int i = 0; i < RoadArray.Num(); i++)
-					{
-						if (RoadArray[i].Data[fiCount].X == x && RoadArray[i].Data[fiCount].Y && y)
-						{
-							bCheck = false;
-							break;
-						}
-					}
-
-					bool ShortRoadV1 = false;
-					bool ShortRoadV2 = false;
-
-					if (RoomArray[RoadLo[wi].Data[fiCount].V1].X < RoadLo[wi].Data[fiCount].X &&
-						RoomArray[RoadLo[wi].Data[fiCount].V1].X + RoomArray[RoadLo[wi].Data[fiCount].V1].SX > RoadLo[wi].Data[fiCount].X)
-					{
-						if (int(RoadLo[wi].Data[fiCount].V1R.Y) == RoadLo[wi].Data[fiCount].Y)
-							ShortRoadV1 = true;
-					}
-					else if (RoomArray[RoadLo[wi].Data[fiCount].V1].Y < RoadLo[wi].Data[fiCount].Y &&
-						RoomArray[RoadLo[wi].Data[fiCount].V1].Y + RoomArray[RoadLo[wi].Data[fiCount].V1].SY > RoadLo[wi].Data[fiCount].Y)
-					{
-						if (int(RoadLo[wi].Data[fiCount].V1R.X) == RoadLo[wi].Data[fiCount].X)
-							ShortRoadV1 = true;
-					}
-
-					if (RoomArray[RoadLo[wi].Data[fiCount].V2].X < RoadLo[wi].Data[fiCount].X &&
-						RoomArray[RoadLo[wi].Data[fiCount].V2].X + RoomArray[RoadLo[wi].Data[fiCount].V2].SX > RoadLo[wi].Data[fiCount].X)
-					{
-						if (int(RoadLo[wi].Data[fiCount].V2R.Y) == RoadLo[wi].Data[fiCount].Y)
-							ShortRoadV2 = true;
-					}
-					else if (RoomArray[RoadLo[wi].Data[fiCount].V2].Y < RoadLo[wi].Data[fiCount].Y &&
-						RoomArray[RoadLo[wi].Data[fiCount].V2].Y + RoomArray[RoadLo[wi].Data[fiCount].V2].SY > RoadLo[wi].Data[fiCount].Y)
-					{
-						if (int(RoadLo[wi].Data[fiCount].V2R.X) == RoadLo[wi].Data[fiCount].X)
-							ShortRoadV2 = true;
-					}
-
-					/*충돌하는 길이 있는지 확인*/
-					if (bCheck)
-					{
-						for (int i = 0; i < RoadArray.Num(); i++)
-						{
-							if (!ShortRoadV1)
-							{
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
-									FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V1R))
-								{
-									Why = 2;
-									bCheck = false;
-									break;
-								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
-									FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V2R))
-								{
-									Why = 2;
-									bCheck = false;
-									break;
-								}
-							}
-
-							if (!ShortRoadV2)
-							{
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
-									FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V1R))
-								{
-									Why = 2;
-									bCheck = false;
-									break;
-								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
-									FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V2R))
-								{
-									Why = 2;
-									bCheck = false;
-									break;
-								}
-							}
-
-							if (abs(RoadLo[wi].Data[fiCount].V2R.X - RoadArray[i].Data[fiCount].V2R.X) <= 300 &&
-								abs(RoadLo[wi].Data[fiCount].V2R.Y - RoadArray[i].Data[fiCount].V2R.Y) <= 300)
-							{
-								bCheck = false;
-								break;
-							}
-
-							if (abs(RoadLo[wi].Data[fiCount].V1R.X - RoadArray[i].Data[fiCount].V1R.X) <= 300 &&
-								abs(RoadLo[wi].Data[fiCount].V1R.Y - RoadArray[i].Data[fiCount].V1R.Y) <= 300)
-							{
-								bCheck = false;
-								break;
-							}
-
-							if (abs(RoadLo[wi].Data[fiCount].V1R.X - RoadArray[i].Data[fiCount].V2R.X) <= 300 &&
-								abs(RoadLo[wi].Data[fiCount].V1R.Y - RoadArray[i].Data[fiCount].V2R.Y) <= 300)
-							{
-								bCheck = false;
-								break;
-							}
-
-							if (abs(RoadLo[wi].Data[fiCount].V2R.X - RoadArray[i].Data[fiCount].V1R.X) <= 300 &&
-								abs(RoadLo[wi].Data[fiCount].V2R.Y - RoadArray[i].Data[fiCount].V1R.Y) <= 300)
-							{
-								bCheck = false;
-								break;
-							}
-						}
-					}
-
-					/*충돌하는 길목이 있는지 확인*/
-					if (bCheck)
-					{
-						for (int i = 0; i < RoadArray.Num(); i++)
-						{
-							if (!ShortRoadV1)
-							{
-								int MinX = RoadLo[wi].Data[fiCount].X;
-								int MinY = RoadLo[wi].Data[fiCount].Y;
-								int XABS = abs(MinX - RoadArray[i].Data[fiCount].V1R.X);
-								int YABS = abs(MinY - RoadArray[i].Data[fiCount].V1R.Y);
-
-								if (RoadLo[wi].Data[fiCount].X > RoadArray[i].Data[fiCount].V1R.X)
-									MinX = RoadArray[i].Data[fiCount].V1R.X;
-								if (RoadLo[wi].Data[fiCount].Y > RoadArray[i].Data[fiCount].V1R.Y)
-									MinY = RoadArray[i].Data[fiCount].V1R.Y;
-
-								for (int j = 0; j < XABS; j++)
-								{
-									if (MinX + j == RoadLo[wi].Data[fiCount].X && 
-										RoadArray[i].Data[fiCount].V1R.Y == RoadLo[wi].Data[fiCount].Y)
-									{
-										bCheck = false;
-										break;
-									}
-								}
-
-								for (int j = 0; j < YABS; j++)
-								{
-									if (MinY + j == RoadLo[wi].Data[fiCount].Y && 
-										RoadArray[i].Data[fiCount].V1R.X == RoadLo[wi].Data[fiCount].X)
-									{
-										bCheck = false;
-										break;
-									}
-								}
-							}
-
-							if (!ShortRoadV2)
-							{
-								int MinX = RoadLo[wi].Data[fiCount].X;
-								int MinY = RoadLo[wi].Data[fiCount].Y;
-								int XABS = abs(MinX - RoadArray[i].Data[fiCount].V2R.X);
-								int YABS = abs(MinY - RoadArray[i].Data[fiCount].V2R.Y);
-
-								if (RoadLo[wi].Data[fiCount].X > RoadArray[i].Data[fiCount].V2R.X)
-									MinX = RoadArray[i].Data[fiCount].V2R.X;
-								if (RoadLo[wi].Data[fiCount].Y > RoadArray[i].Data[fiCount].V2R.Y)
-									MinY = RoadArray[i].Data[fiCount].V2R.Y;
-
-								for (int j = 0; j < XABS; j++)
-								{
-									if (MinX + j == RoadLo[wi].Data[fiCount].X && 
-										RoadArray[i].Data[fiCount].V2R.Y == RoadLo[wi].Data[fiCount].Y)
-									{
-										bCheck = false;
-										break;
-									}
-								}
-
-								for (int j = 0; j < YABS; j++)
-								{
-									if (MinY + j == RoadLo[wi].Data[fiCount].Y && 
-										RoadArray[i].Data[fiCount].V2R.X == RoadLo[wi].Data[fiCount].X)
-									{
-										bCheck = false;
-										break;
-									}
-								}
-							}
-						}
-					}
-
-					/*충돌하는 방이 있는지 확인*/
-
-					if (bCheck)
-					{
 						for (int i = 0; i < RoomArray.Num(); i++)
 						{
-							if (!ShortRoadV1)
+							if (((RoomArray[i].X <= x && RoomArray[i].X + RoomArray[i].SX >= x) &&
+								(RoomArray[i].Y <= y && RoomArray[i].Y + RoomArray[i].SY >= y))) //충돌 범위 설정
 							{
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
-									FVector(RoomArray[i].X, RoomArray[i].Y, 0),
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
-								{
-									Why = 3;
-									bCheck = false;
-									break;
-								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
-									FVector(RoomArray[i].X, RoomArray[i].Y, 0),
-									FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
-								{
-									Why = 3;
-									bCheck = false;
-									break;
-								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
-								{
-									Why = 3;
-									bCheck = false;
-									break;
-								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
-									FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
-								{
-									Why = 3;
-									bCheck = false;
-									break;
-								}
+								Why = 1;
+								bCheck = false;
+								break;
 							}
+						}
 
-							if (!ShortRoadV2)
+						/*겹치는 길목 체크*/
+						for (int i = 0; i < RoadArray.Num(); i++)
+						{
+							if (RoadArray[i].Data[fiCount].X == x && RoadArray[i].Data[fiCount].Y && y)
 							{
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
-									FVector(RoomArray[i].X, RoomArray[i].Y, 0),
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
+								bCheck = false;
+								break;
+							}
+						}
+
+						bool ShortRoadV1 = false;
+						bool ShortRoadV2 = false;
+
+						if (RoomArray[RoadLo[wi].Data[fiCount].V1].X < RoadLo[wi].Data[fiCount].X &&
+							RoomArray[RoadLo[wi].Data[fiCount].V1].X + RoomArray[RoadLo[wi].Data[fiCount].V1].SX > RoadLo[wi].Data[fiCount].X)
+						{
+							if (int(RoadLo[wi].Data[fiCount].V1R.Y) == RoadLo[wi].Data[fiCount].Y)
+								ShortRoadV1 = true;
+						}
+						else if (RoomArray[RoadLo[wi].Data[fiCount].V1].Y < RoadLo[wi].Data[fiCount].Y &&
+							RoomArray[RoadLo[wi].Data[fiCount].V1].Y + RoomArray[RoadLo[wi].Data[fiCount].V1].SY > RoadLo[wi].Data[fiCount].Y)
+						{
+							if (int(RoadLo[wi].Data[fiCount].V1R.X) == RoadLo[wi].Data[fiCount].X)
+								ShortRoadV1 = true;
+						}
+
+						if (RoomArray[RoadLo[wi].Data[fiCount].V2].X < RoadLo[wi].Data[fiCount].X &&
+							RoomArray[RoadLo[wi].Data[fiCount].V2].X + RoomArray[RoadLo[wi].Data[fiCount].V2].SX > RoadLo[wi].Data[fiCount].X)
+						{
+							if (int(RoadLo[wi].Data[fiCount].V2R.Y) == RoadLo[wi].Data[fiCount].Y)
+								ShortRoadV2 = true;
+						}
+						else if (RoomArray[RoadLo[wi].Data[fiCount].V2].Y < RoadLo[wi].Data[fiCount].Y &&
+							RoomArray[RoadLo[wi].Data[fiCount].V2].Y + RoomArray[RoadLo[wi].Data[fiCount].V2].SY > RoadLo[wi].Data[fiCount].Y)
+						{
+							if (int(RoadLo[wi].Data[fiCount].V2R.X) == RoadLo[wi].Data[fiCount].X)
+								ShortRoadV2 = true;
+						}
+
+						/*충돌하는 길이 있는지 확인*/
+						if (bCheck)
+						{
+							for (int i = 0; i < RoadArray.Num(); i++)
+							{
+								if (!ShortRoadV1)
 								{
-									Why = 3;
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
+										FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V1R))
+									{
+										Why = 2;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
+										FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V2R))
+									{
+										Why = 2;
+										bCheck = false;
+										break;
+									}
+								}
+
+								if (!ShortRoadV2)
+								{
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
+										FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V1R))
+									{
+										Why = 2;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
+										FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0), RoadArray[i].Data[fiCount].V2R))
+									{
+										Why = 2;
+										bCheck = false;
+										break;
+									}
+								}
+
+								if (abs(RoadLo[wi].Data[fiCount].V2R.X - RoadArray[i].Data[fiCount].V2R.X) <= 300 &&
+									abs(RoadLo[wi].Data[fiCount].V2R.Y - RoadArray[i].Data[fiCount].V2R.Y) <= 300)
+								{
 									bCheck = false;
 									break;
 								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
-									FVector(RoomArray[i].X, RoomArray[i].Y, 0),
-									FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
+
+								if (abs(RoadLo[wi].Data[fiCount].V1R.X - RoadArray[i].Data[fiCount].V1R.X) <= 300 &&
+									abs(RoadLo[wi].Data[fiCount].V1R.Y - RoadArray[i].Data[fiCount].V1R.Y) <= 300)
 								{
-									Why = 3;
 									bCheck = false;
 									break;
 								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+
+								if (abs(RoadLo[wi].Data[fiCount].V1R.X - RoadArray[i].Data[fiCount].V2R.X) <= 300 &&
+									abs(RoadLo[wi].Data[fiCount].V1R.Y - RoadArray[i].Data[fiCount].V2R.Y) <= 300)
 								{
-									Why = 3;
 									bCheck = false;
 									break;
 								}
-								if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
-									FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
-									FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+
+								if (abs(RoadLo[wi].Data[fiCount].V2R.X - RoadArray[i].Data[fiCount].V1R.X) <= 300 &&
+									abs(RoadLo[wi].Data[fiCount].V2R.Y - RoadArray[i].Data[fiCount].V1R.Y) <= 300)
 								{
-									Why = 3;
 									bCheck = false;
 									break;
 								}
 							}
 						}
+
+						/*충돌하는 길목이 있는지 확인*/
+						if (bCheck)
+						{
+							for (int i = 0; i < RoadArray.Num(); i++)
+							{
+								if (!ShortRoadV1)
+								{
+									int MinX = RoadLo[wi].Data[fiCount].X;
+									int MinY = RoadLo[wi].Data[fiCount].Y;
+									int XABS = abs(MinX - RoadArray[i].Data[fiCount].V1R.X);
+									int YABS = abs(MinY - RoadArray[i].Data[fiCount].V1R.Y);
+
+									if (RoadLo[wi].Data[fiCount].X > RoadArray[i].Data[fiCount].V1R.X)
+										MinX = RoadArray[i].Data[fiCount].V1R.X;
+									if (RoadLo[wi].Data[fiCount].Y > RoadArray[i].Data[fiCount].V1R.Y)
+										MinY = RoadArray[i].Data[fiCount].V1R.Y;
+
+									for (int j = 0; j < XABS; j++)
+									{
+										if (MinX + j == RoadLo[wi].Data[fiCount].X &&
+											RoadArray[i].Data[fiCount].V1R.Y == RoadLo[wi].Data[fiCount].Y)
+										{
+											bCheck = false;
+											break;
+										}
+									}
+
+									for (int j = 0; j < YABS; j++)
+									{
+										if (MinY + j == RoadLo[wi].Data[fiCount].Y &&
+											RoadArray[i].Data[fiCount].V1R.X == RoadLo[wi].Data[fiCount].X)
+										{
+											bCheck = false;
+											break;
+										}
+									}
+								}
+
+								if (!ShortRoadV2)
+								{
+									int MinX = RoadLo[wi].Data[fiCount].X;
+									int MinY = RoadLo[wi].Data[fiCount].Y;
+									int XABS = abs(MinX - RoadArray[i].Data[fiCount].V2R.X);
+									int YABS = abs(MinY - RoadArray[i].Data[fiCount].V2R.Y);
+
+									if (RoadLo[wi].Data[fiCount].X > RoadArray[i].Data[fiCount].V2R.X)
+										MinX = RoadArray[i].Data[fiCount].V2R.X;
+									if (RoadLo[wi].Data[fiCount].Y > RoadArray[i].Data[fiCount].V2R.Y)
+										MinY = RoadArray[i].Data[fiCount].V2R.Y;
+
+									for (int j = 0; j < XABS; j++)
+									{
+										if (MinX + j == RoadLo[wi].Data[fiCount].X &&
+											RoadArray[i].Data[fiCount].V2R.Y == RoadLo[wi].Data[fiCount].Y)
+										{
+											bCheck = false;
+											break;
+										}
+									}
+
+									for (int j = 0; j < YABS; j++)
+									{
+										if (MinY + j == RoadLo[wi].Data[fiCount].Y &&
+											RoadArray[i].Data[fiCount].V2R.X == RoadLo[wi].Data[fiCount].X)
+										{
+											bCheck = false;
+											break;
+										}
+									}
+								}
+							}
+						}
+
+						/*충돌하는 방이 있는지 확인*/
+
+						if (bCheck)
+						{
+							for (int i = 0; i < RoomArray.Num(); i++)
+							{
+								if (!ShortRoadV1)
+								{
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
+										FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
+										FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+										FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V1R,
+										FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+								}
+
+								if (!ShortRoadV2)
+								{
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
+										FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
+										FVector(RoomArray[i].X, RoomArray[i].Y, 0),
+										FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y, 0),
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+									if (IntersectLine(FVector(RoadLo[wi].Data[fiCount].X, RoadLo[wi].Data[fiCount].Y, 0), RoadLo[wi].Data[fiCount].V2R,
+										FVector(RoomArray[i].X, RoomArray[i].Y + RoomArray[i].SY, 0),
+										FVector(RoomArray[i].X + RoomArray[i].SX, RoomArray[i].Y + RoomArray[i].SY, 0)))
+									{
+										Why = 3;
+										bCheck = false;
+										break;
+									}
+								}
+							}
+						}
 					}
+
+					if (bCheck)
+					{
+						RoadArray.Add(RoadLo[wi]);
+
+						bCreateRoad = true;
+
+						break;
+					}
+
+					wi++;
 				}
-
-				if (bCheck)
-				{
-					RoadArray.Add(RoadLo[wi]);
-
-					bCreateRoad = true;
-
-					break;
-				}
-
-				wi++;
 			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Log, TEXT("No RoadLo"));
-		}
+			else
+			{
+				UE_LOG(LogTemp, Log, TEXT("No RoadLo"));
+			}
 
 		if (!bCreateRoad)
 		{
@@ -801,13 +804,18 @@ FVector MapGeneratorSys::GetStartLo()
 	return Lo;
 }
 
-bool MapGeneratorSys::IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2)
+int MapGeneratorSys::GetMaxDisIndex()
 {
-	double den = (_EP2.Y - _SP2.Y)*(_EP1.X - _SP1.X) - (_EP2.X - _SP2.X)*(_EP1.Y - _SP1.Y);
+	return MaxDisIndex;
+}
+
+bool MapGeneratorSys::IntersectLine(const FVector& _SP1, const FVector& _EP1, const FVector& _SP2, const FVector& _EP2)
+{
+	double den = (_EP2.Y - _SP2.Y) * (_EP1.X - _SP1.X) - (_EP2.X - _SP2.X) * (_EP1.Y - _SP1.Y);
 	if (den == 0) return false;
 
-	double p1 = (_EP2.X - _SP2.X)*(_SP1.Y - _SP2.Y) - (_EP2.Y - _SP2.Y)*(_SP1.X - _SP2.X);
-	double p2 = (_EP1.X - _SP1.X)*(_SP1.Y - _SP2.Y) - (_EP1.Y - _SP1.Y)*(_SP1.X - _SP2.X);
+	double p1 = (_EP2.X - _SP2.X) * (_SP1.Y - _SP2.Y) - (_EP2.Y - _SP2.Y) * (_SP1.X - _SP2.X);
+	double p2 = (_EP1.X - _SP1.X) * (_SP1.Y - _SP2.Y) - (_EP1.Y - _SP1.Y) * (_SP1.X - _SP2.X);
 
 	double op1 = p1 / den;
 	double op2 = p2 / den;

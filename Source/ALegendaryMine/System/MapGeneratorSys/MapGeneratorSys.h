@@ -24,6 +24,8 @@ public:
 
 	FVector GetStartLo();
 
+	int GetMaxDisIndex();
+
 protected:
 	bool IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2);
 
@@ -39,4 +41,6 @@ protected:
 	TArray<TArray<UMyCustomAsset*>> TemplateArray;
 	TArray<class ARoomTemplateActor*> TemplateActorArray;
 	TArray<class ARoadTemplateActor*> RoadTemplateActorArray;
+
+	int MaxDisIndex;
 };

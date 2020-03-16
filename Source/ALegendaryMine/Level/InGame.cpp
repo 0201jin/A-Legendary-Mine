@@ -88,7 +88,19 @@ void AInGame::GenerateMap()
 	for (int i = 0; i < RoomArray.Num(); i++)
 	{
 		DrawDebugBox(GetWorld(), FVector(RoomArray[i].X + (RoomArray[i].SX / 2), RoomArray[i].Y + (RoomArray[i].SY / 2), 0), FVector(RoomArray[i].SX / 2, RoomArray[i].SY / 2, 100), FColor::Blue, true, -1, 0, 20);
+
+		if (RoomArray.Num() - 1 == i)
+		{
+			DrawDebugLine(GetWorld(),
+				FVector(RoomArray[i].X + (RoomArray[i].SX / 2), RoomArray[i].Y + (RoomArray[i].SY / 2), 0),
+				FVector(RoomArray[i].X + (RoomArray[i].SX / 2), RoomArray[i].Y + (RoomArray[i].SY / 2), 0), FColor::Yellow, true, -1, 0, 200);
+		}
 	}
+
+	int Indexi = RoomArray.Num() - 2;
+	DrawDebugLine(GetWorld(),
+		FVector(RoomArray[Indexi].X + (RoomArray[Indexi].SX / 2), RoomArray[Indexi].Y + (RoomArray[Indexi].SY / 2), 0), 
+		FVector(RoomArray[Indexi].X + (RoomArray[Indexi].SX / 2), RoomArray[Indexi].Y + (RoomArray[Indexi].SY / 2), 0), FColor::Orange, true, -1, 0, 200);
 
 	FALGraph graph = Mapgen->GetGraph();
 	FPQueue copyPQ = graph.Queue;
