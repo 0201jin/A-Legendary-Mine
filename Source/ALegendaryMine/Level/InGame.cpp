@@ -134,10 +134,10 @@ void AInGame::GenerateMap()
 
 			DrawDebugLine(GetWorld(),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
-				RoadArray[i].Data[fiCount].V1R, FColor::Green, true, -1, 0, 10);
+				RoadArray[i].Data[fiCount].V1R, FColor::Green, true, -1, 0, 30);
 
 			DrawDebugLine(GetWorld(),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
-				RoadArray[i].Data[fiCount].V2R, FColor::Green, true, -1, 0, 10);
+				RoadArray[i].Data[fiCount].V2R, FColor::Green, true, -1, 0, 30);
 		}
 }

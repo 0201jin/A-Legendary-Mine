@@ -12,6 +12,10 @@ AAdventurer::AAdventurer()
 	PlayerSpeed = 300;
 
 	GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
+	
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> Skeletal(TEXT("SkeletalMesh'/Game/Character/Adventurer/Adventurer.Adventurer'"));
+	GetMesh()->SetSkeletalMesh(Skeletal.Object);
+	GetMesh()->SetRelativeRotation(FRotator(0, 90, 0));
 }
 
 // Called when the game starts or when spawned

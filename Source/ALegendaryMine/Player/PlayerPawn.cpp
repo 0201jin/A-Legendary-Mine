@@ -25,7 +25,7 @@ APlayerPawn::APlayerPawn()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 350.0f;
+	CameraBoom->TargetArmLength = 250.0f;
 	CameraBoom->TargetOffset = FVector(0, 0, 700);
 	CameraBoom->ProbeSize = 0.0f;
 	CameraBoom->bUsePawnControlRotation = true;
