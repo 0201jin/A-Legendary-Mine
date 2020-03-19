@@ -15,7 +15,7 @@ APlayerPawn::APlayerPawn()
 
 	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("CharacterMesh");
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동
 	GetCharacterMovement()->JumpZVelocity = 0.0f;
 	GetCharacterMovement()->MaxStepHeight = 0.0f;
