@@ -28,12 +28,20 @@ void AMyPlayerController::LR_Move(float _value)
 void AMyPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	InputComponent->BindAxis("FB_Move", this, &AMyPlayerController::FB_Move);
+	InputComponent->BindAxis("LR_Move", this, &AMyPlayerController::LR_Move);
 }
 
 void AMyPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	InputComponent->BindAxis("FB_Move", this, &AMyPlayerController::FB_Move);
-	InputComponent->BindAxis("LR_Move", this, &AMyPlayerController::LR_Move);
+	FHitResult HitResult;
+	GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HitResult);
+	FRotator DiRo = (HitResult.Location - PlayerPawn->GetActorLocation()).Rotation();
+	DiRo.Pitch = 0;
+	DiRo.Roll = 0;
+
+	PlayerPawn->SetActorRotation(DiRo);
 }

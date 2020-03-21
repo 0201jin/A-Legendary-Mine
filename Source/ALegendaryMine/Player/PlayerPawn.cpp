@@ -52,12 +52,12 @@ void APlayerPawn::Tick(float DeltaTime)
 
 void APlayerPawn::FB_Move(float _value)
 {
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	FVector Direction = GetActorLocation().ForwardVector;//FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 	AddMovementInput(Direction, _value);
 }
 
 void APlayerPawn::LR_Move(float _value)
 {
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	FVector Direction = GetActorLocation().RightVector;//FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	AddMovementInput(Direction, _value);
 }

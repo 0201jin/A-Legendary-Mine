@@ -9,7 +9,7 @@ AAdventurer::AAdventurer()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	PlayerSpeed = 300;
+	PlayerSpeed = 270;
 
 	GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
 
@@ -17,11 +17,13 @@ AAdventurer::AAdventurer()
 	GetCapsuleComponent()->SetCapsuleRadius(32);
 	
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> Skeletal(TEXT("SkeletalMesh'/Game/Character/Adventurer/Adventurer.Adventurer'"));
+	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> Skeletal(TEXT("SkeletalMesh'/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin'"));
 	GetMesh()->SetSkeletalMesh(Skeletal.Object);
 	GetMesh()->SetRelativeRotation(FRotator(0, 90, 0));
 	GetMesh()->SetRelativeLocation(FVector(0, 0, 0));
 	
 	static ConstructorHelpers::FObjectFinder<UClass> AnimClass(TEXT("AnimBlueprint'/Game/Character/Adventurer/Animation/Adventurer_Anim_BP.Adventurer_Anim_BP_C'"));
+	//static ConstructorHelpers::FObjectFinder<UClass> AnimClass(TEXT("AnimBlueprint'/Game/AnimStarterPack/UE4ASP_HeroTPP_AnimBlueprint.UE4ASP_HeroTPP_AnimBlueprint_C'"));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->AnimClass = AnimClass.Object;
 }
