@@ -33,7 +33,7 @@ void AInGame::BeginPlay()
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 
-	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
+	/*TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 
 	for (int i = 0; i < RoomArray.Num(); i++)
 	{
@@ -69,7 +69,7 @@ void AInGame::BeginPlay()
 			DrawDebugLine(GetWorld(),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
 				RoadArray[i].Data[fiCount].V2R, FColor::Green, true, -1, 0, 10);
-		}
+		}*/
 }
 
 void AInGame::GenerateMap()
@@ -83,7 +83,9 @@ void AInGame::GenerateMap()
 
 	Mapgen->MapGen(8, 0);
 
-	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
+	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
+
+	/*TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 
 	for (int i = 0; i < RoomArray.Num(); i++)
 	{
@@ -139,5 +141,5 @@ void AInGame::GenerateMap()
 			DrawDebugLine(GetWorld(),
 				FVector(RoadArray[i].Data[fiCount].X, RoadArray[i].Data[fiCount].Y, 0),
 				RoadArray[i].Data[fiCount].V2R, FColor::Green, true, -1, 0, 30);
-		}
+		}*/
 }
