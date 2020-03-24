@@ -21,9 +21,6 @@ ARoadTemplateActor::ARoadTemplateActor()
 	Walls = NewObject<UInstancedStaticMeshComponent>(this, TEXT("Walls"));
 	Walls->AttachTo(RootComponent);
 
-	Door = NewObject<UInstancedStaticMeshComponent>(this, TEXT("Doors"));
-	Door->AttachTo(RootComponent);
-
 	BlackWalls = NewObject<UInstancedStaticMeshComponent>(this, TEXT("BlackWalls"));
 	UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Template/BlackWall.BlackWall'"), NULL, LOAD_None, NULL);
 	BlackWalls->SetStaticMesh(StaticMesh);
@@ -37,7 +34,6 @@ void ARoadTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData, FRoadData _Roa
 
 	Floor->SetStaticMesh(_MeshData.Floor);
 	Walls->SetStaticMesh(_MeshData.Walls);
-	Door->SetStaticMesh(_MeshData.Doors);
 
 	for (int fiCount = 0; fiCount < 2; fiCount++)
 	{
@@ -148,28 +144,10 @@ void ARoadTemplateActor::CreateRoad(FVector _Road, FVector _Lo, int fiCount)
 {
 	if (_Road == RoadData.Data[fiCount].V1RF)
 	{
-		if (_Road.X == _Lo.X)
-		{
-			Door->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), _Road, FVector(1, 1, 1)));
-		}
-		else if (_Road.Y == _Lo.Y)
-		{
-			Door->AddInstanceWorldSpace(FTransform(FRotator(0, 90, 0), _Road, FVector(1, 1, 1)));
-		}
-
 		return;
 	}
 	else if (_Road == RoadData.Data[fiCount].V2RF)
 	{
-		if (_Road.X == _Lo.X)
-		{
-			Door->AddInstanceWorldSpace(FTransform(FRotator(0, 0, 0), _Road, FVector(1, 1, 1)));
-		}
-		else if (_Road.Y == _Lo.Y)
-		{
-			Door->AddInstanceWorldSpace(FTransform(FRotator(0, 90, 0), _Road, FVector(1, 1, 1)));
-		}
-
 		return;
 	}
 

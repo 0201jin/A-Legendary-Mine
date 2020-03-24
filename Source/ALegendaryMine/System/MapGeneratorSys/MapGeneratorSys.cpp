@@ -755,6 +755,79 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 
 			TemplateActorArray[RoadArray[i].Data[fiCount].V1]->CreateRoad(RoadArray[i].Data[fiCount].V1R, RoadArray[i].Data[fiCount].V1RF);
 			TemplateActorArray[RoadArray[i].Data[fiCount].V2]->CreateRoad(RoadArray[i].Data[fiCount].V2R, RoadArray[i].Data[fiCount].V2RF);
+
+			if (fiCount == 0)
+			{
+				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V1RF.X)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, 0, 0),
+							RoadArray[i].Data[fiCount].V1RF,
+							FVector(1, 1, 1))));
+				}
+				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V1RF.Y)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, 90, 0),
+							RoadArray[i].Data[fiCount].V1RF,
+							FVector(1, 1, 1))));
+				}
+
+				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V2RF.X)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, 0, 0),
+							RoadArray[i].Data[fiCount].V2RF,
+							FVector(1, 1, 1))));
+				}
+				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V2RF.Y)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, 90, 0),
+							RoadArray[i].Data[fiCount].V2RF,
+							FVector(1, 1, 1))));
+				}
+			}
+			else
+			{
+				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V1RF.X)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, 180, 0),
+							RoadArray[i].Data[fiCount].V1RF,
+							FVector(1, 1, 1))));
+				}
+				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V1RF.Y)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, -90, 0),
+							RoadArray[i].Data[fiCount].V1RF,
+							FVector(1, 1, 1))));
+				}
+
+				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V2RF.X)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, 180, 0),
+							RoadArray[i].Data[fiCount].V2RF,
+							FVector(1, 1, 1))));
+				}
+				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V2RF.Y)
+				{
+					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
+						ARoomDoor::StaticClass(),
+						FTransform(FRotator(0, -90, 0),
+							RoadArray[i].Data[fiCount].V2RF,
+							FVector(1, 1, 1))));
+				}
+			}
 		}
 
 	UE_LOG(LogTemp, Log, TEXT("END"));
@@ -763,20 +836,20 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 void MapGeneratorSys::DeleteMap()
 {
 	for (int i = 0; i < TemplateActorArray.Num(); i++)
-	{
 		TemplateActorArray[i]->Destroy();
-	}
 
 	for (int i = 0; i < RoadTemplateActorArray.Num(); i++)
-	{
 		RoadTemplateActorArray[i]->Destroy();
-	}
+
+	for (int i = 0; i < DoorArray.Num(); i++)
+		DoorArray[i]->Destroy();
 
 	TemplateActorArray.Empty();
 	RoadTemplateActorArray.Empty();
 	RoomArray.Empty();
 	RoadArray.Empty();
 	TemplateArray.Empty();
+	DoorArray.Empty();
 }
 
 TArray<FRoomData> MapGeneratorSys::GetRoomArray()
@@ -787,6 +860,11 @@ TArray<FRoomData> MapGeneratorSys::GetRoomArray()
 TArray<FRoadData> MapGeneratorSys::GetRoadArray()
 {
 	return RoadArray;
+}
+
+TArray<ARoomDoor*> MapGeneratorSys::GetDoorArray()
+{
+	return DoorArray;
 }
 
 FALGraph MapGeneratorSys::GetGraph()

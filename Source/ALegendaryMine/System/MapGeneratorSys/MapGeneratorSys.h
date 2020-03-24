@@ -4,6 +4,7 @@
 
 #include "ALegendaryMine/Struct/MapGeneratorStruct.h"
 #include "MyCustomAsset.h"
+#include "Template/RoomDoor.h"
 
 #include "CoreMinimal.h"
 
@@ -18,8 +19,11 @@ public:
 
 	void MapGen(int _Roomsize, int _Stage);
 	void DeleteMap();
+
 	TArray<FRoomData> GetRoomArray();
 	TArray<FRoadData> GetRoadArray();
+	TArray<ARoomDoor*> GetDoorArray();
+
 	FALGraph GetGraph();
 
 	FVector GetStartLo();
@@ -37,10 +41,11 @@ protected:
 
 	TArray<FRoomData> RoomArray;
 	TArray<FRoadData> RoadArray;
-
+	
 	TArray<TArray<UMyCustomAsset*>> TemplateArray;
 	TArray<class ARoomTemplateActor*> TemplateActorArray;
 	TArray<class ARoadTemplateActor*> RoadTemplateActorArray;
+	TArray<ARoomDoor*> DoorArray;
 
 	int MaxDisIndex;
 };
