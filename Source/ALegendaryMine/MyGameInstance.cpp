@@ -13,6 +13,9 @@ UMyGameInstance::UMyGameInstance()
 	
 	static ConstructorHelpers::FObjectFinder<UDataTable> RoadTemplate1(TEXT("DataTable'/Game/Template/TemplateDataTable/Road_Stage1.Road_Stage1'"));
 	RoadTemplateDataTable.Add(RoadTemplate1.Object);
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> MonsterData1(TEXT("DataTable'/Game/Template/TemplateDataTable/Monster_Stage1.Monster_Stage1'"));
+	MonsterDataTable.Add(MonsterData1.Object);
 }
 
 void UMyGameInstance::Init()
@@ -36,7 +39,7 @@ void UMyGameInstance::Init()
 				RoomTemplateRSTableRow->Template->IsBossRoom = RoomTemplateRSTableRow->IsBossRoom;
 				RoomTemplateData[i].Add(RoomTemplateRSTableRow->Template);
 
-				UE_LOG(LogTemp, Log, TEXT("RoomTemplate"));
+				UE_LOG(LogTemp, Log, TEXT("RoomTemplate Load"));
 			}
 		}
 	}
@@ -62,7 +65,38 @@ void UMyGameInstance::Init()
 
 				RoadTemplateData[i].Add(Data);
 
-				UE_LOG(LogTemp, Log, TEXT("RoadTemplate"));
+				UE_LOG(LogTemp, Log, TEXT("RoadTemplate Load"));
+			}
+		}
+	}
+
+	for (int i = 0; i < MonsterDataTable.Num(); i++)
+	{
+		MonsterData.Add(TArray<FMonsterData>());
+
+		FString MonsterTemplateRSContextString;
+		TArray<FName> MonsterTemplateRSRowNames;
+		MonsterTemplateRSRowNames = MonsterDataTable[i]->GetRowNames();
+
+		for (auto& name : MonsterTemplateRSRowNames)
+		{
+			FMonsterDataTableRow* MonsterTemplateRSTableRow = MonsterDataTable[i]->FindRow<FMonsterDataTableRow>(name, MonsterTemplateRSContextString);
+
+			if (MonsterTemplateRSTableRow)
+			{
+				FMonsterData Data;
+				Data.Animation = MonsterTemplateRSTableRow->Animation;
+				Data.AttackDamage = MonsterTemplateRSTableRow->AttackDamage;
+				Data.AttackSpeed = MonsterTemplateRSTableRow->AttackSpeed;
+				Data.DropMoney = MonsterTemplateRSTableRow->DropMoney;
+				Data.ProjectileMesh = MonsterTemplateRSTableRow->ProjectileMesh;
+				Data.Skeleton = MonsterTemplateRSTableRow->Skeleton;
+				Data.Speed = MonsterTemplateRSTableRow->Speed;
+				Data.StrongScore = MonsterTemplateRSTableRow->StrongScore;
+
+				MonsterData[i].Add(Data);
+
+				UE_LOG(LogTemp, Log, TEXT("MonsterData Load"));
 			}
 		}
 	}

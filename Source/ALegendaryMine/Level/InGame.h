@@ -24,6 +24,7 @@ public:
 	void GenerateMap();
 
 	UMyGameInstance * GetMyGameInstance();
+	MapGeneratorSys* GetMapgen() { return Mapgen; }
 
 protected:
 	virtual void BeginPlay();

@@ -15,7 +15,8 @@ public class ALegendaryMine : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "InputCore",
-            });
+				"AIModule",
+			});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

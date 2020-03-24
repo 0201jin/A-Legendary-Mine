@@ -13,7 +13,7 @@ struct FRoomData
 {
 	GENERATED_USTRUCT_BODY()
 
-	int X = 0;
+		int X = 0;
 	int Y = 0;
 
 	int SX = 0;
@@ -29,9 +29,31 @@ struct FRoadMeshData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UStaticMesh * Floor = nullptr;
-	UStaticMesh * Walls = nullptr;
-	UStaticMesh * Doors = nullptr;
+		UStaticMesh* Floor = nullptr;
+	UStaticMesh* Walls = nullptr;
+	UStaticMesh* Doors = nullptr;
+};
+
+USTRUCT(Atomic)
+struct FMonsterData
+{
+	GENERATED_USTRUCT_BODY()
+
+	USkeletalMesh* Skeleton;
+
+	UAnimBlueprint* Animation;
+
+	UStaticMesh* ProjectileMesh;
+
+	int32 Speed;
+
+	int32 AttackSpeed;
+
+	int32 AttackDamage;
+
+	int32 StrongScore;
+
+	int32 DropMoney;
 };
 
 USTRUCT(Atomic)
@@ -39,16 +61,18 @@ struct FRoadDataData
 {
 	GENERATED_USTRUCT_BODY()
 
-	int X = 0;
+		int X = 0;
 	int Y = 0;
 
 	int V1 = 0;
 	FVector V1R = FVector();
 	FVector V1RF = FVector();
+	FVector V1RFF = FVector();
 
 	int V2 = 0;
 	FVector V2R = FVector();
 	FVector V2RF = FVector();
+	FVector V2RFF = FVector();
 };
 
 USTRUCT(Atomic)
@@ -56,7 +80,7 @@ struct FRoadData
 {
 	GENERATED_USTRUCT_BODY()
 
-	TArray<FRoadDataData> Data;
+		TArray<FRoadDataData> Data;
 };
 
 USTRUCT(Atomic)
@@ -75,7 +99,7 @@ struct FListNode
 
 		int data = 0;
 
-	struct FListNode * next;
+	struct FListNode* next;
 };
 
 USTRUCT(Atomic)
@@ -83,9 +107,9 @@ struct FList
 {
 	GENERATED_USTRUCT_BODY()
 
-		FListNode * Head;
-	FListNode * Cur;
-	FListNode * Before;
+		FListNode* Head;
+	FListNode* Cur;
+	FListNode* Before;
 
 	int NumOfData = 0;
 	int(*comp)(int d1, int d2);
@@ -118,7 +142,7 @@ struct FPQueue
 {
 	GENERATED_USTRUCT_BODY()
 
-		PriorityComp * Comp;
+		PriorityComp* Comp;
 	int NumOfData;
 	FGraphEdge HeapArr[ARR_SIZE];
 };
@@ -131,60 +155,60 @@ struct FALGraph
 		int NumV = 0;
 	int NumE = 0;
 
-	FList * AdjList; //간선 정보
-	int * VisitInfo; //새로 추가된 멤버
+	FList* AdjList; //간선 정보
+	int* VisitInfo; //새로 추가된 멤버
 	FPQueue Queue; //간선 가중치 정보 저장
 };
 
 /*배열기반 스택 함수들*/
-void StackInit(FArrayStack * _pstack);
-bool SIsEmpty(FArrayStack * _pstack);
+void StackInit(FArrayStack* _pstack);
+bool SIsEmpty(FArrayStack* _pstack);
 
-void SPush(FArrayStack * _pstack, int _data);
-int SPop(FArrayStack * _pstack);
-int SPeek(FArrayStack * _pstack);
+void SPush(FArrayStack* _pstack, int _data);
+int SPop(FArrayStack* _pstack);
+int SPeek(FArrayStack* _pstack);
 /*배열기반 스택 함수들*/
 
 /*연결리스트 함수들*/
-void ListInit(FList * _plist);
+void ListInit(FList* _plist);
 
-void FInsert(FList * _plist, int _data);
-void SInsert(FList * _plist, int _data);
-void LInsert(FList * _plist, int _data);
+void FInsert(FList* _plist, int _data);
+void SInsert(FList* _plist, int _data);
+void LInsert(FList* _plist, int _data);
 
-bool LFirst(FList * _plist, int * _data);
-bool LNext(FList * _plist, int * _data);
+bool LFirst(FList* _plist, int* _data);
+bool LNext(FList* _plist, int* _data);
 
-int LRemove(FList * _plist);
-int LCount(FList * _plist);
+int LRemove(FList* _plist);
+int LCount(FList* _plist);
 
-void SetSortRule(FList * _plist, int(*comp)(int d1, int d2));
+void SetSortRule(FList* _plist, int(*comp)(int d1, int d2));
 /*연결리스트 함수들*/
 
 /*우선순위 큐 함수들*/
 int GetParentIDX(int _idx);
 int GetLChildIDX(int _idx);
 int GetRChildIDX(int _idx);
-int GetHiPriChildIDX(FPQueue * _ppq, int _idx);
+int GetHiPriChildIDX(FPQueue* _ppq, int _idx);
 
-void PQueueInit(FPQueue * _ppq, PriorityComp _pc);
-bool PQIsEmpty(FPQueue * _ppq);
-void PEnqueue(FPQueue * _ppq, FGraphEdge _data);
-FGraphEdge PDequeue(FPQueue * _ppq);
+void PQueueInit(FPQueue* _ppq, PriorityComp _pc);
+bool PQIsEmpty(FPQueue* _ppq);
+void PEnqueue(FPQueue* _ppq, FGraphEdge _data);
+FGraphEdge PDequeue(FPQueue* _ppq);
 /*우선순위 큐 함수들*/
 
 /*그래프 함수들*/
-void GraphInit(FALGraph * _pg, int _nv);
-void GraphDestory(FALGraph * _pg);
-void AddEdge(FALGraph * _pg, int _fromV, int _toV, int _weight);
-void RemoveEdge(FALGraph * _pg, int _fromV, int _toV);
-void RemoveWayEdge(FALGraph * _pg, int _fromV, int _toV);
-void RecoverEdge(FALGraph * _pg, int _fromV, int _toV, int _weight);
-bool IsConnvertex(FALGraph * _pg, int _v1, int _v2);
+void GraphInit(FALGraph* _pg, int _nv);
+void GraphDestory(FALGraph* _pg);
+void AddEdge(FALGraph* _pg, int _fromV, int _toV, int _weight);
+void RemoveEdge(FALGraph* _pg, int _fromV, int _toV);
+void RemoveWayEdge(FALGraph* _pg, int _fromV, int _toV);
+void RecoverEdge(FALGraph* _pg, int _fromV, int _toV, int _weight);
+bool IsConnvertex(FALGraph* _pg, int _v1, int _v2);
 int GetRoomRoadNum(FALGraph* _pg, int _v1);
-void ShowGraphEdgeInfo(FALGraph * _pg);
-bool VisitVertex(FALGraph * _pg, int _visitV);
-void DFShowGraphVertex(FALGraph * _pg, int _startV);
-void ConKruskalMST(FALGraph * _pg);
-void ShowGraphEdgeWeightInfo(FALGraph * _pg);
+void ShowGraphEdgeInfo(FALGraph* _pg);
+bool VisitVertex(FALGraph* _pg, int _visitV);
+void DFShowGraphVertex(FALGraph* _pg, int _startV);
+void ConKruskalMST(FALGraph* _pg);
+void ShowGraphEdgeWeightInfo(FALGraph* _pg);
 /*그래프 함수들*/

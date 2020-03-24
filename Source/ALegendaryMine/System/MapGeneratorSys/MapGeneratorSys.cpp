@@ -184,6 +184,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V1R = FVector(x, RoomArray[edge.Vertex1].Y - 100, 0);
 							Data.Data[0].V1RF = FVector(x, RoomArray[edge.Vertex1].Y, 0);
+							Data.Data[0].V1RFF = FVector(x, RoomArray[edge.Vertex1].Y + 100, 0);
 
 							Data.Data[1].Y -= 100;
 						}
@@ -191,6 +192,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V1R = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY + 100, 0);
 							Data.Data[0].V1RF = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY, 0);
+							Data.Data[0].V1RFF = FVector(x, RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY - 100, 0);
 
 							Data.Data[1].Y += 100;
 						}
@@ -202,6 +204,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V1R = FVector(RoomArray[edge.Vertex1].X - 100, y, 0);
 							Data.Data[0].V1RF = FVector(RoomArray[edge.Vertex1].X, y, 0);
+							Data.Data[0].V1RFF = FVector(RoomArray[edge.Vertex1].X + 100, y, 0);
 
 							Data.Data[1].X -= 100;
 						}
@@ -209,6 +212,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V1R = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX + 100, y, 0);
 							Data.Data[0].V1RF = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX, y, 0);
+							Data.Data[0].V1RFF = FVector(RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX - 100, y, 0);
 
 							Data.Data[1].X += 100;
 						}
@@ -221,6 +225,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V2R = FVector(x, RoomArray[edge.Vertex2].Y - 100, 0);
 							Data.Data[0].V2RF = FVector(x, RoomArray[edge.Vertex2].Y, 0);
+							Data.Data[0].V2RFF = FVector(x, RoomArray[edge.Vertex2].Y + 100, 0);
 
 							Data.Data[1].Y -= 100;
 						}
@@ -228,6 +233,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V2R = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY + 100, 0);
 							Data.Data[0].V2RF = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY, 0);
+							Data.Data[0].V2RFF = FVector(x, RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY - 100, 0);
 
 							Data.Data[1].Y += 100;
 						}
@@ -239,6 +245,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V2R = FVector(RoomArray[edge.Vertex2].X - 100, y, 0);
 							Data.Data[0].V2RF = FVector(RoomArray[edge.Vertex2].X, y, 0);
+							Data.Data[0].V2RFF = FVector(RoomArray[edge.Vertex2].X + 100, y, 0);
 
 							Data.Data[1].X -= 100;
 						}
@@ -246,6 +253,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 						{
 							Data.Data[0].V2R = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX + 100, y, 0);
 							Data.Data[0].V2RF = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX, y, 0);
+							Data.Data[0].V2RFF = FVector(RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX - 100, y, 0);
 
 							Data.Data[1].X += 100;
 						}
@@ -258,29 +266,36 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 
 					Data.Data[1].V1R = Data.Data[0].V1R;
 					Data.Data[1].V1RF = Data.Data[0].V1RF;
+					Data.Data[1].V1RFF = Data.Data[0].V1RFF;
+
 					Data.Data[1].V2R = Data.Data[0].V2R;
 					Data.Data[1].V2RF = Data.Data[0].V2RF;
+					Data.Data[1].V2RFF = Data.Data[0].V2RFF;
 
 					if (Data.Data[1].V1R.X == Data.Data[1].V1RF.X)
 					{
 						Data.Data[1].V1R.X += Data.Data[1].X - Data.Data[0].X;
 						Data.Data[1].V1RF.X += Data.Data[1].X - Data.Data[0].X;
+						Data.Data[1].V1RFF.X += Data.Data[1].X - Data.Data[0].X;
 					}
 					else if (Data.Data[1].V1R.Y == Data.Data[1].V1RF.Y)
 					{
 						Data.Data[1].V1R.Y += Data.Data[1].Y - Data.Data[0].Y;
 						Data.Data[1].V1RF.Y += Data.Data[1].Y - Data.Data[0].Y;
+						Data.Data[1].V1RFF.Y += Data.Data[1].Y - Data.Data[0].Y;
 					}
 
 					if (Data.Data[1].V2R.X == Data.Data[1].V2RF.X)
 					{
 						Data.Data[1].V2R.X += Data.Data[1].X - Data.Data[0].X;
 						Data.Data[1].V2RF.X += Data.Data[1].X - Data.Data[0].X;
+						Data.Data[1].V2RFF.X += Data.Data[1].X - Data.Data[0].X;
 					}
 					else if (Data.Data[1].V2R.Y == Data.Data[1].V2RF.Y)
 					{
 						Data.Data[1].V2R.Y += Data.Data[1].Y - Data.Data[0].Y;
 						Data.Data[1].V2RF.Y += Data.Data[1].Y - Data.Data[0].Y;
+						Data.Data[1].V2RFF.Y += Data.Data[1].Y - Data.Data[0].Y;
 					}
 
 					if ((
@@ -742,6 +757,8 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 	for (int fiCount = 0; fiCount < 2; fiCount++)
 		for (int i = 0; i < RoadArray.Num(); i++)
 		{
+			RoomActiveActorArray.Add(TArray<ARoomActiveActor*>());
+
 			RoadTemplateActorArray.Add(
 				InGameLevel->GetWorld()->SpawnActor<ARoadTemplateActor>(
 					ARoadTemplateActor::StaticClass(),
@@ -756,76 +773,175 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 			TemplateActorArray[RoadArray[i].Data[fiCount].V1]->CreateRoad(RoadArray[i].Data[fiCount].V1R, RoadArray[i].Data[fiCount].V1RF);
 			TemplateActorArray[RoadArray[i].Data[fiCount].V2]->CreateRoad(RoadArray[i].Data[fiCount].V2R, RoadArray[i].Data[fiCount].V2RF);
 
+			FVector V1RF = RoadArray[i].Data[fiCount].V1RF;
+			FVector V2RF = RoadArray[i].Data[fiCount].V2RF;
+
 			if (fiCount == 0)
-			{
-				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V1RF.X)
+			{				
+				if (RoadArray[i].Data[fiCount].X == V1RF.X)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, 0, 0),
-							RoadArray[i].Data[fiCount].V1RF,
+							V1RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, 0, 0),
+									RoadArray[i].Data[fiCount].V1RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V1);
+					}
 				}
-				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V1RF.Y)
+				else if (RoadArray[i].Data[fiCount].Y == V1RF.Y)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, 90, 0),
-							RoadArray[i].Data[fiCount].V1RF,
+							V1RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, 90, 0),
+									RoadArray[i].Data[fiCount].V1RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V1);
+					}
 				}
 
-				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V2RF.X)
+				if (RoadArray[i].Data[fiCount].X == V2RF.X)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, 0, 0),
-							RoadArray[i].Data[fiCount].V2RF,
+							V2RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, 0, 0),
+									RoadArray[i].Data[fiCount].V2RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V2);
+					}
 				}
-				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V2RF.Y)
+				else if (RoadArray[i].Data[fiCount].Y == V2RF.Y)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, 90, 0),
-							RoadArray[i].Data[fiCount].V2RF,
+							V2RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, 90, 0),
+									RoadArray[i].Data[fiCount].V2RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V2);
+					}
 				}
 			}
 			else
 			{
-				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V1RF.X)
+				if (RoadArray[i].Data[fiCount].X == V1RF.X)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, 180, 0),
-							RoadArray[i].Data[fiCount].V1RF,
+							V1RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, 180, 0),
+									RoadArray[i].Data[fiCount].V1RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V1);
+					}
 				}
-				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V1RF.Y)
+				else if (RoadArray[i].Data[fiCount].Y == V1RF.Y)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, -90, 0),
-							RoadArray[i].Data[fiCount].V1RF,
+							V1RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, -90, 0),
+									RoadArray[i].Data[fiCount].V1RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V1);
+					}
 				}
 
-				if (RoadArray[i].Data[fiCount].X == RoadArray[i].Data[fiCount].V2RF.X)
+				if (RoadArray[i].Data[fiCount].X == V2RF.X)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, 180, 0),
-							RoadArray[i].Data[fiCount].V2RF,
+							V2RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, 180, 0),
+									RoadArray[i].Data[fiCount].V2RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V2);
+					}
 				}
-				else if (RoadArray[i].Data[fiCount].Y == RoadArray[i].Data[fiCount].V2RF.Y)
+				else if (RoadArray[i].Data[fiCount].Y == V2RF.Y)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
 						FTransform(FRotator(0, -90, 0),
-							RoadArray[i].Data[fiCount].V2RF,
+							V2RF,
 							FVector(1, 1, 1))));
+
+					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
+					{
+						RoomActiveActorArray[i].Add(
+							InGameLevel->GetWorld()->SpawnActor<ARoomActiveActor>(
+								ARoomActiveActor::StaticClass(),
+								FTransform(FRotator(0, -90, 0),
+									RoadArray[i].Data[fiCount].V2RFF,
+									FVector(1, 1, 1))));
+
+						RoomActiveActorArray[i][RoomActiveActorArray[i].Num() - 1]->SetRoomNumber(RoadArray[i].Data[fiCount].V2);
+					}
 				}
 			}
 		}
@@ -844,12 +960,29 @@ void MapGeneratorSys::DeleteMap()
 	for (int i = 0; i < DoorArray.Num(); i++)
 		DoorArray[i]->Destroy();
 
+	for (int i = 0; i < RoomActiveActorArray.Num(); i++)
+		for (int j = 0; j < RoomActiveActorArray[i].Num(); j++)
+		RoomActiveActorArray[i][j]->Destroy();
+
 	TemplateActorArray.Empty();
 	RoadTemplateActorArray.Empty();
 	RoomArray.Empty();
 	RoadArray.Empty();
 	TemplateArray.Empty();
 	DoorArray.Empty();
+	RoomActiveActorArray.Empty();
+}
+
+void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
+{
+	if (RoomActiveActorArray[_RoomNumber].Num() > 0)
+	{
+		RoomActiveActorArray[_RoomNumber].Empty();
+		UE_LOG(LogTemp, Log, TEXT("RoomActiveActor Test %d"), _RoomNumber);
+
+		for (int i = 0; i < DoorArray.Num(); i++)
+			DoorArray[i]->ActiveDoor();
+	}
 }
 
 TArray<FRoomData> MapGeneratorSys::GetRoomArray()

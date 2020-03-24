@@ -4,6 +4,7 @@
 
 #include "DataTable/TemplateDataTable.h"
 #include "DataTable/RoadTemplateDataTable.h"
+#include "DataTable/MonsterDataTable.h"
 
 #include "Struct/MapGeneratorStruct.h"
 
@@ -12,7 +13,7 @@
 #include "MyGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class ALEGENDARYMINE_API UMyGameInstance : public UGameInstance
@@ -26,10 +27,12 @@ protected:
 	virtual void Init();
 
 protected:
-	TArray<class UDataTable *> TemplateDataTable;
-	TArray<class UDataTable *> RoadTemplateDataTable;
+	TArray<class UDataTable*> TemplateDataTable;
+	TArray<class UDataTable*> RoadTemplateDataTable;
+	TArray<class UDataTable*> MonsterDataTable;
 
 public:
 	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
 	TArray<TArray<FRoadMeshData>> RoadTemplateData;
+	TArray<TArray<FMonsterData>> MonsterData;
 };

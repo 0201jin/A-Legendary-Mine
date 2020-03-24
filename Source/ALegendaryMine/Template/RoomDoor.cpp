@@ -8,6 +8,7 @@ ARoomDoor::ARoomDoor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	bHidden = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
@@ -25,11 +26,25 @@ ARoomDoor::ARoomDoor()
 
 	Walls_1->AttachTo(RootComponent);
 	Walls_1->SetStaticMesh(Steel_Barred_1.Object);
-	Walls_1->RelativeLocation = FVector(0, 0, -200);
+	Walls_1->RelativeLocation = FVector(0, 0, -100);
 
 	Walls_2->AttachTo(RootComponent);
 	Walls_2->SetStaticMesh(Steel_Barred_1.Object);
 	Walls_2->RelativeLocation = FVector(0, 0, -190);
+}
+
+void ARoomDoor::ActiveDoor()
+{
+	bHidden = false;
+
+	Walls_0->SetRelativeLocation(FVector(0, 0, 0));
+	Walls_1->SetRelativeLocation(FVector(0, 0, 0));
+	Walls_2->SetRelativeLocation(FVector(0, 0, 90));
+}
+
+void ARoomDoor::InActiveDoor()
+{
+	bHidden = true;
 }
 
 void ARoomDoor::BeginPlay()
