@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AIController.h"
 #include "Engine.h"
+#include "Struct/MapGeneratorStruct.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -18,6 +19,8 @@ public:
 	// Sets default values for this actor's properties
 	AMonsterActor();
 
+	void SetData(FMonsterData _Data);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -31,8 +34,8 @@ protected:
 
 	UStaticMesh* ProjectileMesh;
 
-	int WalkSpeed = 0;
 	int AttackSpeed = 0;
 	int AttackDamage = 0;
 	int DropMoney = 0;
+	int Health = 0;
 };

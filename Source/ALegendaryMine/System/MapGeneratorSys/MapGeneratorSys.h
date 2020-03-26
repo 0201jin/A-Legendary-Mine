@@ -6,6 +6,7 @@
 #include "MyCustomAsset.h"
 #include "Template/RoomDoor.h"
 #include "InteractionActor/RoomActiveActor.h"
+#include "Monster/MonsterActor.h"
 
 #include "CoreMinimal.h"
 
@@ -43,6 +44,7 @@ protected:
 
 	TArray<FRoomData> RoomArray;
 	TArray<FRoadData> RoadArray;
+	TArray<TArray<AMonsterActor*>> MonsterArray;
 	
 	TArray<TArray<UMyCustomAsset*>> TemplateArray;
 	TArray<class ARoomTemplateActor*> TemplateActorArray;

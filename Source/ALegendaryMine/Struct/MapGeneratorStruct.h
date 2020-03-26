@@ -45,6 +45,8 @@ struct FMonsterData
 
 	UStaticMesh* ProjectileMesh;
 
+	int32 Health;
+
 	int32 Speed;
 
 	int32 AttackSpeed;
@@ -54,6 +56,12 @@ struct FMonsterData
 	int32 StrongScore;
 
 	int32 DropMoney;
+
+	int32 Height;
+
+	int32 Radius;
+
+	int32 Z;
 };
 
 USTRUCT(Atomic)

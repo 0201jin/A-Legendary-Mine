@@ -23,5 +23,6 @@ void ABumpTypeMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AiController->MoveToLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 }
 

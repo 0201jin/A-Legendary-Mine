@@ -157,7 +157,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 			for (int y = Data.Y; y < Data.Y + Data.SY;)
 			{
 				if ((
-					(V1X < x && V1X + V1SX > x&& V2Y < y && V2Y + V2SY > y) ||
+					(V1X < x && V1X + V1SX > x && V2Y < y && V2Y + V2SY > y) ||
 					(V1Y < y && V1Y + V1SY > y && V2X < x && V2X + V2SX > x) ||
 					(V1X < x && V1X + V1SX > x && V2X < x && V2X + V2SX > x) ||
 					(V1Y < y && V1Y + V1SY > y && V2Y < y && V2Y + V2SY > y)) &&
@@ -299,7 +299,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 					}
 
 					if ((
-						(V1X < Data.Data[1].X && V1X + V1SX > Data.Data[1].X&& V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y) ||
+						(V1X < Data.Data[1].X && V1X + V1SX > Data.Data[1].X && V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y) ||
 						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2X < Data.Data[1].X && V2X + V2SX > Data.Data[1].X) ||
 						(V1X < Data.Data[1].X && V1X + V1SX > Data.Data[1].X && V2X < Data.Data[1].X && V2X + V2SX > Data.Data[1].X) ||
 						(V1Y < Data.Data[1].Y && V1Y + V1SY > Data.Data[1].Y && V2Y < Data.Data[1].Y && V2Y + V2SY > Data.Data[1].Y)) &&
@@ -754,7 +754,9 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 	for (int i = 0; i < eidx; i++)
 		PEnqueue(&(graph.Queue), recvEdge[i]);
 
+	/*입구 설정 및 길 설치하는 코드*/
 	for (int fiCount = 0; fiCount < 2; fiCount++)
+	{
 		for (int i = 0; i < RoadArray.Num(); i++)
 		{
 			RoomActiveActorArray.Add(TArray<ARoomActiveActor*>());
@@ -777,7 +779,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 			FVector V2RF = RoadArray[i].Data[fiCount].V2RF;
 
 			if (fiCount == 0)
-			{				
+			{
 				if (RoadArray[i].Data[fiCount].X == V1RF.X)
 				{
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
@@ -945,6 +947,21 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 				}
 			}
 		}
+	}
+
+	for (int i = 0; i < RoomArray.Num() - 1; i++)
+	{
+		MonsterArray.Add(TArray<AMonsterActor*>());
+
+		MonsterArray[i].Add(
+			InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+				AMonsterActor::StaticClass(),
+				FTransform(FRotator(0, 0, 0),
+					FVector(RoomArray[i].X + RoomArray[i].SY / 2, RoomArray[i].Y + RoomArray[i].SY / 2, 100),
+					FVector(1, 1, 1))));
+
+		MonsterArray[i][0]->SetData(GameInstance->MonsterData[0][0]);
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("END"));
 }
@@ -962,7 +979,7 @@ void MapGeneratorSys::DeleteMap()
 
 	for (int i = 0; i < RoomActiveActorArray.Num(); i++)
 		for (int j = 0; j < RoomActiveActorArray[i].Num(); j++)
-		RoomActiveActorArray[i][j]->Destroy();
+			RoomActiveActorArray[i][j]->Destroy();
 
 	TemplateActorArray.Empty();
 	RoadTemplateActorArray.Empty();

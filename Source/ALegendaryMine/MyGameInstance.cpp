@@ -10,7 +10,7 @@ UMyGameInstance::UMyGameInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable> Template1(TEXT("DataTable'/Game/Template/TemplateDataTable/Stage1.Stage1'"));
 	TemplateDataTable.Add(Template1.Object);
-	
+
 	static ConstructorHelpers::FObjectFinder<UDataTable> RoadTemplate1(TEXT("DataTable'/Game/Template/TemplateDataTable/Road_Stage1.Road_Stage1'"));
 	RoadTemplateDataTable.Add(RoadTemplate1.Object);
 
@@ -32,7 +32,7 @@ void UMyGameInstance::Init()
 
 		for (auto& name : RoomTemplateRSRowNames)
 		{
-			FTemplateDataTableRow * RoomTemplateRSTableRow = TemplateDataTable[i]->FindRow<FTemplateDataTableRow>(name, RoomTemplateRSContextString);
+			FTemplateDataTableRow* RoomTemplateRSTableRow = TemplateDataTable[i]->FindRow<FTemplateDataTableRow>(name, RoomTemplateRSContextString);
 
 			if (RoomTemplateRSTableRow)
 			{
@@ -54,7 +54,7 @@ void UMyGameInstance::Init()
 
 		for (auto& name : RoadTemplateRSRowNames)
 		{
-			FRoadTemplateDataTableRow * RoadTemplateRSTableRow = RoadTemplateDataTable[i]->FindRow<FRoadTemplateDataTableRow>(name, RoadTemplateRSContextString);
+			FRoadTemplateDataTableRow* RoadTemplateRSTableRow = RoadTemplateDataTable[i]->FindRow<FRoadTemplateDataTableRow>(name, RoadTemplateRSContextString);
 
 			if (RoadTemplateRSTableRow)
 			{
@@ -93,10 +93,15 @@ void UMyGameInstance::Init()
 				Data.Skeleton = MonsterTemplateRSTableRow->Skeleton;
 				Data.Speed = MonsterTemplateRSTableRow->Speed;
 				Data.StrongScore = MonsterTemplateRSTableRow->StrongScore;
+				Data.Health = MonsterTemplateRSTableRow->Health;
+				Data.Height = MonsterTemplateRSTableRow->Height;
+				Data.Radius = MonsterTemplateRSTableRow->Radius;
+				Data.Z = MonsterTemplateRSTableRow->Z;
 
 				MonsterData[i].Add(Data);
 
-				UE_LOG(LogTemp, Log, TEXT("MonsterData Load"));
+				if (Data.Animation != nullptr)
+					UE_LOG(LogTemp, Log, TEXT("MonsterData Load"));
 			}
 		}
 	}
