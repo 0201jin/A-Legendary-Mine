@@ -18,6 +18,7 @@ class ALEGENDARYMINE_API AMonsterActor : public ACharacter
 public:
 	// Sets default values for this actor's properties
 	AMonsterActor();
+	~AMonsterActor();
 
 	void SetData(FMonsterData _Data);
 

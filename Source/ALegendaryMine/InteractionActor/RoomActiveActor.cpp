@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "RoomActiveActor.h"
 #include "Level/InGame.h"
+#include "Player/PlayerPawn.h"
 
 // Sets default values
 ARoomActiveActor::ARoomActiveActor()
@@ -33,7 +33,7 @@ void ARoomActiveActor::BeginPlay()
 
 void ARoomActiveActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (RoomNumber != -1 && Cast<ACharacter>(OtherActor) != nullptr)
+	if (RoomNumber != -1 && Cast<APlayerPawn>(OtherActor) != nullptr)
 	{
 		Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 

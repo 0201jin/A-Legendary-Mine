@@ -949,13 +949,14 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 		}
 	}
 
+	//방마다 몬스터 배치하는 코드
 	for (int i = 0; i < RoomArray.Num() - 1; i++)
 	{
 		MonsterArray.Add(TArray<AMonsterActor*>());
 
 		MonsterArray[i].Add(
 			InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
-				AMonsterActor::StaticClass(),
+				ABumpTypeMonster::StaticClass(),
 				FTransform(FRotator(0, 0, 0),
 					FVector(RoomArray[i].X + RoomArray[i].SY / 2, RoomArray[i].Y + RoomArray[i].SY / 2, 100),
 					FVector(1, 1, 1))));
@@ -981,6 +982,10 @@ void MapGeneratorSys::DeleteMap()
 		for (int j = 0; j < RoomActiveActorArray[i].Num(); j++)
 			RoomActiveActorArray[i][j]->Destroy();
 
+	for (int i = 0; i < MonsterArray.Num(); i++)
+		for (int j = 0; j < MonsterArray[i].Num(); j++)
+			MonsterArray[i][j]->Destroy();
+
 	TemplateActorArray.Empty();
 	RoadTemplateActorArray.Empty();
 	RoomArray.Empty();
@@ -988,6 +993,7 @@ void MapGeneratorSys::DeleteMap()
 	TemplateArray.Empty();
 	DoorArray.Empty();
 	RoomActiveActorArray.Empty();
+	MonsterArray.Empty();
 }
 
 void MapGeneratorSys::RoomActiveActor(int _RoomNumber)

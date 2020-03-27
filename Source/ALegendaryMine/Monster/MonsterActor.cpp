@@ -7,7 +7,7 @@
 AMonsterActor::AMonsterActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("CharacterMesh");
 
@@ -18,6 +18,12 @@ AMonsterActor::AMonsterActor()
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 	GetCharacterMovement()->AirControl = 0.0f;
 	GetCharacterMovement()->GroundFriction = 100.0f;
+}
+
+AMonsterActor::~AMonsterActor()
+{
+	if (AiController != nullptr)
+		AiController->Destroy();
 }
 
 void AMonsterActor::SetData(FMonsterData _Data)

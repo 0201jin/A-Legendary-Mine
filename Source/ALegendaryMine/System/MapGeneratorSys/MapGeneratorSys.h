@@ -7,6 +7,7 @@
 #include "Template/RoomDoor.h"
 #include "InteractionActor/RoomActiveActor.h"
 #include "Monster/MonsterActor.h"
+#include "Monster/BumpType/BumpTypeMonster.h"
 
 #include "CoreMinimal.h"
 
