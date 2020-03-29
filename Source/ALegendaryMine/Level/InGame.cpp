@@ -47,3 +47,8 @@ void AInGame::GenerateMap()
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }
+
+void AInGame::UpDateNavMesh(FVector _Size, FVector _Location)
+{
+	UpdateNavMeshSize.Broadcast(_Size, _Location);
+}

@@ -1003,6 +1003,12 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 		RoomActiveActorArray[_RoomNumber].Empty();
 		UE_LOG(LogTemp, Log, TEXT("RoomActiveActor Test %d"), _RoomNumber);
 
+		InGameLevel->UpDateNavMesh(
+			FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100), 
+			FVector(
+				RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
+				RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
+
 		for (int i = 0; i < DoorArray.Num(); i++)
 			DoorArray[i]->ActiveDoor();
 	}

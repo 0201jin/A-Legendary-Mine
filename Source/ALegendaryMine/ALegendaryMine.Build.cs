@@ -16,6 +16,7 @@ public class ALegendaryMine : ModuleRules
                 "Engine",
                 "InputCore",
 				"AIModule",
+				"NavigationSystem",
 			});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
