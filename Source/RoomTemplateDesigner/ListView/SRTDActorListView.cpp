@@ -24,7 +24,7 @@ void SRTDActorListView::Construct(const FArguments & Args)
 	}
 
 	ContentReferencePtr = SNew(SContentReference)
-		.AllowedClass(UBlueprint::StaticClass())
+		.AllowedClass(UBlueprintCore::StaticClass())
 		.AllowSelectingNewAsset(true)
 		.AllowClearingReference(true)
 		.ShowFindInBrowserButton(true)

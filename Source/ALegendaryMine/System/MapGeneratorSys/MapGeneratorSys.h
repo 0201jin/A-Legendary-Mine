@@ -45,13 +45,13 @@ protected:
 
 	TArray<FRoomData> RoomArray;
 	TArray<FRoadData> RoadArray;
-	TArray<TArray<AMonsterActor*>> MonsterArray;
-	
-	TArray<TArray<UMyCustomAsset*>> TemplateArray;
+	TArray<TArray<FMonsterData>> MonsterArray;
+
 	TArray<class ARoomTemplateActor*> TemplateActorArray;
 	TArray<class ARoadTemplateActor*> RoadTemplateActorArray;
 	TArray<ARoomDoor*> DoorArray;
 	TArray<TArray<ARoomActiveActor*>> RoomActiveActorArray;
 
 	int MaxDisIndex;
+	int iStage = 0;
 };

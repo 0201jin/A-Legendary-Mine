@@ -37,6 +37,7 @@ void UMyGameInstance::Init()
 			if (RoomTemplateRSTableRow)
 			{
 				RoomTemplateRSTableRow->Template->IsBossRoom = RoomTemplateRSTableRow->IsBossRoom;
+				RoomTemplateRSTableRow->Template->RoomMaxScoreSize = RoomTemplateRSTableRow->RoomMonsterMaxScore;
 				RoomTemplateData[i].Add(RoomTemplateRSTableRow->Template);
 
 				UE_LOG(LogTemp, Log, TEXT("RoomTemplate Load"));

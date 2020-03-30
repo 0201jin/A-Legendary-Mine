@@ -175,20 +175,7 @@ void FRTDViewportClient::MouseMove(FViewport * Viewport, int32 x, int32 y)
 	FVector WorldLocation = (Direction * BC) + Location;
 	WorldLocation.X = int(WorldLocation.X / 100) * 100;
 	WorldLocation.Y = int(WorldLocation.Y / 100) * 100;
-	WorldLocation.Z = MeshActor->GetRelativeLocation().Z;//int(WorldLocation.Z / 100) * 100;
-
-	/*FHitResult result;
-	GetWorld()->LineTraceSingleByChannel(result, Location, WorldLocation, ECollisionChannel::ECC_WorldDynamic);
-
-	if (result.GetComponent() != nullptr)
-	{
-		UInstancedStaticMeshComponent* ISM = Cast<UInstancedStaticMeshComponent>(result.GetComponent());
-
-		FTransform Transform = FTransform::Identity;
-		ISM->GetInstanceTransform(result.Item, Transform);
-
-		WorldLocation.Z = Transform.GetLocation().Z + 100;
-	}*/
+	WorldLocation.Z = MeshActor->GetRelativeLocation().Z;
 
 	MeshActor->SetWorldLocation(WorldLocation);
 
@@ -441,6 +428,8 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 					UE_LOG(LogTemp, Log, TEXT("Actor %s"), *IGCObject->ActorDataArr[IGCObject->ActorDataIndex].MeshData);
 				}
 			}
+
+			UE_LOG(LogTemp, Log, TEXT("Actor %d"), Actors.Num());
 		}
 
 		else if (EventArgs.Key == EKeys::Q)

@@ -18,11 +18,11 @@ MapGeneratorSys::~MapGeneratorSys()
 
 void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 {
-	int iStage = _Stage;
+	iStage = _Stage;
 
 	for (int i = 0; i < _Roomsize; i++)
 	{
-		int RandomIndex = (rand() % GameInstance->RoomTemplateData[0].Num());
+		int RandomIndex = (rand() % GameInstance->RoomTemplateData[iStage].Num());
 
 		FRoomData Data;
 
@@ -952,16 +952,15 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 	//방마다 몬스터 배치하는 코드
 	for (int i = 0; i < RoomArray.Num() - 1; i++)
 	{
-		MonsterArray.Add(TArray<AMonsterActor*>());
+		MonsterArray.Add(TArray<FMonsterData>());
+		int RoomStrongScore = 0;
 
-		MonsterArray[i].Add(
-			InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
-				ABumpTypeMonster::StaticClass(),
-				FTransform(FRotator(0, 0, 0),
-					FVector(RoomArray[i].X + RoomArray[i].SY / 2, RoomArray[i].Y + RoomArray[i].SY / 2, 100),
-					FVector(1, 1, 1))));
-
-		MonsterArray[i][0]->SetData(GameInstance->MonsterData[0][0]);
+		while (RoomStrongScore < GameInstance->RoomTemplateData[iStage][RoomArray[i].RoomNumber]->RoomMaxScoreSize)
+		{
+			int randNum = rand() % GameInstance->MonsterData[iStage].Num();
+			MonsterArray[i].Add(GameInstance->MonsterData[iStage][randNum]);
+			RoomStrongScore += GameInstance->MonsterData[iStage][randNum].StrongScore;
+		}
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("END"));
@@ -982,15 +981,10 @@ void MapGeneratorSys::DeleteMap()
 		for (int j = 0; j < RoomActiveActorArray[i].Num(); j++)
 			RoomActiveActorArray[i][j]->Destroy();
 
-	for (int i = 0; i < MonsterArray.Num(); i++)
-		for (int j = 0; j < MonsterArray[i].Num(); j++)
-			MonsterArray[i][j]->Destroy();
-
 	TemplateActorArray.Empty();
 	RoadTemplateActorArray.Empty();
 	RoomArray.Empty();
 	RoadArray.Empty();
-	TemplateArray.Empty();
 	DoorArray.Empty();
 	RoomActiveActorArray.Empty();
 	MonsterArray.Empty();
@@ -1000,11 +994,28 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 {
 	if (RoomActiveActorArray[_RoomNumber].Num() > 0)
 	{
+		for (int i = 0; i < MonsterArray[_RoomNumber].Num(); i++)
+		{
+			int iNum = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr.Num();
+
+			int randNum = rand() % iNum;
+
+			FVector Lo = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr[randNum].MeshTransform.GetLocation();
+			FVector Lo1 = FVector(RoomArray[_RoomNumber].X, RoomArray[_RoomNumber].Y, 100);
+
+			InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+				ABumpTypeMonster::StaticClass(),
+				FTransform(FRotator(0, 0, 0),
+					FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+					FVector(1, 1, 1)))
+				->SetData(MonsterArray[_RoomNumber][i]);
+		}
+
 		RoomActiveActorArray[_RoomNumber].Empty();
 		UE_LOG(LogTemp, Log, TEXT("RoomActiveActor Test %d"), _RoomNumber);
 
 		InGameLevel->UpDateNavMesh(
-			FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100), 
+			FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100),
 			FVector(
 				RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
 				RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
