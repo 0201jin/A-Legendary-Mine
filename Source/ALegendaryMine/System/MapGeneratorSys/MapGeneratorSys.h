@@ -20,7 +20,7 @@ public:
 	MapGeneratorSys(class AInGame * _InGameLevel);
 	~MapGeneratorSys();
 
-	void MapGen(int _Roomsize, int _Stage);
+	void MapGen(int _Stage);
 	void DeleteMap();
 	void RoomActiveActor(int _RoomNumber);
 

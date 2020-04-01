@@ -16,11 +16,14 @@ MapGeneratorSys::~MapGeneratorSys()
 {
 }
 
-void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
+void MapGeneratorSys::MapGen(int _Stage)
 {
 	iStage = _Stage;
 
-	for (int i = 0; i < _Roomsize; i++)
+	//방 스폰
+	int RoomSize = 0;
+	int RoomCount = 0;
+	while(GameInstance->StageSizeData[_Stage].StageSize > RoomSize)
 	{
 		int RandomIndex = (rand() % GameInstance->RoomTemplateData[iStage].Num());
 
@@ -38,9 +41,12 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 					FVector(Data.X, Data.Y, 0),
 					FVector(1, 1, 1))));
 
-		TemplateActorArray[i]->SetAsset(GameInstance->RoomTemplateData[iStage][RandomIndex]);
+		TemplateActorArray[RoomCount]->SetAsset(GameInstance->RoomTemplateData[iStage][RandomIndex]);
 
 		RoomArray.Add(Data);
+
+		RoomSize += GameInstance->RoomTemplateData[iStage][RandomIndex]->RoomMaxScoreSize;
+		RoomCount++;
 	}
 
 	//방이 겹치지 않게 퍼트림
@@ -84,7 +90,7 @@ void MapGeneratorSys::MapGen(int _Roomsize, int _Stage)
 		}
 	}
 
-	GraphInit(&graph, _Roomsize);
+	GraphInit(&graph, RoomCount);
 
 	for (int i = 0; i < RoomArray.Num(); i++)
 	{

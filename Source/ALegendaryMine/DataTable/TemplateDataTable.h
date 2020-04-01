@@ -25,6 +25,16 @@ public:
 		int32 RoomMonsterMaxScore;
 };
 
+USTRUCT(BlueprintType)
+struct FStageSizeDataTableRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		int32 StageSize;
+};
+
 UCLASS()
 class ALEGENDARYMINE_API ATemplateDataTable : public AActor
 {

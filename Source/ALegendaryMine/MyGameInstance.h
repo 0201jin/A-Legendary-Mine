@@ -30,9 +30,13 @@ protected:
 	TArray<class UDataTable*> TemplateDataTable;
 	TArray<class UDataTable*> RoadTemplateDataTable;
 	TArray<class UDataTable*> MonsterDataTable;
+	
+	class UDataTable* StageSizeDataTable;
 
 public:
 	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
 	TArray<TArray<FRoadMeshData>> RoadTemplateData;
 	TArray<TArray<FMonsterData>> MonsterData;
+
+	TArray<FStageSizeDataTableRow> StageSizeData;
 };

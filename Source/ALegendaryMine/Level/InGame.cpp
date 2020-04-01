@@ -29,7 +29,7 @@ void AInGame::BeginPlay()
 
 	Mapgen = new MapGeneratorSys(this);
 
-	Mapgen->MapGen(8, 0);
+	Mapgen->MapGen(0);
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }
@@ -43,7 +43,7 @@ void AInGame::GenerateMap()
 
 	Mapgen->DeleteMap();
 
-	Mapgen->MapGen(8, 0);
+	Mapgen->MapGen(0);
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }

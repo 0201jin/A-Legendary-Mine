@@ -16,6 +16,9 @@ UMyGameInstance::UMyGameInstance()
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> MonsterData1(TEXT("DataTable'/Game/Template/TemplateDataTable/Monster_Stage1.Monster_Stage1'"));
 	MonsterDataTable.Add(MonsterData1.Object);
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> StageSizeData(TEXT("DataTable'/Game/Template/TemplateDataTable/StageSize/StageSizeDataTable.StageSizeDataTable'"));
+	StageSizeDataTable = StageSizeData.Object;
 }
 
 void UMyGameInstance::Init()
@@ -104,6 +107,20 @@ void UMyGameInstance::Init()
 				if (Data.Animation != nullptr)
 					UE_LOG(LogTemp, Log, TEXT("MonsterData Load"));
 			}
+		}
+	}
+
+	FString StageSizeRSContextString;
+	TArray<FName> StageSizeRSRowNames;
+	StageSizeRSRowNames = StageSizeDataTable->GetRowNames();
+
+	for (auto& name : StageSizeRSRowNames)
+	{
+		FStageSizeDataTableRow* StageSizeRSTableRow = StageSizeDataTable->FindRow<FStageSizeDataTableRow>(name, StageSizeRSContextString);
+
+		if (StageSizeRSTableRow)
+		{
+			StageSizeData.Add(*StageSizeRSTableRow);
 		}
 	}
 }

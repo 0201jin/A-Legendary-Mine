@@ -14,6 +14,7 @@
 #include "ListView/SRTDListview.h"
 #include "ListView/SRTDActorListView.h"
 #include "RoomSizeWidget/SRoomSizeWidget.h"
+#include "ListView/ObjectListView.h"
 
 #include "IDetailsView.h"
 
@@ -24,6 +25,7 @@ const FName FCustomAssetEditor::ViewportTabId(TEXT("Viewport"));
 const FName FCustomAssetEditor::ListviewTabId(TEXT("ListView"));
 const FName FCustomAssetEditor::ActorListViewTabId(TEXT("ActorListView"));
 const FName FCustomAssetEditor::RoomSizeId(TEXT("RoomSize"));
+const FName FCustomAssetEditor::ObjectListViewId(TEXT("ObjectListView"));
 
 void FCustomAssetEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
@@ -47,6 +49,10 @@ void FCustomAssetEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>
 	InTabManager->RegisterTabSpawner(RoomSizeId, FOnSpawnTab::CreateSP(this, &FCustomAssetEditor::SpawnTab_RoomSize))
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
+
+	InTabManager->RegisterTabSpawner(ObjectListViewId, FOnSpawnTab::CreateSP(this, &FCustomAssetEditor::SpawnTab_ObjectListView))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
 }
 
 void FCustomAssetEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
@@ -57,6 +63,7 @@ void FCustomAssetEditor::UnregisterTabSpawners(const TSharedRef<class FTabManage
 	InTabManager->UnregisterTabSpawner(ViewportTabId);
 	InTabManager->UnregisterTabSpawner(ListviewTabId);
 	InTabManager->UnregisterTabSpawner(ActorListViewTabId);
+	InTabManager->UnregisterTabSpawner(ObjectListViewId);
 }
 
 void FCustomAssetEditor::InitCustomAssetEditorEditor(const EToolkitMode::Type Mode, const TSharedPtr<class IToolkitHost>& InitToolkitHost, UMyCustomAsset* InCustomAsset)
@@ -79,6 +86,9 @@ void FCustomAssetEditor::InitCustomAssetEditorEditor(const EToolkitMode::Type Mo
 
 	RoomSize = SNew(SRoomSizeWidget)
 		.Viewport(Viewport);
+
+	ObjectListView = SNew(SObjectListView)
+		.ObjectToEdit(CustomAsset);
 
 	const TSharedRef<FTabManager::FLayout> StandaloneDefaultLayout = FTabManager::NewLayout("Standalone_CustomAssetEditor_Layout_v1")
 		->AddArea
@@ -218,6 +228,16 @@ TSharedRef<SDockTab> FCustomAssetEditor::SpawnTab_RoomSize(const FSpawnTabArgs &
 	return SNew(SDockTab)
 		[
 			RoomSize.ToSharedRef()
+		];
+}
+
+TSharedRef<SDockTab> FCustomAssetEditor::SpawnTab_ObjectListView(const FSpawnTabArgs& Args)
+{
+	check(Args.GetTabId() == ObjectListViewId);
+
+	return SNew(SDockTab)
+		[
+			ObjectListView.ToSharedRef()
 		];
 }
 
