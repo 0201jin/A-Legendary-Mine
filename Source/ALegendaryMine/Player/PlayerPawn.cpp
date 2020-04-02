@@ -6,7 +6,7 @@
 // Sets default values
 APlayerPawn::APlayerPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	bUseControllerRotationPitch = false;
@@ -40,7 +40,7 @@ APlayerPawn::APlayerPawn()
 void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -50,14 +50,67 @@ void APlayerPawn::Tick(float DeltaTime)
 
 }
 
+void APlayerPawn::SetRot(FRotator _Ro)
+{
+	if (!bJumping)
+		SetActorRotation(_Ro);
+}
+
 void APlayerPawn::FB_Move(float _value)
 {
-	FVector Direction = GetActorLocation().ForwardVector;//FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, _value);
+	if (!bJumping)
+	{
+		fFBValue = _value;
+		FVector Direction = GetActorLocation().ForwardVector;
+		AddMovementInput(Direction, _value);
+	}
 }
 
 void APlayerPawn::LR_Move(float _value)
 {
-	FVector Direction = GetActorLocation().RightVector;//FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, _value);
+	if (!bJumping)
+	{
+		fLRValue = _value;
+		FVector Direction = GetActorLocation().RightVector;
+		AddMovementInput(Direction, _value);
+	}
+}
+
+void APlayerPawn::Jump()
+{
+	if (bJump && (fLRValue != 0 || fFBValue != 0))
+	{
+		bJumping = true;
+		bJump = false;
+
+		FVector FB_Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+		FVector LR_Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+
+		FB_Direction *= fFBValue;
+		LR_Direction *= fLRValue;
+
+		SetActorRotation((FB_Direction + LR_Direction).Rotation());
+
+		GetMesh()->GetAnimInstance()->Montage_Play(JumpAnimation);
+
+		GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::JumpTimerFunc, 0.01f, true, 0.0f);
+		GetWorldTimerManager().SetTimer(JumpTimerEnd, this, &APlayerPawn::JumpTimerEndFunc, 0.417f, false, 0.417f);
+	}
+}
+
+void APlayerPawn::JumpTimerFunc()
+{
+	AddActorLocalOffset(GetActorLocation().ForwardVector * 4, true);
+}
+
+void APlayerPawn::JumpTimerEndFunc()
+{
+	bJumping = false;
+	GetWorldTimerManager().ClearTimer(JumpTimer);
+	GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::JumpTimerCoolFunc, 0.3f, false, 0.3f);
+}
+
+void APlayerPawn::JumpTimerCoolFunc()
+{
+	bJump = true;
 }

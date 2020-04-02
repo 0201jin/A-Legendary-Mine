@@ -24,6 +24,9 @@ AAdventurer::AAdventurer()
 	static ConstructorHelpers::FObjectFinder<UClass> AnimClass(TEXT("AnimBlueprint'/Game/Character/Adventurer/Animation/Adventurer_Anim_BP.Adventurer_Anim_BP_C'"));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->AnimClass = AnimClass.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> JumpMo(TEXT("AnimMontage'/Game/Character/Adventurer/Animation/Adventurer_Armature_Jump_Montage.Adventurer_Armature_Jump_Montage'"));
+	JumpAnimation = JumpMo.Object;
 }
 
 // Called when the game starts or when spawned

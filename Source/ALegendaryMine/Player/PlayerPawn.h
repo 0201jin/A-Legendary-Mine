@@ -30,9 +30,26 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetRot(FRotator _Ro);
+
 	void FB_Move(float _value);
 	void LR_Move(float _value);
 
+	void Jump();
+
+	void JumpTimerFunc();
+	void JumpTimerEndFunc();
+	void JumpTimerCoolFunc();
+
 protected:
 	float PlayerSpeed;
+	float fFBValue, fLRValue;
+
+	bool bJump = true;
+	bool bJumping = false;
+
+	class UAnimMontage* JumpAnimation;
+
+	FTimerHandle JumpTimer;
+	FTimerHandle JumpTimerEnd;
 };

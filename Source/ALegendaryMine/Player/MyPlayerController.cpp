@@ -25,12 +25,19 @@ void AMyPlayerController::LR_Move(float _value)
 	PlayerPawn->LR_Move(_value);
 }
 
+void AMyPlayerController::Jump()
+{
+	PlayerPawn->Jump();
+}
+
 void AMyPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
 	InputComponent->BindAxis("FB_Move", this, &AMyPlayerController::FB_Move);
 	InputComponent->BindAxis("LR_Move", this, &AMyPlayerController::LR_Move);
+
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AMyPlayerController::Jump);
 }
 
 void AMyPlayerController::PlayerTick(float DeltaTime)
@@ -43,5 +50,5 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 	DiRo.Pitch = 0;
 	DiRo.Roll = 0;
 
-	PlayerPawn->SetActorRotation(DiRo);
+	PlayerPawn->SetRot(DiRo);
 }

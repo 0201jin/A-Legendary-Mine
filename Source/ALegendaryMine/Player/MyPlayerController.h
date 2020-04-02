@@ -28,6 +28,7 @@ protected:
 	void FB_Move(float _value);
 	void LR_Move(float _value);
 
+	void Jump();
 
 protected:
 	APlayerPawn * PlayerPawn;
