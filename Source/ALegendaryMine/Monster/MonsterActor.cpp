@@ -18,6 +18,8 @@ AMonsterActor::AMonsterActor()
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 	GetCharacterMovement()->AirControl = 0.0f;
 	GetCharacterMovement()->GroundFriction = 100.0f;
+
+	GetMesh()->SetRelativeRotation(FRotator(0, 90, 0));
 }
 
 AMonsterActor::~AMonsterActor()
@@ -29,7 +31,7 @@ AMonsterActor::~AMonsterActor()
 void AMonsterActor::SetData(FMonsterData _Data)
 {
 	GetMesh()->SetSkeletalMesh(_Data.Skeleton);
-	GetMesh()->AnimClass = _Data.Animation->GetAnimBlueprintGeneratedClass();
+	GetMesh()->SetAnimClass(_Data.Animation->GetAnimBlueprintGeneratedClass());
 	GetMesh()->SetRelativeLocation(FVector(0, 0, _Data.Z));
 
 	GetCharacterMovement()->MaxWalkSpeed = _Data.Speed;
