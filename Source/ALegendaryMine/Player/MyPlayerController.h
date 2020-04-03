@@ -29,6 +29,7 @@ protected:
 	void LR_Move(float _value);
 
 	void Jump();
+	void Attack();
 
 protected:
 	APlayerPawn * PlayerPawn;

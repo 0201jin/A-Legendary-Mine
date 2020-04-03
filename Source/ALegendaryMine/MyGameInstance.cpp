@@ -19,12 +19,16 @@ UMyGameInstance::UMyGameInstance()
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> StageSizeData(TEXT("DataTable'/Game/Template/TemplateDataTable/StageSize/StageSizeDataTable.StageSizeDataTable'"));
 	StageSizeDataTable = StageSizeData.Object;
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponData(TEXT("DataTable'/Game/Weapon/WeaponDataTable.WeaponDataTable'"));
+	WeaponDataTable = WeaponData.Object;
 }
 
 void UMyGameInstance::Init()
 {
 	Super::Init();
 
+	//방 템플릿 데이터 테이블
 	for (int i = 0; i < TemplateDataTable.Num(); i++)
 	{
 		RoomTemplateData.Add(TArray<class UMyCustomAsset*>());
@@ -48,6 +52,7 @@ void UMyGameInstance::Init()
 		}
 	}
 
+	//길 템플릿 데이터 테이블
 	for (int i = 0; i < RoadTemplateDataTable.Num(); i++)
 	{
 		RoadTemplateData.Add(TArray<FRoadMeshData>());
@@ -74,6 +79,7 @@ void UMyGameInstance::Init()
 		}
 	}
 
+	//몬스터 데이터 테이블
 	for (int i = 0; i < MonsterDataTable.Num(); i++)
 	{
 		MonsterData.Add(TArray<FMonsterData>());
@@ -110,6 +116,7 @@ void UMyGameInstance::Init()
 		}
 	}
 
+	//스테이지 사이즈 데이터 테이블
 	FString StageSizeRSContextString;
 	TArray<FName> StageSizeRSRowNames;
 	StageSizeRSRowNames = StageSizeDataTable->GetRowNames();
@@ -121,6 +128,21 @@ void UMyGameInstance::Init()
 		if (StageSizeRSTableRow)
 		{
 			StageSizeData.Add(*StageSizeRSTableRow);
+		}
+	}
+
+	//무기 데이터 테이블
+	FString WeaponRSContextString;
+	TArray<FName> WeaponRSRowNames;
+	WeaponRSRowNames = WeaponDataTable->GetRowNames();
+
+	for (auto& name : WeaponRSRowNames)
+	{
+		FWeaponDataTableRow* WeaponRSTableRow = WeaponDataTable->FindRow<FWeaponDataTableRow>(name, WeaponRSContextString);
+
+		if (WeaponRSTableRow)
+		{
+			WeaponData.Add(*WeaponRSTableRow);
 		}
 	}
 }

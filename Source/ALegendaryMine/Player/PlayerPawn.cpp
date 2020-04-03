@@ -34,6 +34,12 @@ APlayerPawn::APlayerPawn()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->RelativeLocation = FVector(0, 0, 0);
 	FollowCamera->RelativeRotation = FRotator(290, 0, 0);
+
+	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	Weapon->AttachTo(GetMesh(), TEXT("Bone"));
+	Weapon->RelativeRotation = FRotator(0, 0, -90);
+	Weapon->RelativeScale3D = FVector(0.02, 0.02, 0.02);
+	Weapon->CastShadow = true;
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +60,11 @@ void APlayerPawn::SetRot(FRotator _Ro)
 {
 	if (!bJumping)
 		SetActorRotation(_Ro);
+}
+
+void APlayerPawn::Attack()
+{
+
 }
 
 void APlayerPawn::FB_Move(float _value)
@@ -101,10 +112,12 @@ void APlayerPawn::Jump()
 void APlayerPawn::JumpTimerFunc()
 {
 	AddActorLocalOffset(GetActorLocation().ForwardVector * 4, true);
+	bGodMode = true;
 }
 
 void APlayerPawn::JumpTimerEndFunc()
 {
+	bGodMode = false;
 	bJumping = false;
 	GetWorldTimerManager().ClearTimer(JumpTimer);
 	GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::JumpTimerCoolFunc, 0.3f, false, 0.3f);

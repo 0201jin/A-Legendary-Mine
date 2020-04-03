@@ -12,11 +12,15 @@ class ALEGENDARYMINE_API APlayerPawn : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-		class USpringArmComponent * CameraBoom;
+		class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-		class UCameraComponent * FollowCamera;
+		class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class UStaticMeshComponent* Weapon;
 
 public:
 	// Sets default values for this pawn's properties
@@ -32,11 +36,12 @@ public:
 
 	void SetRot(FRotator _Ro);
 
+	void Attack();
+
 	void FB_Move(float _value);
 	void LR_Move(float _value);
 
 	void Jump();
-
 	void JumpTimerFunc();
 	void JumpTimerEndFunc();
 	void JumpTimerCoolFunc();
@@ -47,6 +52,7 @@ protected:
 
 	bool bJump = true;
 	bool bJumping = false;
+	bool bGodMode = false;
 
 	class UAnimMontage* JumpAnimation;
 

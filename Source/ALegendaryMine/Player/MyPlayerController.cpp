@@ -30,6 +30,11 @@ void AMyPlayerController::Jump()
 	PlayerPawn->Jump();
 }
 
+void AMyPlayerController::Attack()
+{
+	PlayerPawn->Attack();
+}
+
 void AMyPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -38,6 +43,7 @@ void AMyPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LR_Move", this, &AMyPlayerController::LR_Move);
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AMyPlayerController::Jump);
+	InputComponent->BindAction("Attack", IE_Pressed, this, &AMyPlayerController::Attack);
 }
 
 void AMyPlayerController::PlayerTick(float DeltaTime)

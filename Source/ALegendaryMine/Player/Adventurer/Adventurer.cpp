@@ -2,6 +2,7 @@
 
 
 #include "Adventurer.h"
+#include "MyGameInstance.h"
 
 // Sets default values
 AAdventurer::AAdventurer()
@@ -33,7 +34,8 @@ AAdventurer::AAdventurer()
 void AAdventurer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Weapon->SetStaticMesh(Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].WeaponMesh);
 }
 
 // Called every frame

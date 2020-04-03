@@ -5,6 +5,7 @@
 #include "DataTable/TemplateDataTable.h"
 #include "DataTable/RoadTemplateDataTable.h"
 #include "DataTable/MonsterDataTable.h"
+#include "DataTable/WeaponDataTable.h"
 
 #include "Struct/MapGeneratorStruct.h"
 
@@ -32,6 +33,7 @@ protected:
 	TArray<class UDataTable*> MonsterDataTable;
 	
 	class UDataTable* StageSizeDataTable;
+	class UDataTable* WeaponDataTable;
 
 public:
 	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
@@ -39,4 +41,5 @@ public:
 	TArray<TArray<FMonsterData>> MonsterData;
 
 	TArray<FStageSizeDataTableRow> StageSizeData;
+	TArray<FWeaponDataTableRow> WeaponData;
 };
