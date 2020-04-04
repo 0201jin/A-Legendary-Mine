@@ -40,6 +40,26 @@ APlayerPawn::APlayerPawn()
 	Weapon->RelativeRotation = FRotator(0, 0, -90);
 	Weapon->RelativeScale3D = FVector(0.02, 0.02, 0.02);
 	Weapon->CastShadow = true;
+	Weapon->SetCollisionProfileName("OverlapAll");
+}
+
+void APlayerPawn::CheckEndAttack()
+{
+	bAttack = false;
+}
+
+void APlayerPawn::CheckInputAttack()
+{
+	if (iComboCnt >= 2)
+	{
+		iComboCnt = 0;
+		bAttackWhenAttack = false;
+	}
+	else if (bAttackWhenAttack)
+	{
+		iComboCnt += 1;
+		bAttackWhenAttack = false;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -47,6 +67,14 @@ void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+bool APlayerPawn::CheckAction()
+{
+	if (!bJumping && !bAttack)
+		return true;
+
+	return false;
 }
 
 // Called every frame
@@ -58,18 +86,44 @@ void APlayerPawn::Tick(float DeltaTime)
 
 void APlayerPawn::SetRot(FRotator _Ro)
 {
-	if (!bJumping)
+	if (CheckAction())
 		SetActorRotation(_Ro);
 }
 
-void APlayerPawn::Attack()
+void APlayerPawn::Attack(FRotator _Ro)
 {
+	if (CheckAction())
+	{
+		SetActorRotation(_Ro);
 
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (!AnimInstance || !AttackAnimation) return;
+
+		bAttack = true;
+
+		const char* Combo[] = { "Attack1", "Attack2", "Attack3" };
+
+		if (!AnimInstance->Montage_IsPlaying(AttackAnimation))
+		{
+			AnimInstance->Montage_Play(AttackAnimation);
+		}
+		else if (AnimInstance->Montage_IsPlaying(AttackAnimation))
+		{
+			AnimInstance->Montage_Play(AttackAnimation);
+			AnimInstance->Montage_JumpToSection(FName(Combo[iComboCnt]), AttackAnimation);
+
+			UE_LOG(LogTemp, Log, TEXT("Attack %d"), iComboCnt);
+		}
+	}
+	else
+	{
+		bAttackWhenAttack = true;
+	}
 }
 
 void APlayerPawn::FB_Move(float _value)
 {
-	if (!bJumping)
+	if (CheckAction())
 	{
 		fFBValue = _value;
 		FVector Direction = GetActorLocation().ForwardVector;
@@ -79,7 +133,7 @@ void APlayerPawn::FB_Move(float _value)
 
 void APlayerPawn::LR_Move(float _value)
 {
-	if (!bJumping)
+	if (CheckAction())
 	{
 		fLRValue = _value;
 		FVector Direction = GetActorLocation().RightVector;
@@ -89,7 +143,7 @@ void APlayerPawn::LR_Move(float _value)
 
 void APlayerPawn::Jump()
 {
-	if (bJump && (fLRValue != 0 || fFBValue != 0))
+	if (bJump && !bAttack && (fLRValue != 0 || fFBValue != 0))
 	{
 		bJumping = true;
 		bJump = false;
@@ -119,6 +173,8 @@ void APlayerPawn::JumpTimerEndFunc()
 {
 	bGodMode = false;
 	bJumping = false;
+	bGodMode = false;
+
 	GetWorldTimerManager().ClearTimer(JumpTimer);
 	GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::JumpTimerCoolFunc, 0.3f, false, 0.3f);
 }

@@ -28,6 +28,9 @@ AAdventurer::AAdventurer()
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> JumpMo(TEXT("AnimMontage'/Game/Character/Adventurer/Animation/Adventurer_Armature_Jump_Montage.Adventurer_Armature_Jump_Montage'"));
 	JumpAnimation = JumpMo.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMo(TEXT("AnimMontage'/Game/Character/Adventurer/Animation/Adventurer_Armature_Attack_Sword_Montage.Adventurer_Armature_Attack_Sword_Montage'"));
+	AttackAnimation = AttackMo.Object;
 }
 
 // Called when the game starts or when spawned

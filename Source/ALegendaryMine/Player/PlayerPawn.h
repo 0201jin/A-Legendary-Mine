@@ -26,9 +26,17 @@ public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
 
+	UFUNCTION(BlueprintCallable)
+		void CheckEndAttack();
+
+	UFUNCTION(BlueprintCallable)
+		void CheckInputAttack();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	bool CheckAction();
 
 public:	
 	// Called every frame
@@ -36,7 +44,7 @@ public:
 
 	void SetRot(FRotator _Ro);
 
-	void Attack();
+	void Attack(FRotator _Ro);
 
 	void FB_Move(float _value);
 	void LR_Move(float _value);
@@ -54,7 +62,12 @@ protected:
 	bool bJumping = false;
 	bool bGodMode = false;
 
+	bool bAttack = false;
+	bool bAttackWhenAttack = false;
+	int iComboCnt = 0;
+
 	class UAnimMontage* JumpAnimation;
+	class UAnimMontage* AttackAnimation;
 
 	FTimerHandle JumpTimer;
 	FTimerHandle JumpTimerEnd;

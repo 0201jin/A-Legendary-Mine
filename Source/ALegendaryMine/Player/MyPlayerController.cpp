@@ -30,9 +30,16 @@ void AMyPlayerController::Jump()
 	PlayerPawn->Jump();
 }
 
-void AMyPlayerController::Attack()
+void AMyPlayerController::Attack(float _value)
 {
-	PlayerPawn->Attack();
+	FHitResult HitResult;
+	GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HitResult);
+	FRotator DiRo = (HitResult.Location - PlayerPawn->GetActorLocation()).Rotation();
+	DiRo.Pitch = 0;
+	DiRo.Roll = 0;
+
+	if (_value >= 1)
+		PlayerPawn->Attack(DiRo);
 }
 
 void AMyPlayerController::SetupInputComponent()
@@ -41,9 +48,9 @@ void AMyPlayerController::SetupInputComponent()
 
 	InputComponent->BindAxis("FB_Move", this, &AMyPlayerController::FB_Move);
 	InputComponent->BindAxis("LR_Move", this, &AMyPlayerController::LR_Move);
+	InputComponent->BindAxis("Attack", this, &AMyPlayerController::Attack);
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AMyPlayerController::Jump);
-	InputComponent->BindAction("Attack", IE_Pressed, this, &AMyPlayerController::Attack);
 }
 
 void AMyPlayerController::PlayerTick(float DeltaTime)
