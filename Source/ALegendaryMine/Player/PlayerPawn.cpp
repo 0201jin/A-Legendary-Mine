@@ -3,6 +3,7 @@
 
 #include "PlayerPawn.h"
 #include "Monster/MonsterActor.h"
+#include "HitBox/HitBox.h"
 
 // Sets default values
 APlayerPawn::APlayerPawn()
@@ -42,7 +43,6 @@ APlayerPawn::APlayerPawn()
 	Weapon->RelativeScale3D = FVector(0.02, 0.02, 0.02);
 	Weapon->CastShadow = true;
 	Weapon->SetCollisionProfileName("OverlapAll");
-	Weapon->OnComponentBeginOverlap.AddDynamic(this, &APlayerPawn::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -57,28 +57,6 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void APlayerPawn::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AMonsterActor* Monster = Cast<AMonsterActor>(OtherActor);
-
-	if (Monster)
-	{
-		bool bCheck = false;
-		for (int i = 0; i < HitMonsterList.Num(); i++)
-		{
-			if (HitMonsterList[i] == OtherActor)
-				bCheck = true;
-		}
-
-		if (bAttack && !bCheck)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Attack Success"));
-			Monster->Damage(AD, this);
-			HitMonsterList.Add(OtherActor);
-		}
-	}
 }
 
 void APlayerPawn::SetRot(FRotator _Ro)
@@ -189,6 +167,7 @@ void APlayerPawn::CheckEndAttack()
 		iComboCnt = 0;
 
 	HitMonsterList.Empty();
+	HitBox->Destroy();
 }
 
 void APlayerPawn::CheckInputAttack()
@@ -207,6 +186,14 @@ void APlayerPawn::CheckInputAttack()
 
 void APlayerPawn::MoveAttack()
 {
+	HitBox = GetWorld()->SpawnActor<AHitBox>(AHitBox::StaticClass(),
+		FTransform(
+			GetActorRotation(),
+			GetActorLocation() + (GetActorForwardVector() * (HitBoxY)),
+			FVector(HitBoxX, HitBoxY, 1)));
+
+	HitBox->SetDamage(AD);
+
 	GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::MoveTimer, 0.01f, true, 0.0f);
 	GetWorldTimerManager().SetTimer(JumpTimerEnd, this, &APlayerPawn::JumpTimerEndFunc, 0.1f, false, 0.1f);
 }
@@ -222,6 +209,7 @@ bool APlayerPawn::CheckAction()
 void APlayerPawn::MoveTimer()
 {
 	AddActorLocalOffset(GetActorLocation().ForwardVector * 4, true);
+	HitBox->AddActorLocalOffset(GetActorLocation().ForwardVector * 4);
 }
 
 void APlayerPawn::EndMoveTimer()

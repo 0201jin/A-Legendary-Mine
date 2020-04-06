@@ -27,6 +27,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController);
 
+	void StunEnd() { bStun = false; }
+
 public:
 	virtual void Damage(int _Damage, AActor * _ACKActor);
 
@@ -39,4 +41,8 @@ protected:
 	int AttackDamage = 0;
 	int DropMoney = 0;
 	int Health = 0;
+
+	bool bStun;
+
+	FTimerHandle StunTimer;
 };

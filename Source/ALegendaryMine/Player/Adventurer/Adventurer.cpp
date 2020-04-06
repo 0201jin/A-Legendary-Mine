@@ -41,6 +41,8 @@ void AAdventurer::BeginPlay()
 	Weapon->SetStaticMesh(Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].WeaponMesh);
 
 	AD = Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].Damage;
+	HitBoxX = Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].HitBoxX;
+	HitBoxY = Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].HitBoxY;
 }
 
 // Called every frame

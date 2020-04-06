@@ -67,10 +67,14 @@ void AMonsterActor::PossessedBy(AController* NewController)
 
 void AMonsterActor::Damage(int _Damage, AActor* _ACKActor)
 {
+	bStun = true;
+
+	GetWorldTimerManager().SetTimer(StunTimer, this, &AMonsterActor::StunEnd, 0.5f, false, 0.25f);
+
 	FRotator DiRo = (GetActorLocation() - _ACKActor->GetActorLocation()).Rotation();
 	DiRo.Pitch = 0;
 
-	AddActorLocalOffset(DiRo.Vector().ForwardVector * -100, true);
+	AddActorLocalOffset(DiRo.Vector().ForwardVector * -50, true);
 
 	Health -= _Damage;
 
