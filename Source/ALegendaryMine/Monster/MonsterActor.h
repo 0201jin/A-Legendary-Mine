@@ -28,7 +28,7 @@ protected:
 	virtual void PossessedBy(AController* NewController);
 
 public:
-	virtual void Damage(int _Damage);
+	virtual void Damage(int _Damage, AActor * _ACKActor);
 
 protected:
 	AAIController* AiController;

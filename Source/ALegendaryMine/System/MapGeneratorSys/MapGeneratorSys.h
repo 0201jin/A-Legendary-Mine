@@ -22,7 +22,10 @@ public:
 
 	void MapGen(int _Stage);
 	void DeleteMap();
+
 	void RoomActiveActor(int _RoomNumber);
+	void RoomInActiveActor();
+	void DestroyMonster();
 
 	TArray<FRoomData> GetRoomArray();
 	TArray<FRoadData> GetRoadArray();
@@ -54,4 +57,5 @@ protected:
 
 	int MaxDisIndex;
 	int iStage = 0;
+	int iMonsterCount = 0;
 };

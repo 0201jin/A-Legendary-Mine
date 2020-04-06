@@ -35,7 +35,7 @@ ARoomDoor::ARoomDoor()
 
 void ARoomDoor::ActiveDoor()
 {
-	bHidden = false;
+	SetActorHiddenInGame(false);
 
 	Walls_0->SetRelativeLocation(FVector(0, 0, 0));
 	Walls_1->SetRelativeLocation(FVector(0, 0, 0));
@@ -44,7 +44,11 @@ void ARoomDoor::ActiveDoor()
 
 void ARoomDoor::InActiveDoor()
 {
-	bHidden = true;
+	SetActorHiddenInGame(true);
+
+	Walls_0->SetRelativeLocation(FVector(0, 0, -200));
+	Walls_1->SetRelativeLocation(FVector(0, 0, -100));
+	Walls_2->SetRelativeLocation(FVector(0, 0, -190));
 }
 
 void ARoomDoor::BeginPlay()

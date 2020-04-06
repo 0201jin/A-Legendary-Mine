@@ -2,6 +2,7 @@
 
 
 #include "PlayerPawn.h"
+#include "Monster/MonsterActor.h"
 
 // Sets default values
 APlayerPawn::APlayerPawn()
@@ -41,25 +42,7 @@ APlayerPawn::APlayerPawn()
 	Weapon->RelativeScale3D = FVector(0.02, 0.02, 0.02);
 	Weapon->CastShadow = true;
 	Weapon->SetCollisionProfileName("OverlapAll");
-}
-
-void APlayerPawn::CheckEndAttack()
-{
-	bAttack = false;
-}
-
-void APlayerPawn::CheckInputAttack()
-{
-	if (iComboCnt >= 2)
-	{
-		iComboCnt = 0;
-		bAttackWhenAttack = false;
-	}
-	else if (bAttackWhenAttack)
-	{
-		iComboCnt += 1;
-		bAttackWhenAttack = false;
-	}
+	Weapon->OnComponentBeginOverlap.AddDynamic(this, &APlayerPawn::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -69,14 +52,6 @@ void APlayerPawn::BeginPlay()
 
 }
 
-bool APlayerPawn::CheckAction()
-{
-	if (!bJumping && !bAttack)
-		return true;
-
-	return false;
-}
-
 // Called every frame
 void APlayerPawn::Tick(float DeltaTime)
 {
@@ -84,41 +59,32 @@ void APlayerPawn::Tick(float DeltaTime)
 
 }
 
+void APlayerPawn::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AMonsterActor* Monster = Cast<AMonsterActor>(OtherActor);
+
+	if (Monster)
+	{
+		bool bCheck = false;
+		for (int i = 0; i < HitMonsterList.Num(); i++)
+		{
+			if (HitMonsterList[i] == OtherActor)
+				bCheck = true;
+		}
+
+		if (bAttack && !bCheck)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Attack Success"));
+			Monster->Damage(AD, this);
+			HitMonsterList.Add(OtherActor);
+		}
+	}
+}
+
 void APlayerPawn::SetRot(FRotator _Ro)
 {
 	if (CheckAction())
 		SetActorRotation(_Ro);
-}
-
-void APlayerPawn::Attack(FRotator _Ro)
-{
-	if (CheckAction())
-	{
-		SetActorRotation(_Ro);
-
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (!AnimInstance || !AttackAnimation) return;
-
-		bAttack = true;
-
-		const char* Combo[] = { "Attack1", "Attack2", "Attack3" };
-
-		if (!AnimInstance->Montage_IsPlaying(AttackAnimation))
-		{
-			AnimInstance->Montage_Play(AttackAnimation);
-		}
-		else if (AnimInstance->Montage_IsPlaying(AttackAnimation))
-		{
-			AnimInstance->Montage_Play(AttackAnimation);
-			AnimInstance->Montage_JumpToSection(FName(Combo[iComboCnt]), AttackAnimation);
-
-			UE_LOG(LogTemp, Log, TEXT("Attack %d"), iComboCnt);
-		}
-	}
-	else
-	{
-		bAttackWhenAttack = true;
-	}
 }
 
 void APlayerPawn::FB_Move(float _value)
@@ -182,4 +148,83 @@ void APlayerPawn::JumpTimerEndFunc()
 void APlayerPawn::JumpTimerCoolFunc()
 {
 	bJump = true;
+}
+
+void APlayerPawn::Attack(FRotator _Ro)
+{
+	if (CheckAction())
+	{
+		SetActorRotation(_Ro);
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (!AnimInstance || !AttackAnimation) return;
+
+		bAttack = true;
+
+		const char* Combo[] = { "Attack1", "Attack2", "Attack3" };
+
+		if (!AnimInstance->Montage_IsPlaying(AttackAnimation))
+		{
+			AnimInstance->Montage_Play(AttackAnimation);
+		}
+		else if (AnimInstance->Montage_IsPlaying(AttackAnimation))
+		{
+			AnimInstance->Montage_Play(AttackAnimation);
+			AnimInstance->Montage_JumpToSection(FName(Combo[iComboCnt]), AttackAnimation);
+
+			UE_LOG(LogTemp, Log, TEXT("Attack %d"), iComboCnt);
+		}
+	}
+	else
+	{
+		bAttackWhenAttack = true;
+	}
+}
+
+void APlayerPawn::CheckEndAttack()
+{
+	bAttack = false;
+
+	if (!bAttackWhenAttack)
+		iComboCnt = 0;
+
+	HitMonsterList.Empty();
+}
+
+void APlayerPawn::CheckInputAttack()
+{
+	if (iComboCnt >= 2)
+	{
+		iComboCnt = 0;
+		bAttackWhenAttack = false;
+	}
+	else if (bAttackWhenAttack)
+	{
+		iComboCnt += 1;
+		bAttackWhenAttack = false;
+	}
+}
+
+void APlayerPawn::MoveAttack()
+{
+	GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::MoveTimer, 0.01f, true, 0.0f);
+	GetWorldTimerManager().SetTimer(JumpTimerEnd, this, &APlayerPawn::JumpTimerEndFunc, 0.1f, false, 0.1f);
+}
+
+bool APlayerPawn::CheckAction()
+{
+	if (!bJumping && !bAttack)
+		return true;
+
+	return false;
+}
+
+void APlayerPawn::MoveTimer()
+{
+	AddActorLocalOffset(GetActorLocation().ForwardVector * 4, true);
+}
+
+void APlayerPawn::EndMoveTimer()
+{
+	GetWorldTimerManager().ClearTimer(JumpTimer);
 }

@@ -2,6 +2,7 @@
 
 
 #include "MonsterActor.h"
+#include "Level/InGame.h"
 
 // Sets default values
 AMonsterActor::AMonsterActor()
@@ -64,8 +65,19 @@ void AMonsterActor::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Log, TEXT("Monster : Possessed Controller!"));
 }
 
-void AMonsterActor::Damage(int _Damage)
+void AMonsterActor::Damage(int _Damage, AActor* _ACKActor)
 {
+	FRotator DiRo = (GetActorLocation() - _ACKActor->GetActorLocation()).Rotation();
+	DiRo.Pitch = 0;
 
+	AddActorLocalOffset(DiRo.Vector().ForwardVector * -100, true);
+
+	Health -= _Damage;
+
+	if (Health <= 0)
+	{
+		Destroy();
+		Cast<AInGame>(GetWorld()->GetLevelScriptActor())->GetMapgen()->DestroyMonster();
+	}
 }
 

@@ -1015,6 +1015,8 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 					FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
 					FVector(1, 1, 1)))
 				->SetData(MonsterArray[_RoomNumber][i]);
+
+			iMonsterCount++;
 		}
 
 		RoomActiveActorArray[_RoomNumber].Empty();
@@ -1028,6 +1030,23 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 
 		for (int i = 0; i < DoorArray.Num(); i++)
 			DoorArray[i]->ActiveDoor();
+	}
+}
+
+void MapGeneratorSys::RoomInActiveActor()
+{
+	for (int i = 0; i < DoorArray.Num(); i++)
+		DoorArray[i]->InActiveDoor();
+}
+
+void MapGeneratorSys::DestroyMonster()
+{
+	iMonsterCount -= 1;
+
+	if (iMonsterCount <= 0)
+	{
+		RoomInActiveActor();
+		iMonsterCount = 0;
 	}
 }
 
