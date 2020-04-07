@@ -3,6 +3,7 @@
 
 #include "Adventurer.h"
 #include "MyGameInstance.h"
+#include "HitBox/HitBox.h"
 
 // Sets default values
 AAdventurer::AAdventurer()
@@ -43,6 +44,14 @@ void AAdventurer::BeginPlay()
 	AD = Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].Damage;
 	HitBoxX = Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].HitBoxX;
 	HitBoxY = Cast<UMyGameInstance>(GetWorld()->GetGameInstance())->WeaponData[0].HitBoxY;
+
+	HitBox = GetWorld()->SpawnActor<AHitBox>(AHitBox::StaticClass(),
+		FTransform(
+			GetActorRotation(),
+			GetActorLocation(),
+			FVector(1, HitBoxX, HitBoxY)));
+
+	HitBox->SetDamage(AD);
 }
 
 // Called every frame

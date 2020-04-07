@@ -57,6 +57,17 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bAttack)
+	{
+		FVector Loca = GetActorLocation() + (GetActorForwardVector() * HitBoxY);
+		HitBox->SetActorLocation(Loca);
+
+		FRotator DiRo = ((Weapon->GetComponentToWorld().GetLocation()) - GetActorLocation()).Rotation();
+		DiRo.Pitch = 90;
+		DiRo.Roll = 0;
+
+		HitBox->SetActorRotation(DiRo);
+	}
 }
 
 void APlayerPawn::SetRot(FRotator _Ro)
@@ -134,6 +145,9 @@ void APlayerPawn::Attack(FRotator _Ro)
 	{
 		SetActorRotation(_Ro);
 
+		HitBox->ClearHitMonster();
+		HitBox->SetCollisionEnable(ECollisionEnabled::QueryAndPhysics);
+
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (!AnimInstance || !AttackAnimation) return;
 
@@ -166,8 +180,8 @@ void APlayerPawn::CheckEndAttack()
 	if (!bAttackWhenAttack)
 		iComboCnt = 0;
 
+	HitBox->SetCollisionEnable(ECollisionEnabled::NoCollision);
 	HitMonsterList.Empty();
-	HitBox->Destroy();
 }
 
 void APlayerPawn::CheckInputAttack()
@@ -186,14 +200,6 @@ void APlayerPawn::CheckInputAttack()
 
 void APlayerPawn::MoveAttack()
 {
-	HitBox = GetWorld()->SpawnActor<AHitBox>(AHitBox::StaticClass(),
-		FTransform(
-			GetActorRotation(),
-			GetActorLocation() + (GetActorForwardVector() * (HitBoxY)),
-			FVector(HitBoxX, HitBoxY, 1)));
-
-	HitBox->SetDamage(AD);
-
 	GetWorldTimerManager().SetTimer(JumpTimer, this, &APlayerPawn::MoveTimer, 0.01f, true, 0.0f);
 	GetWorldTimerManager().SetTimer(JumpTimerEnd, this, &APlayerPawn::JumpTimerEndFunc, 0.1f, false, 0.1f);
 }
@@ -209,7 +215,6 @@ bool APlayerPawn::CheckAction()
 void APlayerPawn::MoveTimer()
 {
 	AddActorLocalOffset(GetActorLocation().ForwardVector * 4, true);
-	HitBox->AddActorLocalOffset(GetActorLocation().ForwardVector * 4);
 }
 
 void APlayerPawn::EndMoveTimer()

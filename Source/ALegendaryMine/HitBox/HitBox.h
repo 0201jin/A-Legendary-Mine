@@ -26,6 +26,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetDamage(int _Damage);
+	void ClearHitMonster();
+	void SetCollisionEnable(ECollisionEnabled::Type _Collision);
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)

@@ -65,16 +65,23 @@ void AMonsterActor::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Log, TEXT("Monster : Possessed Controller!"));
 }
 
+void AMonsterActor::NuckBack()
+{
+	AddActorLocalOffset(DiRo.Vector().ForwardVector * -5, true);
+}
+
 void AMonsterActor::Damage(int _Damage, AActor* _ACKActor)
 {
 	bStun = true;
 
-	GetWorldTimerManager().SetTimer(StunTimer, this, &AMonsterActor::StunEnd, 0.5f, false, 0.25f);
+	GetWorldTimerManager().SetTimer(StunTimer, this, &AMonsterActor::StunEnd, 0.5f, false, 0.3f);
+	GetWorldTimerManager().SetTimer(NuckBackEndTimer, this, &AMonsterActor::NuckBackEnd, 0.5f, false, 0.1f);
+	GetWorldTimerManager().SetTimer(NuckBackTimer, this, &AMonsterActor::NuckBack, 0.01f, true, 0.0f);
 
-	FRotator DiRo = (GetActorLocation() - _ACKActor->GetActorLocation()).Rotation();
+	//AddActorLocalOffset(DiRo.Vector().ForwardVector * -60, true);
+
+	DiRo = (GetActorLocation() - _ACKActor->GetActorLocation()).Rotation();
 	DiRo.Pitch = 0;
-
-	AddActorLocalOffset(DiRo.Vector().ForwardVector * -50, true);
 
 	Health -= _Damage;
 

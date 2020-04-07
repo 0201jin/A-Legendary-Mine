@@ -28,6 +28,8 @@ protected:
 	virtual void PossessedBy(AController* NewController);
 
 	void StunEnd() { bStun = false; }
+	void NuckBack();
+	void NuckBackEnd() { GetWorldTimerManager().ClearTimer(NuckBackTimer); }
 
 public:
 	virtual void Damage(int _Damage, AActor * _ACKActor);
@@ -44,5 +46,9 @@ protected:
 
 	bool bStun;
 
+	FRotator DiRo;
+
 	FTimerHandle StunTimer;
+	FTimerHandle NuckBackTimer;
+	FTimerHandle NuckBackEndTimer;
 };

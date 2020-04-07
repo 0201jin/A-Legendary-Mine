@@ -14,7 +14,7 @@ AHitBox::AHitBox()
 	Collision->SetCollisionProfileName("OverlapAll");
 	Collision->RelativeLocation = FVector(0, 0, 0);
 	Collision->RelativeRotation = FRotator(0, 0, 0);
-	Collision->InitBoxExtent(FVector(1, 1, 100));
+	Collision->InitBoxExtent(FVector(25, 1, 1));
 	Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AHitBox::OnOverlapBegin);
 }
@@ -36,7 +36,16 @@ void AHitBox::Tick(float DeltaTime)
 void AHitBox::SetDamage(int _Damage)
 {
 	Damage = _Damage;
-	Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
+void AHitBox::ClearHitMonster()
+{
+	HitMonsterList.Empty();
+}
+
+void AHitBox::SetCollisionEnable(ECollisionEnabled::Type _Collision)
+{
+	Collision->SetCollisionEnabled(_Collision);
 }
 
 void AHitBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
