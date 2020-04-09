@@ -59,6 +59,8 @@ public:
 	void JumpTimerEndFunc();
 	void JumpTimerCoolFunc();
 
+	void Damage(int _Damage);
+
 protected:
 	float PlayerSpeed;
 	int AD;

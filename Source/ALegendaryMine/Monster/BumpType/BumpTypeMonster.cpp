@@ -28,4 +28,3 @@ void ABumpTypeMonster::Tick(float DeltaTime)
 	else
 		AiController->MoveToLocation(GetActorLocation());
 }
-

@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "Engine.h"
 #include "Struct/MapGeneratorStruct.h"
+#include "MyGameInstance.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -20,7 +21,7 @@ public:
 	AMonsterActor();
 	~AMonsterActor();
 
-	void SetData(FMonsterData _Data);
+	void SetData(FMonsterDataTableRow _Data);
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,15 +39,19 @@ protected:
 	AAIController* AiController;
 
 	UStaticMesh* ProjectileMesh;
+	class AHitBoxMTP* HitBox;
+
+	UAnimMontage* AttackAnimation;
 
 	int AttackSpeed = 0;
-	int AttackDamage = 0;
+	int AttackDistance = 0;
 	int DropMoney = 0;
 	int Health = 0;
 
 	bool bStun;
 
 	FRotator DiRo;
+	FVector HitBoxSize;
 
 	FTimerHandle StunTimer;
 	FTimerHandle NuckBackTimer;

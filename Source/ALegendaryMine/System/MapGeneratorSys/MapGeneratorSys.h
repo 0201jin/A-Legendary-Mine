@@ -8,6 +8,7 @@
 #include "InteractionActor/RoomActiveActor.h"
 #include "Monster/MonsterActor.h"
 #include "Monster/BumpType/BumpTypeMonster.h"
+#include "Monster/MeleeType/MeleeType.h"
 
 #include "CoreMinimal.h"
 
@@ -48,7 +49,7 @@ protected:
 
 	TArray<FRoomData> RoomArray;
 	TArray<FRoadData> RoadArray;
-	TArray<TArray<FMonsterData>> MonsterArray;
+	TArray<TArray<FMonsterDataTableRow>> MonsterArray;
 
 	TArray<class ARoomTemplateActor*> TemplateActorArray;
 	TArray<class ARoadTemplateActor*> RoadTemplateActorArray;

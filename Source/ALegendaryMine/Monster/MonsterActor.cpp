@@ -29,11 +29,12 @@ AMonsterActor::~AMonsterActor()
 		AiController->Destroy();
 }
 
-void AMonsterActor::SetData(FMonsterData _Data)
+void AMonsterActor::SetData(FMonsterDataTableRow _Data)
 {
 	GetMesh()->SetSkeletalMesh(_Data.Skeleton);
 	GetMesh()->SetAnimClass(_Data.Animation->GetAnimBlueprintGeneratedClass());
 	GetMesh()->SetRelativeLocation(FVector(0, 0, _Data.Z));
+	GetMesh()->SetRelativeScale3D(_Data.Size);
 
 	GetCharacterMovement()->MaxWalkSpeed = _Data.Speed;
 
@@ -42,9 +43,11 @@ void AMonsterActor::SetData(FMonsterData _Data)
 
 	ProjectileMesh = _Data.ProjectileMesh;
 	AttackSpeed = _Data.AttackSpeed;
-	AttackDamage = _Data.AttackDamage;
+	AttackDistance = _Data.AttackDistance;
 	DropMoney = _Data.DropMoney;
 	Health = _Data.Health;
+	AttackAnimation = _Data.AttackAnimation;
+	HitBoxSize = _Data.HitBoxSize;
 
 	SpawnDefaultController();
 }

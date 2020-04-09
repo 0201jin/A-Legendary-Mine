@@ -38,7 +38,7 @@ protected:
 public:
 	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
 	TArray<TArray<FRoadMeshData>> RoadTemplateData;
-	TArray<TArray<FMonsterData>> MonsterData;
+	TArray<TArray<FMonsterDataTableRow>> MonsterData;
 
 	TArray<FStageSizeDataTableRow> StageSizeData;
 	TArray<FWeaponDataTableRow> WeaponData;

@@ -35,36 +35,6 @@ struct FRoadMeshData
 };
 
 USTRUCT(Atomic)
-struct FMonsterData
-{
-	GENERATED_USTRUCT_BODY()
-
-	USkeletalMesh* Skeleton;
-
-	UAnimBlueprint* Animation;
-
-	UStaticMesh* ProjectileMesh;
-
-	int32 Health;
-
-	int32 Speed;
-
-	int32 AttackSpeed;
-
-	int32 AttackDamage;
-
-	int32 StrongScore;
-
-	int32 DropMoney;
-
-	int32 Height;
-
-	int32 Radius;
-
-	int32 Z;
-};
-
-USTRUCT(Atomic)
 struct FRoadDataData
 {
 	GENERATED_USTRUCT_BODY()

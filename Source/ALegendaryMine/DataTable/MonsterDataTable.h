@@ -8,6 +8,13 @@
 #include "GameFramework/Actor.h"
 #include "MonsterDataTable.generated.h"
 
+UENUM(BlueprintType)
+enum class E_MonsterAttackType : uint8
+{
+	M_BumpType UMETA(DisplayName = "Bump Type"),
+	M_MeleeType UMETA(DisplayName = "Melee Type")
+};
+
 USTRUCT(BlueprintType)
 struct FMonsterDataTableRow : public FTableRowBase
 {
@@ -21,7 +28,13 @@ public:
 		UAnimBlueprint* Animation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		UAnimMontage* AttackAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		UStaticMesh* ProjectileMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		E_MonsterAttackType AttackType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 Health;
@@ -33,7 +46,7 @@ public:
 		int32 AttackSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
-		int32 AttackDamage;
+		int32 AttackDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 StrongScore;
@@ -49,6 +62,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 Z;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		FVector Size;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		FVector HitBoxSize;
 };
 
 UCLASS()

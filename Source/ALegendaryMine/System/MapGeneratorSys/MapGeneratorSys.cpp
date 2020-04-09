@@ -5,6 +5,7 @@
 #include "Level/InGame.h"
 #include "Template/RoomTemplateActor.h"
 #include "Template/RoadTemplateActor.h"
+#include "MyGameInstance.h"
 
 MapGeneratorSys::MapGeneratorSys(class AInGame* _InGameLevel)
 {
@@ -23,7 +24,7 @@ void MapGeneratorSys::MapGen(int _Stage)
 	//방 스폰
 	int RoomSize = 0;
 	int RoomCount = 0;
-	while(GameInstance->StageSizeData[_Stage].StageSize > RoomSize)
+	while (GameInstance->StageSizeData[_Stage].StageSize > RoomSize)
 	{
 		int RandomIndex = (rand() % GameInstance->RoomTemplateData[iStage].Num());
 
@@ -958,14 +959,18 @@ void MapGeneratorSys::MapGen(int _Stage)
 	//방마다 몬스터 배치하는 코드
 	for (int i = 0; i < RoomArray.Num() - 1; i++)
 	{
-		MonsterArray.Add(TArray<FMonsterData>());
+		MonsterArray.Add(TArray<FMonsterDataTableRow>());
 		int RoomStrongScore = 0;
 
 		while (RoomStrongScore < GameInstance->RoomTemplateData[iStage][RoomArray[i].RoomNumber]->RoomMaxScoreSize)
 		{
 			int randNum = rand() % GameInstance->MonsterData[iStage].Num();
-			MonsterArray[i].Add(GameInstance->MonsterData[iStage][randNum]);
 			RoomStrongScore += GameInstance->MonsterData[iStage][randNum].StrongScore;
+
+			if (RoomStrongScore > GameInstance->RoomTemplateData[iStage][RoomArray[i].RoomNumber]->RoomMaxScoreSize)
+				RoomStrongScore -= GameInstance->MonsterData[iStage][randNum].StrongScore;
+			else
+				MonsterArray[i].Add(GameInstance->MonsterData[iStage][randNum]);
 		}
 	}
 
@@ -1009,12 +1014,26 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 			FVector Lo = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr[randNum].MeshTransform.GetLocation();
 			FVector Lo1 = FVector(RoomArray[_RoomNumber].X, RoomArray[_RoomNumber].Y, 100);
 
-			InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
-				ABumpTypeMonster::StaticClass(),
-				FTransform(FRotator(0, 0, 0),
-					FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
-					FVector(1, 1, 1)))
-				->SetData(MonsterArray[_RoomNumber][i]);
+			switch (MonsterArray[_RoomNumber][i].AttackType)
+			{
+			case E_MonsterAttackType::M_BumpType:
+				InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+					ABumpTypeMonster::StaticClass(),
+					FTransform(FRotator(0, 0, 0),
+						FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+						FVector(1, 1, 1)))
+					->SetData(MonsterArray[_RoomNumber][i]);
+				break;
+
+			case E_MonsterAttackType::M_MeleeType:
+				InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+					AMeleeType::StaticClass(),
+					FTransform(FRotator(0, 0, 0),
+						FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+						FVector(1, 1, 1)))
+					->SetData(MonsterArray[_RoomNumber][i]);
+				break;
+			}
 
 			iMonsterCount++;
 		}

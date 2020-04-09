@@ -17,6 +17,8 @@ APlayerPawn::APlayerPawn()
 
 	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("CharacterMesh");
 
+	GetCapsuleComponent()->SetCapsuleRadius(14.f);
+
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동
 	GetCharacterMovement()->JumpZVelocity = 0.0f;
@@ -137,6 +139,11 @@ void APlayerPawn::JumpTimerEndFunc()
 void APlayerPawn::JumpTimerCoolFunc()
 {
 	bJump = true;
+}
+
+void APlayerPawn::Damage(int _Damage)
+{
+	UE_LOG(LogTemp, Log, TEXT("Player Damaged!"));
 }
 
 void APlayerPawn::Attack(FRotator _Ro)

@@ -82,7 +82,7 @@ void UMyGameInstance::Init()
 	//몬스터 데이터 테이블
 	for (int i = 0; i < MonsterDataTable.Num(); i++)
 	{
-		MonsterData.Add(TArray<FMonsterData>());
+		MonsterData.Add(TArray<FMonsterDataTableRow>());
 
 		FString MonsterTemplateRSContextString;
 		TArray<FName> MonsterTemplateRSRowNames;
@@ -94,24 +94,7 @@ void UMyGameInstance::Init()
 
 			if (MonsterTemplateRSTableRow)
 			{
-				FMonsterData Data;
-				Data.Animation = MonsterTemplateRSTableRow->Animation;
-				Data.AttackDamage = MonsterTemplateRSTableRow->AttackDamage;
-				Data.AttackSpeed = MonsterTemplateRSTableRow->AttackSpeed;
-				Data.DropMoney = MonsterTemplateRSTableRow->DropMoney;
-				Data.ProjectileMesh = MonsterTemplateRSTableRow->ProjectileMesh;
-				Data.Skeleton = MonsterTemplateRSTableRow->Skeleton;
-				Data.Speed = MonsterTemplateRSTableRow->Speed;
-				Data.StrongScore = MonsterTemplateRSTableRow->StrongScore;
-				Data.Health = MonsterTemplateRSTableRow->Health;
-				Data.Height = MonsterTemplateRSTableRow->Height;
-				Data.Radius = MonsterTemplateRSTableRow->Radius;
-				Data.Z = MonsterTemplateRSTableRow->Z;
-
-				MonsterData[i].Add(Data);
-
-				if (Data.Animation != nullptr)
-					UE_LOG(LogTemp, Log, TEXT("MonsterData Load"));
+				MonsterData[i].Add(*MonsterTemplateRSTableRow);
 			}
 		}
 	}
