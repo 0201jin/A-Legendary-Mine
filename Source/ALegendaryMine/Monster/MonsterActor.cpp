@@ -35,6 +35,7 @@ void AMonsterActor::SetData(FMonsterDataTableRow _Data)
 	GetMesh()->SetAnimClass(_Data.Animation->GetAnimBlueprintGeneratedClass());
 	GetMesh()->SetRelativeLocation(FVector(0, 0, _Data.Z));
 	GetMesh()->SetRelativeScale3D(_Data.Size);
+	GetMesh()->SetMaterial(0, _Data.Material);
 
 	GetCharacterMovement()->MaxWalkSpeed = _Data.Speed;
 

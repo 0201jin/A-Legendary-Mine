@@ -25,6 +25,9 @@ public:
 		USkeletalMesh* Skeleton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		UMaterialInstance* Material;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		UAnimBlueprint* Animation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
