@@ -48,7 +48,10 @@ protected:
 	int DropMoney = 0;
 	int Health = 0;
 
+	float ProjectileSpeed;
+
 	bool bStun;
+	bool bNuckBack;
 
 	FRotator DiRo;
 	FVector HitBoxSize;

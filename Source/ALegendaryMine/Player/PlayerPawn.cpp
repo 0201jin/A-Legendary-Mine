@@ -36,13 +36,13 @@ APlayerPawn::APlayerPawn()
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->RelativeLocation = FVector(0, 0, 0);
-	FollowCamera->RelativeRotation = FRotator(290, 0, 0);
+	FollowCamera->SetRelativeLocation(FVector(0, 0, 0));
+	FollowCamera->SetRelativeRotation(FRotator(290, 0, 0));
 
 	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
-	Weapon->AttachTo(GetMesh(), TEXT("Bone"));
-	Weapon->RelativeRotation = FRotator(0, 0, -90);
-	Weapon->RelativeScale3D = FVector(0.02, 0.02, 0.02);
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("Bone"));
+	Weapon->SetRelativeRotation(FRotator(0, 0, -90));
+	Weapon->SetRelativeScale3D(FVector(0.02, 0.02, 0.02));
 	Weapon->CastShadow = true;
 	Weapon->SetCollisionProfileName("OverlapAll");
 }

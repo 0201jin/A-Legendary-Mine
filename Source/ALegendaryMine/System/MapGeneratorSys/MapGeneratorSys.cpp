@@ -1033,6 +1033,15 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 						FVector(1, 1, 1)))
 					->SetData(MonsterArray[_RoomNumber][i]);
 				break;
+
+			case E_MonsterAttackType::M_StandOffType:
+				InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+					AStandOffTypeMonster::StaticClass(),
+					FTransform(FRotator(0, 0, 0),
+						FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+						FVector(1, 1, 1)))
+					->SetData(MonsterArray[_RoomNumber][i]);
+				break;
 			}
 
 			iMonsterCount++;

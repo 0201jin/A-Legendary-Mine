@@ -49,6 +49,8 @@ void AMonsterActor::SetData(FMonsterDataTableRow _Data)
 	Health = _Data.Health;
 	AttackAnimation = _Data.AttackAnimation;
 	HitBoxSize = _Data.HitBoxSize;
+	bNuckBack = _Data.NuckBack;
+	ProjectileSpeed = _Data.ProjecTileSpeed;
 
 	SpawnDefaultController();
 }
@@ -71,7 +73,8 @@ void AMonsterActor::PossessedBy(AController* NewController)
 
 void AMonsterActor::NuckBack()
 {
-	AddActorLocalOffset(DiRo.Vector().ForwardVector * -5, true);
+	if (bNuckBack)
+		AddActorLocalOffset(DiRo.Vector().ForwardVector * -5, true);
 }
 
 void AMonsterActor::Damage(int _Damage, AActor* _ACKActor)

@@ -12,7 +12,8 @@ UENUM(BlueprintType)
 enum class E_MonsterAttackType : uint8
 {
 	M_BumpType UMETA(DisplayName = "Bump Type"),
-	M_MeleeType UMETA(DisplayName = "Melee Type")
+	M_MeleeType UMETA(DisplayName = "Melee Type"),
+	M_StandOffType UMETA(DisplayName = "Stand Off Type")
 };
 
 USTRUCT(BlueprintType)
@@ -35,6 +36,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		UStaticMesh* ProjectileMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		float ProjecTileSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		E_MonsterAttackType AttackType;
@@ -71,6 +75,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		FVector HitBoxSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool NuckBack;
 };
 
 UCLASS()

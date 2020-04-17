@@ -9,6 +9,7 @@
 #include "Monster/MonsterActor.h"
 #include "Monster/BumpType/BumpTypeMonster.h"
 #include "Monster/MeleeType/MeleeType.h"
+#include "Monster/StandOffType/StandOffTypeMonster.h"
 
 #include "CoreMinimal.h"
 
