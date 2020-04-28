@@ -16,7 +16,7 @@
 #include "Editor/EditorPerProjectUserSettings.h"
 #include "AssetViewerSettings.h"
 
-FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> ParentIGCEditor, const TSharedRef<class FPreviewScene>& AdvPreviewScene, const TSharedRef<class SRTDViewport>& IGCViewport, UMyCustomAsset * ObjectToEdit)
+FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> ParentIGCEditor, const TSharedRef<class FPreviewScene>& AdvPreviewScene, const TSharedRef<class SRTDViewport>& IGCViewport, UMyCustomAsset* ObjectToEdit)
 	: FEditorViewportClient(nullptr, &AdvPreviewScene.Get(), StaticCastSharedRef<SEditorViewport>(IGCViewport))
 	, IGCEditorPtr(ParentIGCEditor)
 	, IGCEditorViewportPtr(IGCViewport)
@@ -33,7 +33,7 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	AdvancedPreviewScene = static_cast<FAdvancedPreviewScene*>(PreviewScene);
 	AdvancedPreviewScene->SetFloorVisibility(false);
 
-	UTextureCube * Cube = LoadObject<UTextureCube>(NULL, TEXT("TextureCube'/Engine/EngineResources/GrayLightTextureCube.GrayLightTextureCube'"), NULL, LOAD_None, NULL);
+	UTextureCube* Cube = LoadObject<UTextureCube>(NULL, TEXT("TextureCube'/Engine/EngineResources/GrayLightTextureCube.GrayLightTextureCube'"), NULL, LOAD_None, NULL);
 
 	AdvancedPreviewScene->SetLightDirection(FRotator(-90, -90, 0));
 	AdvancedPreviewScene->SetSkyCubemap(Cube);
@@ -81,9 +81,9 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	for (int i = 0; IGCObject->ActorArr.Num() > i; i++)
 	{
 		UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *IGCObject->ActorArr[i].MeshData, NULL, LOAD_None, NULL);
-		
+
 		Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AInteractionActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform));
-		
+
 		IGCObject->ActorArr[i].MonsterSpawn = Actors[i]->GetSpawnMonster();
 	}
 }
@@ -160,12 +160,12 @@ void FRTDViewportClient::Tick(float DeltaSeconds)
 	FEditorViewportClient::Tick(DeltaSeconds);
 }
 
-void FRTDViewportClient::Draw(const FSceneView * View, FPrimitiveDrawInterface * PDI)
+void FRTDViewportClient::Draw(const FSceneView* View, FPrimitiveDrawInterface* PDI)
 {
 	FEditorViewportClient::Draw(View, PDI);
 }
 
-void FRTDViewportClient::MouseMove(FViewport * Viewport, int32 x, int32 y)
+void FRTDViewportClient::MouseMove(FViewport* Viewport, int32 x, int32 y)
 {
 	FViewportCursorLocation CursorLo = GetCursorWorldLocationFromMousePos();
 	FVector Direction = CursorLo.GetDirection();
@@ -185,7 +185,7 @@ void FRTDViewportClient::MouseMove(FViewport * Viewport, int32 x, int32 y)
 	Invalidate();
 }
 
-bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
+bool FRTDViewportClient::InputKey(const FInputKeyEventArgs& EventArgs)
 {
 	if (EventArgs.Event == EInputEvent::IE_Released)
 	{
@@ -261,7 +261,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 		{
 			MeshActor->AddWorldOffset(FVector(0, 0, 100));
 		}
-		
+
 		else if (EventArgs.Key == EKeys::Two)
 		{
 			MeshActor->AddWorldOffset(FVector(0, 0, -100));
@@ -288,7 +288,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 							IGCObject->ActorData.Add(FISMData());
 
 							FTransform Transform = FTransform::Identity;
-							Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+							Transform.SetLocation(MeshActor->GetRelativeLocation());
 							Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
 							actor[ActorIndex]->AddInstanceWorldSpace(Transform);
 
@@ -298,6 +298,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 							IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index = ActorIndex;
 
 							Transform.SetRotation(FQuat(0, 0, 0, 0));
+							Transform.SetLocation(FVector());
 							AdvancedPreviewScene->AddComponent(actor[ActorIndex], Transform);
 						}
 						else
@@ -305,7 +306,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 							ActorIndex = IGCObject->MeshDataArr[IGCObject->MeshDataIndex].Index;
 
 							FTransform Transform = FTransform::Identity;
-							Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
+							Transform.SetLocation(MeshActor->GetRelativeLocation());
 							Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
 							actor[ActorIndex]->AddInstanceWorldSpace(Transform);
 
@@ -505,7 +506,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 	return true;
 }
 
-bool FRTDViewportClient::InputAxis(FViewport * Viewport, int32 ControllerId, FKey Key, float Delta, float DeltaTime, int32 NumSamples, bool bGamepad)
+bool FRTDViewportClient::InputAxis(FViewport* Viewport, int32 ControllerId, FKey Key, float Delta, float DeltaTime, int32 NumSamples, bool bGamepad)
 {
 	//축회전 하는 코드
 

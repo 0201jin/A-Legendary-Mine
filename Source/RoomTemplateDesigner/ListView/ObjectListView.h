@@ -19,10 +19,14 @@ public:
 
 	void Construct(const FArguments& Args);
 
-	TSharedRef<ITableRow> OnGenerateRowForList(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& OwnerTable);
+	void ListItemClick(TSharedPtr<FAData> SelectItem);
 
-	TSharedPtr<SListView<TSharedPtr<FString>>> ActorListViewWidget;
-	TArray<TSharedPtr<FString>> Items;
+	void RefreshData();
+
+	TSharedRef<ITableRow> OnGenerateRowForList(TSharedPtr<FAData> Item, const TSharedRef<STableViewBase>& OwnerTable);
+
+	TSharedPtr<SListView<TSharedPtr<FAData>>> ActorListViewWidget;
+	TArray<TSharedPtr<FAData>> Items;
 
 	UMyCustomAsset* AssetData;
 };
