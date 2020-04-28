@@ -18,7 +18,7 @@ void AStandOffTypeMonster::Attack()
 		FTransform(
 			GetActorRotation(),
 			FVector(GetActorLocation().X, GetActorLocation().Y, 50),
-			FVector(1, 1, 1)));
+			FVector(2, 2, 2)));
 
 	ProjectileClass->SetData(ProjectileMesh, ProjectileSpeed);
 }

@@ -2,7 +2,8 @@
 
 #include "Projectile.h"
 #include "Player/PlayerPawn.h"
-#include "Monster/MonsterActor.h"
+#include "Template/RoomTemplateActor.h"
+#include "Template/RoadTemplateActor.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -35,6 +36,8 @@ void AProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AddActorWorldOffset(GetActorForwardVector() * Speed * DeltaTime);
+
+	ProjectileMesh->AddWorldRotation(FRotator(10, 0, 0));
 }
 
 void AProjectile::SetData(UStaticMesh* _Mesh, float _Speed)
@@ -56,9 +59,10 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	if (Cast<APlayerPawn>(OtherActor))
 	{
 		Cast<APlayerPawn>(OtherActor)->Damage(Damage);
+		Destroy();
 	}
 
-	if (!Cast<AMonsterActor>(OtherActor) && !Cast<AProjectile>(OtherActor))
+	else if (Cast<ARoomTemplateActor>(OtherActor) || Cast<ARoadTemplateActor>(OtherActor))
 	{
 		Destroy();
 	}

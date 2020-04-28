@@ -46,6 +46,9 @@ struct FAData
 
 	UPROPERTY()
 		FTransform MeshTransform;
+
+	UPROPERTY()
+		bool MonsterSpawn = false;
 };
 
 USTRUCT(Atomic)

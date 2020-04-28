@@ -6,6 +6,7 @@
 #include "Template/RoomTemplateActor.h"
 #include "Template/RoadTemplateActor.h"
 #include "MyGameInstance.h"
+#include "InteractionActor/MonsterSpawn.h"
 
 MapGeneratorSys::MapGeneratorSys(class AInGame* _InGameLevel)
 {
@@ -1005,59 +1006,67 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 {
 	if (RoomActiveActorArray[_RoomNumber].Num() > 0)
 	{
-		for (int i = 0; i < MonsterArray[_RoomNumber].Num(); i++)
+		for (int i = 0; i < MonsterArray[_RoomNumber].Num();)
 		{
 			int iNum = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr.Num();
 
 			int randNum = rand() % iNum;
 
-			FVector Lo = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr[randNum].MeshTransform.GetLocation();
-			FVector Lo1 = FVector(RoomArray[_RoomNumber].X, RoomArray[_RoomNumber].Y, 100);
+			UE_LOG(LogTemp, Log, TEXT("RoomActiveActor SpawnMonster %s"), *GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr[randNum].MeshData);
 
-			switch (MonsterArray[_RoomNumber][i].AttackType)
+			if (GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr[randNum].MonsterSpawn)
 			{
-			case E_MonsterAttackType::M_BumpType:
-				InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
-					ABumpTypeMonster::StaticClass(),
-					FTransform(FRotator(0, 0, 0),
-						FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
-						FVector(1, 1, 1)))
-					->SetData(MonsterArray[_RoomNumber][i]);
-				break;
+				FVector Lo = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber]->ActorArr[randNum].MeshTransform.GetLocation();
+				FVector Lo1 = FVector(RoomArray[_RoomNumber].X, RoomArray[_RoomNumber].Y, 100);
 
-			case E_MonsterAttackType::M_MeleeType:
-				InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
-					AMeleeType::StaticClass(),
-					FTransform(FRotator(0, 0, 0),
-						FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
-						FVector(1, 1, 1)))
-					->SetData(MonsterArray[_RoomNumber][i]);
-				break;
+				switch (MonsterArray[_RoomNumber][i].AttackType)
+				{
+				case E_MonsterAttackType::M_BumpType:
+					InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+						ABumpTypeMonster::StaticClass(),
+						FTransform(FRotator(0, 0, 0),
+							FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+							FVector(1, 1, 1)))
+						->SetData(MonsterArray[_RoomNumber][i]);
+					break;
 
-			case E_MonsterAttackType::M_StandOffType:
-				InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
-					AStandOffTypeMonster::StaticClass(),
-					FTransform(FRotator(0, 0, 0),
-						FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
-						FVector(1, 1, 1)))
-					->SetData(MonsterArray[_RoomNumber][i]);
-				break;
+				case E_MonsterAttackType::M_MeleeType:
+					InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+						AMeleeType::StaticClass(),
+						FTransform(FRotator(0, 0, 0),
+							FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+							FVector(1, 1, 1)))
+						->SetData(MonsterArray[_RoomNumber][i]);
+					break;
+
+				case E_MonsterAttackType::M_StandOffType:
+					InGameLevel->GetWorld()->SpawnActor<AMonsterActor>(
+						AStandOffTypeMonster::StaticClass(),
+						FTransform(FRotator(0, 0, 0),
+							FVector(Lo.X + Lo1.X, Lo.Y + Lo1.Y, 100),
+							FVector(1, 1, 1)))
+						->SetData(MonsterArray[_RoomNumber][i]);
+					break;
+				}
+
+				iMonsterCount++;
+
+
+				RoomActiveActorArray[_RoomNumber].Empty();
+				UE_LOG(LogTemp, Log, TEXT("RoomActiveActor Test %d"), _RoomNumber);
+
+				InGameLevel->UpDateNavMesh(
+					FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100),
+					FVector(
+						RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
+						RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
+
+				for (int i = 0; i < DoorArray.Num(); i++)
+					DoorArray[i]->ActiveDoor();
+
+				i++;
 			}
-
-			iMonsterCount++;
 		}
-
-		RoomActiveActorArray[_RoomNumber].Empty();
-		UE_LOG(LogTemp, Log, TEXT("RoomActiveActor Test %d"), _RoomNumber);
-
-		InGameLevel->UpDateNavMesh(
-			FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100),
-			FVector(
-				RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
-				RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
-
-		for (int i = 0; i < DoorArray.Num(); i++)
-			DoorArray[i]->ActiveDoor();
 	}
 }
 

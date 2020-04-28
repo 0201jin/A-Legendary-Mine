@@ -7,6 +7,7 @@
 #include "AdvancedPreviewScene.h"
 #include "MyCustomAsset.h"
 #include "EngineUtils.h"
+#include "InteractionActor/InteractionActor.h"
 
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
@@ -81,7 +82,9 @@ FRTDViewportClient::FRTDViewportClient(TWeakPtr<class FCustomAssetEditor> Parent
 	{
 		UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *IGCObject->ActorArr[i].MeshData, NULL, LOAD_None, NULL);
 		
-		Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform));
+		Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AInteractionActor>(StaticMesh1->GeneratedClass, IGCObject->ActorArr[i].MeshTransform));
+		
+		IGCObject->ActorArr[i].MonsterSpawn = Actors[i]->GetSpawnMonster();
 	}
 }
 
@@ -412,7 +415,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 					Transform.SetLocation(FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z));
 					Transform.SetRotation(MeshActor->GetRelativeRotation().Quaternion());
 
-					Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AActor>(
+					Actors.Add(AdvancedPreviewScene->GetWorld()->SpawnActor<AInteractionActor>(
 						StaticMesh1->GeneratedClass, Transform));
 
 					ActorIndex = Actors.Num() - 1;
@@ -422,6 +425,7 @@ bool FRTDViewportClient::InputKey(const FInputKeyEventArgs & EventArgs)
 					FAData Data;
 					Data.MeshData = IGCObject->ActorDataArr[IGCObject->ActorDataIndex].MeshData;
 					Data.MeshTransform = Transform;
+					Data.MonsterSpawn = Actors[ActorIndex]->GetSpawnMonster();
 
 					IGCObject->ActorArr.Add(Data);
 
