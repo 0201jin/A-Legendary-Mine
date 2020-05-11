@@ -50,7 +50,7 @@ public:
 		int32 Speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
-		int32 AttackSpeed;
+		float AttackSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 AttackDistance;

@@ -15,7 +15,7 @@ APlayerPawn::APlayerPawn()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("CharacterMesh");
+	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("Pawn");
 
 	GetCapsuleComponent()->SetCapsuleRadius(14.f);
 
@@ -102,6 +102,8 @@ void APlayerPawn::Jump()
 {
 	if (bJump && !bAttack && (fLRValue != 0 || fFBValue != 0))
 	{
+		Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("IgnoreOnlyPawn");
+
 		bJumping = true;
 		bJump = false;
 
@@ -128,6 +130,8 @@ void APlayerPawn::JumpTimerFunc()
 
 void APlayerPawn::JumpTimerEndFunc()
 {
+	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("Pawn");
+
 	bGodMode = false;
 	bJumping = false;
 	bGodMode = false;

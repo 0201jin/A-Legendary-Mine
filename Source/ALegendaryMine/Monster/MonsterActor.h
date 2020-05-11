@@ -30,10 +30,19 @@ protected:
 
 	void StunEnd() { bStun = false; }
 	void NuckBack();
-	void NuckBackEnd() { GetWorldTimerManager().ClearTimer(NuckBackTimer); }
+	void NuckBackEnd()
+	{
+		Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("Pawn");
+		GetWorldTimerManager().ClearTimer(NuckBackTimer);
+	}
+	void CanAttack()
+	{
+		bCanAttack = true;
+		GetWorldTimerManager().ClearTimer(AttackTimer);
+	}
 
 public:
-	virtual void Damage(int _Damage, AActor * _ACKActor);
+	virtual void Damage(int _Damage, AActor* _ACKActor);
 
 protected:
 	AAIController* AiController;
@@ -43,7 +52,7 @@ protected:
 
 	UAnimMontage* AttackAnimation;
 
-	int AttackSpeed = 0;
+	float AttackSpeed = 0;
 	int AttackDistance = 0;
 	int DropMoney = 0;
 	int Health = 0;
@@ -59,4 +68,8 @@ protected:
 	FTimerHandle StunTimer;
 	FTimerHandle NuckBackTimer;
 	FTimerHandle NuckBackEndTimer;
+
+	FTimerHandle AttackTimer;
+
+	bool bCanAttack = true;
 };

@@ -11,8 +11,8 @@ UCLASS()
 class ALEGENDARYMINE_API ABumpTypeMonster : public AMonsterActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABumpTypeMonster();
 
@@ -20,8 +20,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+	void Attack();
+
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };

@@ -20,6 +20,8 @@ void AMeleeType::Attack()
 
 	HitBox->ClearHitPlayer();
 	HitBox->SetCollisionEnable(ECollisionEnabled::QueryAndPhysics);
+
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AMeleeType::CanAttack, AttackSpeed, false, AttackSpeed);
 }
 
 void AMeleeType::EndAttack()
@@ -49,7 +51,7 @@ void AMeleeType::IsNotStun()
 
 	if (!AnimInstance->Montage_IsPlaying(AttackAnimation))
 	{
-		if (Distance <= AttackDistance)
+		if (Distance <= AttackDistance && bCanAttack)
 		{
 			AiController->MoveToLocation(GetActorLocation());
 			AnimInstance->Montage_Play(AttackAnimation);

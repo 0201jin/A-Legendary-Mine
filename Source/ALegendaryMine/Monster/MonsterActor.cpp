@@ -10,7 +10,7 @@ AMonsterActor::AMonsterActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("CharacterMesh");
+	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("Pawn");
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동
@@ -74,7 +74,10 @@ void AMonsterActor::PossessedBy(AController* NewController)
 void AMonsterActor::NuckBack()
 {
 	if (bNuckBack)
+	{
+		Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("IgnoreOnlyPawn");
 		AddActorLocalOffset(DiRo.Vector().ForwardVector * -5, true);
+	}
 }
 
 void AMonsterActor::Damage(int _Damage, AActor* _ACKActor)

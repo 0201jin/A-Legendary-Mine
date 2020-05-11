@@ -13,14 +13,21 @@ AStandOffTypeMonster::AStandOffTypeMonster()
 
 void AStandOffTypeMonster::Attack()
 {
-	AProjectile* ProjectileClass = GetWorld()->SpawnActor<AProjectile>(
-		AProjectile::StaticClass(),
-		FTransform(
-			GetActorRotation(),
-			FVector(GetActorLocation().X, GetActorLocation().Y, 50),
-			FVector(2, 2, 2)));
+	if (bCanAttack)
+	{
+		bCanAttack = false;
 
-	ProjectileClass->SetData(ProjectileMesh, ProjectileSpeed);
+		AProjectile* ProjectileClass = GetWorld()->SpawnActor<AProjectile>(
+			AProjectile::StaticClass(),
+			FTransform(
+				GetActorRotation(),
+				FVector(GetActorLocation().X, GetActorLocation().Y, 50),
+				FVector(2, 2, 2)));
+
+		ProjectileClass->SetData(ProjectileMesh, ProjectileSpeed);
+
+		GetWorldTimerManager().SetTimer(AttackTimer, this, &AStandOffTypeMonster::CanAttack, AttackSpeed, false, AttackSpeed);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -35,15 +42,15 @@ void AStandOffTypeMonster::IsNotStun()
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	if (!AnimInstance->Montage_IsPlaying(AttackAnimation))
+	FRotator DiRo = (GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - GetActorLocation()).Rotation();
+	DiRo.Roll = 0;
+
+	SetActorRotation(DiRo);
+
+	if (!AnimInstance->Montage_IsPlaying(AttackAnimation) && bCanAttack)
 	{
 		if (Distance <= AttackDistance)
 		{
-			FRotator DiRo = (GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - GetActorLocation()).Rotation();
-			DiRo.Roll = 0;
-
-			SetActorRotation(DiRo);
-
 			AiController->MoveToLocation(GetActorLocation());
 			AnimInstance->Montage_Play(AttackAnimation);
 		}
