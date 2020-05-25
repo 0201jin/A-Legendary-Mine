@@ -120,30 +120,30 @@ void MapGeneratorSys::MapGen(int _Stage)
 	{
 		edge = PDequeue(copyPQ);
 
-		FRoomData Data;
+		FRoomData RData;
 
 		CheckEdge[edge.Vertex1][edge.Vertex2] = true;
 
 		if (RoomArray[edge.Vertex1].X > RoomArray[edge.Vertex2].X)
 		{
-			Data.X = RoomArray[edge.Vertex2].X;
-			Data.SX = (RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX) - RoomArray[edge.Vertex2].X;
+			RData.X = RoomArray[edge.Vertex2].X;
+			RData.SX = (RoomArray[edge.Vertex1].X + RoomArray[edge.Vertex1].SX) - RoomArray[edge.Vertex2].X;
 		}
 		else
 		{
-			Data.X = RoomArray[edge.Vertex1].X;
-			Data.SX = (RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX) - RoomArray[edge.Vertex1].X;
+			RData.X = RoomArray[edge.Vertex1].X;
+			RData.SX = (RoomArray[edge.Vertex2].X + RoomArray[edge.Vertex2].SX) - RoomArray[edge.Vertex1].X;
 		}
 
 		if (RoomArray[edge.Vertex1].Y > RoomArray[edge.Vertex2].Y)
 		{
-			Data.Y = RoomArray[edge.Vertex2].Y;
-			Data.SY = (RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY) - RoomArray[edge.Vertex2].Y;
+			RData.Y = RoomArray[edge.Vertex2].Y;
+			RData.SY = (RoomArray[edge.Vertex1].Y + RoomArray[edge.Vertex1].SY) - RoomArray[edge.Vertex2].Y;
 		}
 		else
 		{
-			Data.Y = RoomArray[edge.Vertex1].Y;
-			Data.SY = (RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY) - RoomArray[edge.Vertex1].Y;
+			RData.Y = RoomArray[edge.Vertex1].Y;
+			RData.SY = (RoomArray[edge.Vertex2].Y + RoomArray[edge.Vertex2].SY) - RoomArray[edge.Vertex1].Y;
 		}
 
 		TArray<FRoadData> RoadLo;
@@ -160,9 +160,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 		int V2Y = RoomArray[edge.Vertex2].Y + 100;
 		int V2SY = RoomArray[edge.Vertex2].SY - 100;
 
-		for (int x = Data.X; x < Data.X + Data.SX;)
+		for (int x = RData.X; x < RData.X + RData.SX;)
 		{
-			for (int y = Data.Y; y < Data.Y + Data.SY;)
+			for (int y = RData.Y; y < RData.Y + RData.SY;)
 			{
 				if ((
 					(V1X < x && V1X + V1SX > x && V2Y < y && V2Y + V2SY > y) ||
@@ -1061,8 +1061,8 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 						RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
 						RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
 
-				for (int i = 0; i < DoorArray.Num(); i++)
-					DoorArray[i]->ActiveDoor();
+				for (int ii = 0; ii < DoorArray.Num(); ii++)
+					DoorArray[ii]->ActiveDoor();
 
 				i++;
 			}

@@ -5,6 +5,15 @@
 #include "Monster/MonsterActor.h"
 #include "HitBox/HitBox.h"
 
+void APlayerPawn::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (bJumping && bGodMode)
+	{
+		if (Cast<AMonsterActor>(OtherActor))
+			Cast<AMonsterActor>(OtherActor)->JumpDamage(5, this);
+	}
+}
+
 // Sets default values
 APlayerPawn::APlayerPawn()
 {
@@ -16,6 +25,7 @@ APlayerPawn::APlayerPawn()
 	bUseControllerRotationRoll = false;
 
 	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("Pawn");
+	Cast<UCapsuleComponent>(RootComponent)->OnComponentBeginOverlap.AddDynamic(this, &APlayerPawn::OnOverlapBegin);
 
 	GetCapsuleComponent()->SetCapsuleRadius(14.f);
 
@@ -102,7 +112,7 @@ void APlayerPawn::Jump()
 {
 	if (bJump && !bAttack && (fLRValue != 0 || fFBValue != 0))
 	{
-		Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("IgnoreOnlyPawn");
+		Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("OverlapOnlyPawn");
 
 		bJumping = true;
 		bJump = false;

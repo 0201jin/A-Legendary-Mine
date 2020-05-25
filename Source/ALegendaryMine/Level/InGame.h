@@ -40,4 +40,8 @@ protected:
 
 	UPROPERTY(BluePrintAssignable, Category = "UpDateNavMesh")
 		FUpDateNavMeshSize UpdateNavMeshSize;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "UMG Function")
+		void SpawnMonster(int _Stage, int _Number);
 };

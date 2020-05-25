@@ -7,14 +7,14 @@
 // Sets default values
 AHitBoxMTP::AHitBoxMTP()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Collision = NewObject<UBoxComponent>(this, TEXT("CollisionBox"));
 	RootComponent = Collision;
 	Collision->SetCollisionProfileName("OverlapAll");
-	Collision->RelativeLocation = FVector(0, 0, 0);
-	Collision->RelativeRotation = FRotator(0, 0, 0);
+	Collision->SetRelativeLocation(FVector(0, 0, 0));
+	Collision->SetRelativeRotation(FRotator(0, 0, 0));
 	Collision->InitBoxExtent(FVector(1, 1, 50));
 	Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AHitBoxMTP::OnOverlapBegin);
@@ -24,7 +24,7 @@ AHitBoxMTP::AHitBoxMTP()
 void AHitBoxMTP::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

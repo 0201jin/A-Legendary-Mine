@@ -34,6 +34,18 @@ void AInGame::BeginPlay()
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }
 
+void AInGame::SpawnMonster(int _Stage, int _Number)
+{
+	FMonsterDataTableRow MonsterData = MyGameInstance->MonsterData[_Stage][_Number];
+
+	GetWorld()->SpawnActor<AMonsterActor>(
+		AMeleeType::StaticClass(),
+		FTransform(FRotator(0, 0, 0),
+			FVector(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X, GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y, 200),
+			FVector(1, 1, 1)))
+		->SetData(MonsterData);
+}
+
 void AInGame::GenerateMap()
 {
 	UE_LOG(LogTemp, Log, TEXT("------------------------------"));

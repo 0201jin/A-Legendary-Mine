@@ -38,6 +38,9 @@ public:
 		UStaticMesh* ProjectileMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool JumpDamaged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		float ProjecTileSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")

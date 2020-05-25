@@ -12,8 +12,8 @@ AHitBox::AHitBox()
 	Collision = NewObject<UBoxComponent>(this, TEXT("CollisionBox"));
 	RootComponent = Collision;
 	Collision->SetCollisionProfileName("OverlapAll");
-	Collision->RelativeLocation = FVector(0, 0, 0);
-	Collision->RelativeRotation = FRotator(0, 0, 0);
+	Collision->SetRelativeLocation(FVector(0, 0, 0));
+	Collision->SetRelativeRotation(FRotator(0, 0, 0));
 	Collision->InitBoxExtent(FVector(25, 1, 1));
 	Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AHitBox::OnOverlapBegin);

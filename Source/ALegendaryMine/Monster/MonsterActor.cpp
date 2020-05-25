@@ -51,6 +51,7 @@ void AMonsterActor::SetData(FMonsterDataTableRow _Data)
 	HitBoxSize = _Data.HitBoxSize;
 	bNuckBack = _Data.NuckBack;
 	ProjectileSpeed = _Data.ProjecTileSpeed;
+	JumpDamaged = _Data.JumpDamaged;
 
 	SpawnDefaultController();
 }
@@ -99,6 +100,27 @@ void AMonsterActor::Damage(int _Damage, AActor* _ACKActor)
 	{
 		Destroy();
 		Cast<AInGame>(GetWorld()->GetLevelScriptActor())->GetMapgen()->DestroyMonster();
+	}
+}
+
+void AMonsterActor::JumpDamage(int _Damage, AActor* _ACKActor)
+{
+	if (JumpDamaged && !bGodMode)
+	{
+		bStun = true;
+
+		GetWorldTimerManager().SetTimer(StunTimer, this, &AMonsterActor::StunEnd, 0.5f, false, 0.3f);
+
+		Health -= _Damage;
+
+		if (Health <= 0)
+		{
+			Destroy();
+			Cast<AInGame>(GetWorld()->GetLevelScriptActor())->GetMapgen()->DestroyMonster();
+		}
+
+		bGodMode = true;
+		GetWorldTimerManager().SetTimer(GodModeTimer, this, &AMonsterActor::GodModeEnd, 0.25f, false, 0.25f);
 	}
 }
 

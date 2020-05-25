@@ -13,8 +13,8 @@ ARoomActiveActor::ARoomActiveActor()
 	Collision = NewObject<UBoxComponent>(this, TEXT("CollisionBox"));
 	RootComponent = Collision;
 	Collision->SetCollisionProfileName("OverlapAll");
-	Collision->RelativeLocation = FVector(0, 0, 50);
-	Collision->RelativeRotation = FRotator(0, 0, 0);
+	Collision->SetRelativeLocation(FVector(0, 0, 50));
+	Collision->SetRelativeRotation(FRotator(0, 0, 0));
 	Collision->InitBoxExtent(FVector(50, 10, 50));
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &ARoomActiveActor::OnOverlapBegin);
 }

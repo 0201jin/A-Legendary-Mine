@@ -40,9 +40,15 @@ protected:
 		bCanAttack = true;
 		GetWorldTimerManager().ClearTimer(AttackTimer);
 	}
+	void GodModeEnd()
+	{
+		bGodMode = false;
+		GetWorldTimerManager().ClearTimer(GodModeTimer);
+	}
 
 public:
 	virtual void Damage(int _Damage, AActor* _ACKActor);
+	virtual void JumpDamage(int _Damage, AActor* _ACKActor);
 
 protected:
 	AAIController* AiController;
@@ -56,11 +62,13 @@ protected:
 	int AttackDistance = 0;
 	int DropMoney = 0;
 	int Health = 0;
+	bool JumpDamaged = false;
 
 	float ProjectileSpeed;
 
 	bool bStun;
 	bool bNuckBack;
+	bool bGodMode;
 
 	FRotator DiRo;
 	FVector HitBoxSize;
@@ -68,6 +76,7 @@ protected:
 	FTimerHandle StunTimer;
 	FTimerHandle NuckBackTimer;
 	FTimerHandle NuckBackEndTimer;
+	FTimerHandle GodModeTimer;
 
 	FTimerHandle AttackTimer;
 
