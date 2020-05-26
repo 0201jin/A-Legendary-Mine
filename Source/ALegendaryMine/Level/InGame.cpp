@@ -38,12 +38,35 @@ void AInGame::SpawnMonster(int _Stage, int _Number)
 {
 	FMonsterDataTableRow MonsterData = MyGameInstance->MonsterData[_Stage][_Number];
 
-	GetWorld()->SpawnActor<AMonsterActor>(
-		AMeleeType::StaticClass(),
-		FTransform(FRotator(0, 0, 0),
-			FVector(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X, GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y, 200),
-			FVector(1, 1, 1)))
-		->SetData(MonsterData);
+	switch (MonsterData.AttackType)
+	{
+	case E_MonsterAttackType::M_BumpType:
+		GetWorld()->SpawnActor<AMonsterActor>(
+			ABumpTypeMonster::StaticClass(),
+			FTransform(FRotator(0, 0, 0),
+				FVector(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X, GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y, 200),
+				FVector(1, 1, 1)))
+			->SetData(MonsterData);
+		break;
+
+	case E_MonsterAttackType::M_MeleeType:
+		GetWorld()->SpawnActor<AMonsterActor>(
+			AMeleeType::StaticClass(),
+			FTransform(FRotator(0, 0, 0),
+				FVector(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X, GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y, 200),
+				FVector(1, 1, 1)))
+			->SetData(MonsterData);
+		break;
+
+	case E_MonsterAttackType::M_StandOffType:
+		GetWorld()->SpawnActor<AMonsterActor>(
+			AStandOffTypeMonster::StaticClass(),
+			FTransform(FRotator(0, 0, 0),
+				FVector(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X, GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y, 200),
+				FVector(1, 1, 1)))
+			->SetData(MonsterData);
+		break;
+	}
 }
 
 void AInGame::GenerateMap()

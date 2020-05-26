@@ -6,28 +6,25 @@
 // Sets default values
 AStandOffTypeMonster::AStandOffTypeMonster()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
 void AStandOffTypeMonster::Attack()
 {
-	if (bCanAttack)
-	{
-		bCanAttack = false;
+	bCanAttack = false;
 
-		AProjectile* ProjectileClass = GetWorld()->SpawnActor<AProjectile>(
-			AProjectile::StaticClass(),
-			FTransform(
-				GetActorRotation(),
-				FVector(GetActorLocation().X, GetActorLocation().Y, 50),
-				FVector(2, 2, 2)));
+	AProjectile* ProjectileClass = GetWorld()->SpawnActor<AProjectile>(
+		AProjectile::StaticClass(),
+		FTransform(
+			GetActorRotation(),
+			FVector(GetActorLocation().X, GetActorLocation().Y, 50),
+			FVector(2, 2, 2)));
 
-		ProjectileClass->SetData(ProjectileMesh, ProjectileSpeed);
+	ProjectileClass->SetData(ProjectileMesh, ProjectileSpeed);
 
-		GetWorldTimerManager().SetTimer(AttackTimer, this, &AStandOffTypeMonster::CanAttack, AttackSpeed, false, AttackSpeed);
-	}
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AStandOffTypeMonster::CanAttack, AttackSpeed, false, AttackSpeed);
 }
 
 // Called when the game starts or when spawned
@@ -47,14 +44,14 @@ void AStandOffTypeMonster::IsNotStun()
 
 	SetActorRotation(DiRo);
 
-	if (!AnimInstance->Montage_IsPlaying(AttackAnimation) && bCanAttack)
+	if (!AnimInstance->Montage_IsPlaying(AttackAnimation))
 	{
-		if (Distance <= AttackDistance)
+		if (Distance <= AttackDistance && bCanAttack)
 		{
 			AiController->MoveToLocation(GetActorLocation());
 			AnimInstance->Montage_Play(AttackAnimation);
 		}
-		else
+		else if (Distance > 150)
 			AiController->MoveToLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 	}
 }

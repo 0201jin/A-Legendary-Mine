@@ -14,6 +14,8 @@ AMeleeType::AMeleeType()
 
 void AMeleeType::Attack()
 {
+	bCanAttack = false;
+
 	HitBox->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * AttackDistance));
 	HitBox->SetActorRotation(GetActorRotation());
 	HitBox->SetActorScale3D(FVector(HitBoxSize.X, HitBoxSize.Y, 1));
