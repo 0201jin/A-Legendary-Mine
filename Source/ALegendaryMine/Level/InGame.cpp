@@ -34,7 +34,7 @@ void AInGame::BeginPlay()
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }
 
-void AInGame::SpawnMonster(int _Stage, int _Number)
+void AInGame::SpawnMonster(int _Stage, int _Number) //명령어 추후 반드시 지울 것
 {
 	FMonsterDataTableRow MonsterData = MyGameInstance->MonsterData[_Stage][_Number];
 
