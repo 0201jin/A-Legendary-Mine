@@ -16,6 +16,13 @@ class ALEGENDARYMINE_API AMyHUD : public AHUD
 	
 public:
 	AMyHUD();
+	void InitHUD();
+
+	void HideAllWidget();
+	void InGameWidgetMode();
+	void CardSelectWidgetMode();
+
+	void CardSelectWidgetChangeButton(int _ButtonSwitch);
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,4 +30,7 @@ protected:
 protected:
 	class UClass * InGameWidgetClass;
 	class UInGameWidget * InGameWidget;
+
+	class UClass* CardSelectWidgetClass;
+	class UCardSelectWidget* CardSelectWidget;
 };

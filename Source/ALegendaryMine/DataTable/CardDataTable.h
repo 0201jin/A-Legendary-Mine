@@ -43,6 +43,9 @@ public:
 		E_CardType CardType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		FText Explain;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		E_C_SpawnType SpawnType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")

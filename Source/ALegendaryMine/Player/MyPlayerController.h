@@ -20,6 +20,8 @@ class ALEGENDARYMINE_API AMyPlayerController : public APlayerController
 public:
 	virtual void SetupInputComponent();
 	virtual void PlayerTick(float DeltaTime) override;
+	
+	void SetFightMode(bool _bFightMode);
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,4 +35,6 @@ protected:
 
 protected:
 	APlayerPawn * PlayerPawn;
+
+	bool bFightMode = true;
 };

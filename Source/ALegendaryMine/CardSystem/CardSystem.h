@@ -4,6 +4,7 @@
 #include "DataTable/CardDataTable.h"
 #include "Engine.h"
 #include "GameFramework/Actor.h"
+#include "CardActor.h"
 
 #include "CoreMinimal.h"
 #include "CardSystem.generated.h"
@@ -19,6 +20,14 @@ class ALEGENDARYMINE_API ACardSystem : public AActor
 public:
 	ACardSystem();
 	~ACardSystem();
+
+	void RotBAll();
+	void MoveAll();
+	void RotFAll();
+	void MoveToField();
+
+	void SpawnCard();
+	void DestroyCard();
 
 	void InitCard();
 	void AddCard(FCardDataTableRow _Buff, FCardDataTableRow _DeBuff);
@@ -36,6 +45,11 @@ protected:
 	TArray<FTimerHandle> TimeHandlerArray;
 	TArray<FTimerDelegate> DelegateArray;
 	TArray<FCardDataTableRow> CardArray;
+
+	TArray<ACardActor*> CardActorArray;
+
+	FTimerHandle MoveTimer;
+	int RotCounter;
 
 	class AInGame * LevelScript;
 };

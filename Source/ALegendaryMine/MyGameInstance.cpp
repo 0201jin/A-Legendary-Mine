@@ -22,6 +22,12 @@ UMyGameInstance::UMyGameInstance()
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponData(TEXT("DataTable'/Game/Weapon/WeaponDataTable.WeaponDataTable'"));
 	WeaponDataTable = WeaponData.Object;
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> BuffData(TEXT("DataTable'/Game/Card/DataTable/BuffDataTable.BuffDataTable'"));
+	BuffDataTable = BuffData.Object;
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> DeBuffData(TEXT("DataTable'/Game/Card/DataTable/DeBuffDataTable.DeBuffDataTable'"));
+	DeBuffDataTable = DeBuffData.Object;
 }
 
 void UMyGameInstance::Init()
@@ -126,6 +132,36 @@ void UMyGameInstance::Init()
 		if (WeaponRSTableRow)
 		{
 			WeaponData.Add(*WeaponRSTableRow);
+		}
+	}
+
+	//버프 데이터 테이블
+	FString BuffRSContextString;
+	TArray<FName> BuffRSRowNames;
+	BuffRSRowNames = BuffDataTable->GetRowNames();
+
+	for (auto& name : BuffRSRowNames)
+	{
+		FCardDataTableRow* BuffRSTableRow = BuffDataTable->FindRow<FCardDataTableRow>(name, BuffRSContextString);
+
+		if (BuffRSTableRow)
+		{
+			BuffData.Add(*BuffRSTableRow);
+		}
+	}
+
+	//디버프 데이터 테이블
+	FString DeBuffRSContextString;
+	TArray<FName> DeBuffRSRowNames;
+	DeBuffRSRowNames = DeBuffDataTable->GetRowNames();
+
+	for (auto& name : DeBuffRSRowNames)
+	{
+		FCardDataTableRow* DeBuffRSTableRow = DeBuffDataTable->FindRow<FCardDataTableRow>(name, DeBuffRSContextString);
+
+		if (DeBuffRSTableRow)
+		{
+			DeBuffData.Add(*DeBuffRSTableRow);
 		}
 	}
 }

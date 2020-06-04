@@ -21,6 +21,8 @@ void AInGame::BeginPlay()
 	Super::BeginPlay();
 
 	MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	MyHUD = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	MyHUD->InitHUD();
 
 	if (Mapgen != nullptr)
 	{
@@ -28,6 +30,18 @@ void AInGame::BeginPlay()
 	}
 
 	Mapgen = new MapGeneratorSys(this);
+
+	CardSystem = GetWorld()->SpawnActor<ACardSystem>(
+		ACardSystem::StaticClass(),
+		FTransform(FRotator(0, 0, 0),
+			FVector(0, 0, -500),
+			FVector(1, 1, 1)));
+
+	CardSystem->SpawnCard();
+
+	UpdateCamera.Broadcast();
+	
+	MyHUD->CardSelectWidgetMode();
 
 	Mapgen->MapGen(0);
 
@@ -86,4 +100,16 @@ void AInGame::GenerateMap()
 void AInGame::UpDateNavMesh(FVector _Size, FVector _Location)
 {
 	UpdateNavMeshSize.Broadcast(_Size, _Location);
+}
+
+void AInGame::ShuffleCard()
+{
+	CardSystem->RotBAll();
+}
+
+void AInGame::CameraToCharacter()
+{
+	UpdateCameraCharacter.Broadcast();
+	MyHUD->InGameWidgetMode();
+	CardSystem->DestroyCard();
 }

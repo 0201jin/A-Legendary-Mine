@@ -13,33 +13,41 @@ void AMyPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerPawn = Cast<APlayerPawn>(GetPawn());
+
+	bEnableClickEvents = true;
 }
 
 void AMyPlayerController::FB_Move(float _value)
 {
-	PlayerPawn->FB_Move(_value);
+	if (bFightMode)
+		PlayerPawn->FB_Move(_value);
 }
 
 void AMyPlayerController::LR_Move(float _value)
 {
-	PlayerPawn->LR_Move(_value);
+	if (bFightMode)
+		PlayerPawn->LR_Move(_value);
 }
 
 void AMyPlayerController::Jump()
 {
-	PlayerPawn->Jump();
+	if (bFightMode)
+		PlayerPawn->Jump();
 }
 
 void AMyPlayerController::Attack(float _value)
 {
-	FHitResult HitResult;
-	GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HitResult);
-	FRotator DiRo = (HitResult.Location - PlayerPawn->GetActorLocation()).Rotation();
-	DiRo.Pitch = 0;
-	DiRo.Roll = 0;
+	if (bFightMode)
+	{
+		FHitResult HitResult;
+		GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HitResult);
+		FRotator DiRo = (HitResult.Location - PlayerPawn->GetActorLocation()).Rotation();
+		DiRo.Pitch = 0;
+		DiRo.Roll = 0;
 
-	if (_value >= 1)
-		PlayerPawn->Attack(DiRo);
+		if (_value >= 1)
+			PlayerPawn->Attack(DiRo);
+	}
 }
 
 void AMyPlayerController::SetupInputComponent()
@@ -64,4 +72,9 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 	DiRo.Roll = 0;
 
 	PlayerPawn->SetRot(DiRo);
+}
+
+void AMyPlayerController::SetFightMode(bool _bFightMode)
+{
+	bFightMode = _bFightMode;
 }

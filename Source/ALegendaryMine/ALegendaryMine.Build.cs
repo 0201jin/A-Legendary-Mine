@@ -17,6 +17,7 @@ public class ALegendaryMine : ModuleRules
                 "InputCore",
 				"AIModule",
 				"NavigationSystem",
+				"Paper2D",
 			});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

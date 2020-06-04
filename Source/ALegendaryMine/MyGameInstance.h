@@ -6,6 +6,7 @@
 #include "DataTable/RoadTemplateDataTable.h"
 #include "DataTable/MonsterDataTable.h"
 #include "DataTable/WeaponDataTable.h"
+#include "DataTable/CardDataTable.h"
 
 #include "Struct/MapGeneratorStruct.h"
 
@@ -35,6 +36,9 @@ protected:
 	class UDataTable* StageSizeDataTable;
 	class UDataTable* WeaponDataTable;
 
+	class UDataTable* BuffDataTable;
+	class UDataTable* DeBuffDataTable;
+
 public:
 	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
 	TArray<TArray<FRoadMeshData>> RoadTemplateData;
@@ -42,4 +46,7 @@ public:
 
 	TArray<FStageSizeDataTableRow> StageSizeData;
 	TArray<FWeaponDataTableRow> WeaponData;
+
+	TArray<FCardDataTableRow> BuffData;
+	TArray<FCardDataTableRow> DeBuffData;
 };

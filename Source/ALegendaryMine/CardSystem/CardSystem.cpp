@@ -3,6 +3,7 @@
 
 #include "CardSystem.h"
 #include "Level/InGame.h"
+#include "HUD/MyHUD.h"
 
 ACardSystem::ACardSystem()
 {
@@ -10,6 +11,113 @@ ACardSystem::ACardSystem()
 
 ACardSystem::~ACardSystem()
 {
+}
+
+void ACardSystem::RotBAll()
+{
+	if (RotCounter < 3)
+	{
+		CardActorArray[RotCounter]->ShowB();
+
+		RotCounter++;
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(MoveTimer, this, &ACardSystem::MoveAll, 0.2, false, 0.2);
+
+		RotCounter = 0;
+	}
+}
+
+void ACardSystem::MoveAll()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		CardActorArray[i]->MoveToSuffle();
+	}
+}
+
+void ACardSystem::RotFAll()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		CardActorArray[i]->ShowF();
+	}
+}
+
+void ACardSystem::MoveToField()
+{
+	RotCounter++;
+
+	if (RotCounter >= 3)
+	{
+		TArray<int> CardNum;
+
+		for (int i = 0; i < 3; i++)
+		{
+			int R = 0;
+			for (;;)
+			{
+				bool Check = true;
+				R = rand() % 3;
+
+				for (int i = 0; i < CardNum.Num(); i++)
+				{
+					if (CardNum[i] == R)
+						Check = false;
+				}
+
+				if (Check)
+				{
+					CardNum.Add(R);
+					break;
+				}
+			}
+
+			CardActorArray[i]->MoveToNum(R);
+
+			UE_LOG(LogTemp, Log, TEXT("Move to Number %d %d"), i, R);
+		}
+	}
+}
+
+void ACardSystem::SpawnCard()
+{
+	LevelScript = Cast<AInGame>(GetWorld()->GetLevelScriptActor());
+
+	for (int i = 0; i < 3; i++)
+	{
+		CardActorArray.Add(
+			LevelScript->GetWorld()->SpawnActor<ACardActor>(
+				ACardActor::StaticClass(),
+				FTransform(
+					FRotator(-90, -90, 0),
+					FVector(-600 + (600 * i), 0, -1400),
+					FVector(1, 1, 1))));
+
+		int BuffNum = rand() % LevelScript->GetMyGameInstance()->BuffData.Num();
+		int DeBuffNum = rand() % LevelScript->GetMyGameInstance()->DeBuffData.Num();
+
+		CardActorArray[i]->SetCard(
+			LevelScript->GetMyGameInstance()->BuffData[BuffNum],
+			LevelScript->GetMyGameInstance()->DeBuffData[DeBuffNum]);
+
+		CardActorArray[i]->SetCardSystem(this);
+	}
+
+	Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->CardSelectWidgetChangeButton(0);
+
+	RotCounter = 0;
+}
+
+void ACardSystem::DestroyCard()
+{
+	for (int i = 0; i < CardActorArray.Num(); i++)
+	{
+		CardActorArray[i]->Destroy();
+	}
+
+	CardActorArray.Empty();
 }
 
 void ACardSystem::InitCard()
@@ -20,10 +128,17 @@ void ACardSystem::InitCard()
 	}
 
 	TimeHandlerArray.Empty();
+
+	RotCounter = 0;
 }
 
 void ACardSystem::AddCard(FCardDataTableRow _Buff, FCardDataTableRow _DeBuff)
 {
+	for (int i = 0; i < 3; i++)
+	{
+		CardActorArray[i]->SetCanClick(false);
+	}
+
 	CardArray.Add(_Buff);
 	CardArray.Add(_DeBuff);
 
@@ -97,5 +212,5 @@ void ACardSystem::AvoidType(FCardDataTableRow _Data)
 
 void ACardSystem::SpawnObject(UStaticMesh* _Mesh)
 {
-	
+
 }

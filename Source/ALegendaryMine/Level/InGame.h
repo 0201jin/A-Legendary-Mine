@@ -4,6 +4,8 @@
 
 #include "System/MapGeneratorSys/MapGeneratorSys.h"
 #include "MyGameInstance.h"
+#include "HUD/MyHUD.h"
+#include "CardSystem/CardSystem.h"
 
 #include "Engine/BrushBuilder.h"
 #include "NavMesh/NavMeshBoundsVolume.h"
@@ -15,6 +17,8 @@
  *
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FUpDateNavMeshSize, FVector, Size, FVector, Location);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdateCamera);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdateCameraCharacter);
 
 UCLASS()
 class ALEGENDARYMINE_API AInGame : public ALevelScriptActor
@@ -28,6 +32,9 @@ public:
 	void GenerateMap();
 	void UpDateNavMesh(FVector _Size, FVector _Location);
 
+	void ShuffleCard();
+	void CameraToCharacter();
+
 	UMyGameInstance* GetMyGameInstance();
 	MapGeneratorSys* GetMapgen() { return Mapgen; }
 
@@ -37,9 +44,17 @@ protected:
 protected:
 	MapGeneratorSys* Mapgen;
 	UMyGameInstance* MyGameInstance;
+	ACardSystem* CardSystem;
+	AMyHUD* MyHUD;
 
 	UPROPERTY(BluePrintAssignable, Category = "UpDateNavMesh")
 		FUpDateNavMeshSize UpdateNavMeshSize;
+
+	UPROPERTY(BluePrintAssignable, Category = "UpdateCamera")
+		FUpdateCamera UpdateCamera;
+
+	UPROPERTY(BluePrintAssignable, Category = "UpdateCamera")
+		FUpdateCameraCharacter UpdateCameraCharacter;
 
 public: //명령어 추후 반드시 지울 것.
 	UFUNCTION(BlueprintCallable, Category = "UMG Function")
