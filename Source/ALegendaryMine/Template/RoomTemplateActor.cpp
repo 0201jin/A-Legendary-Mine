@@ -45,7 +45,12 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 	{
 		UBlueprint* StaticMesh1 = LoadObject<UBlueprint>(NULL, *MyCustomAsset->ActorArr[i].MeshData, NULL, LOAD_None, NULL);
 
-		GetWorld()->SpawnActor<AActor>(StaticMesh1->GeneratedClass, MyCustomAsset->ActorArr[i].MeshTransform)->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+		ActorArr.Add(
+			GetWorld()->SpawnActor<AActor>(
+				StaticMesh1->GeneratedClass, 
+				MyCustomAsset->ActorArr[i].MeshTransform));
+
+		ActorArr[ActorArr.Num() - 1]->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 	}
 }
 
@@ -86,6 +91,14 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 	else if (_RoadLo.Y == _Lo.Y)
 	{
 		CreateRoad(_Lo, FVector(_Lo.X + (_Lo.X - _RoadLo.X), _Lo.Y, 0));
+	}
+}
+
+void ARoomTemplateActor::DestroyRoom()
+{
+	for (int i = 0; i < ActorArr.Num(); i++)
+	{
+		ActorArr[i]->Destroy();
 	}
 }
 

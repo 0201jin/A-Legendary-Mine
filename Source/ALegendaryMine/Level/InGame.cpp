@@ -45,6 +45,15 @@ void AInGame::BeginPlay()
 
 	Mapgen->MapGen(0);
 
+	//지우기
+	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
+
+	for (int i = RoomArray.Num() - 2; i < RoomArray.Num(); i++)
+	{
+		DrawDebugBox(GetWorld(), FVector(RoomArray[i].X + (RoomArray[i].SX / 2), RoomArray[i].Y + (RoomArray[i].SY / 2), 0), FVector(RoomArray[i].SX / 2, RoomArray[i].SY / 2, 100), FColor::Blue, true, -1, 0, 20);
+	}
+	//지우기
+
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }
 
@@ -93,6 +102,15 @@ void AInGame::GenerateMap()
 	Mapgen->DeleteMap();
 
 	Mapgen->MapGen(0);
+
+	//지우기
+	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
+
+	for (int i = RoomArray.Num() - 2; i < RoomArray.Num(); i++)
+	{
+		DrawDebugBox(GetWorld(), FVector(RoomArray[i].X + (RoomArray[i].SX / 2), RoomArray[i].Y + (RoomArray[i].SY / 2), 0), FVector(RoomArray[i].SX / 2, RoomArray[i].SY / 2, 100), FColor::Blue, true, -1, 0, 20);
+	}
+	//지우기
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(Mapgen->GetStartLo()));
 }

@@ -40,7 +40,7 @@ protected:
 	class UDataTable* DeBuffDataTable;
 
 public:
-	TArray<TArray<class UMyCustomAsset*>> RoomTemplateData;
+	TArray<TArray<FTemplateDataTableRow>> RoomTemplateData;
 	TArray<TArray<FRoadMeshData>> RoadTemplateData;
 	TArray<TArray<FMonsterDataTableRow>> MonsterData;
 

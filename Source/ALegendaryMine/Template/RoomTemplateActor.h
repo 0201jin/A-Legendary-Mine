@@ -18,6 +18,7 @@ public:
 
 	void SetAsset(UMyCustomAsset* _MyCustomAsset);
 	void CreateRoad(FVector _RoadLo, FVector _Lo);
+	void DestroyRoom();
 
 protected:
 	// Called when the game starts or when spawned

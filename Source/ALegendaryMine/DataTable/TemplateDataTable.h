@@ -22,6 +22,9 @@ public:
 		bool IsBossRoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool IsMonsterRoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 RoomMonsterMaxScore;
 };
 

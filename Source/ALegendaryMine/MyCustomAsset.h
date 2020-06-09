@@ -89,11 +89,7 @@ public:
 	UPROPERTY()
 		int32 SY;
 
-	UPROPERTY()
-		bool IsBossRoom;
-
 	bool bSelectActor = false;
-	int RoomMaxScoreSize = 0;
 
 	int16 MeshDataIndex = 0; //MeshDataArr¿« Index∏¶ ∞°∏£≈¥
 	int16 ActorDataIndex = 0;

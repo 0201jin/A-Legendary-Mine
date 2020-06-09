@@ -37,7 +37,7 @@ void UMyGameInstance::Init()
 	//방 템플릿 데이터 테이블
 	for (int i = 0; i < TemplateDataTable.Num(); i++)
 	{
-		RoomTemplateData.Add(TArray<class UMyCustomAsset*>());
+		RoomTemplateData.Add(TArray<FTemplateDataTableRow>());
 
 		FString RoomTemplateRSContextString;
 		TArray<FName> RoomTemplateRSRowNames;
@@ -49,9 +49,7 @@ void UMyGameInstance::Init()
 
 			if (RoomTemplateRSTableRow)
 			{
-				RoomTemplateRSTableRow->Template->IsBossRoom = RoomTemplateRSTableRow->IsBossRoom;
-				RoomTemplateRSTableRow->Template->RoomMaxScoreSize = RoomTemplateRSTableRow->RoomMonsterMaxScore;
-				RoomTemplateData[i].Add(RoomTemplateRSTableRow->Template);
+				RoomTemplateData[i].Add(*RoomTemplateRSTableRow);
 
 				UE_LOG(LogTemp, Log, TEXT("RoomTemplate Load"));
 			}
