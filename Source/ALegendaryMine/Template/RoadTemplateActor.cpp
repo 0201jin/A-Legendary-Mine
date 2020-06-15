@@ -22,7 +22,8 @@ ARoadTemplateActor::ARoadTemplateActor()
 	Walls->AttachTo(RootComponent);
 
 	BlackWalls = NewObject<UInstancedStaticMeshComponent>(this, TEXT("BlackWalls"));
-	UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Template/BlackWall.BlackWall'"), NULL, LOAD_None, NULL);
+	
+	static UStaticMesh* StaticMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Template/BlackWall.BlackWall'"), NULL, LOAD_None, NULL);
 	BlackWalls->SetStaticMesh(StaticMesh);
 	BlackWalls->AttachTo(RootComponent);
 }

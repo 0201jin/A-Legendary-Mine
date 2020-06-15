@@ -855,6 +855,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 							V1RF,
 							FVector(1, 1, 1))));
 
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
+
 					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
 					{
 						RoomActiveActorArray[i].Add(
@@ -874,6 +877,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 						FTransform(FRotator(0, 90, 0),
 							V1RF,
 							FVector(1, 1, 1))));
+
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
 
 					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
 					{
@@ -896,6 +902,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 							V2RF,
 							FVector(1, 1, 1))));
 
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
+
 					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
 					{
 						RoomActiveActorArray[i].Add(
@@ -915,6 +924,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 						FTransform(FRotator(0, 90, 0),
 							V2RF,
 							FVector(1, 1, 1))));
+
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
 
 					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
 					{
@@ -939,6 +951,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 							V1RF,
 							FVector(1, 1, 1))));
 
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
+
 					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
 					{
 						RoomActiveActorArray[i].Add(
@@ -958,6 +973,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 						FTransform(FRotator(0, -90, 0),
 							V1RF,
 							FVector(1, 1, 1))));
+
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
 
 					if (RoadArray[i].Data[fiCount].V1 != RoomArray.Num() - 1)
 					{
@@ -980,6 +998,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 							V2RF,
 							FVector(1, 1, 1))));
 
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
+
 					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
 					{
 						RoomActiveActorArray[i].Add(
@@ -999,6 +1020,9 @@ void MapGeneratorSys::MapGen(int _Stage)
 						FTransform(FRotator(0, -90, 0),
 							V2RF,
 							FVector(1, 1, 1))));
+
+					if (CheckBossRoom(i, fiCount)) //보스방 세팅
+						DoorArray[DoorArray.Num() - 1]->BossDoor();
 
 					if (RoadArray[i].Data[fiCount].V2 != RoomArray.Num() - 1)
 					{
@@ -1175,6 +1199,11 @@ void MapGeneratorSys::DestroyMonster()
 	}
 }
 
+void MapGeneratorSys::DestroyBoss()
+{
+	RoomInActiveActor();
+}
+
 TArray<FRoomData> MapGeneratorSys::GetRoomArray()
 {
 	return RoomArray;
@@ -1227,4 +1256,13 @@ bool MapGeneratorSys::IntersectLine(const FVector& _SP1, const FVector& _EP1, co
 		return false;
 
 	return true;
+}
+
+bool MapGeneratorSys::CheckBossRoom(int i, int fiCount)
+{
+	if (RoadArray[i].Data[fiCount].V1 == RoomArray.Num() - 2 ||
+		RoadArray[i].Data[fiCount].V2 == RoomArray.Num() - 2)
+		return true;
+
+	return false;
 }

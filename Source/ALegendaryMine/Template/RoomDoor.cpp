@@ -8,7 +8,7 @@ ARoomDoor::ARoomDoor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	bHidden = true;
+	bHidden = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
@@ -18,6 +18,7 @@ ARoomDoor::ARoomDoor()
 	Walls_0 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh0"));
 	Walls_1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh1"));
 	Walls_2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh2"));
+	BossDoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BossDoor"));
 
 	Walls_0->AttachTo(RootComponent);
 	Walls_0->SetStaticMesh(Steel_Barred_0.Object);
@@ -31,11 +32,16 @@ ARoomDoor::ARoomDoor()
 	Walls_2->AttachTo(RootComponent);
 	Walls_2->SetStaticMesh(Steel_Barred_1.Object);
 	Walls_2->RelativeLocation = FVector(0, 0, -190);
+
+	BossDoorMesh->AttachTo(RootComponent);
+	BossDoorMesh->SetStaticMesh(Steel_Barred_0.Object);
 }
 
 void ARoomDoor::ActiveDoor()
 {
-	SetActorHiddenInGame(false);
+	Walls_0->SetHiddenInGame(false);
+	Walls_1->SetHiddenInGame(false);
+	Walls_2->SetHiddenInGame(false);
 
 	Walls_0->SetRelativeLocation(FVector(0, 0, 0));
 	Walls_1->SetRelativeLocation(FVector(0, 0, 0));
@@ -44,15 +50,29 @@ void ARoomDoor::ActiveDoor()
 
 void ARoomDoor::InActiveDoor()
 {
-	SetActorHiddenInGame(true);
+	Walls_0->SetHiddenInGame(true);
+	Walls_1->SetHiddenInGame(true);
+	Walls_2->SetHiddenInGame(true);
 
 	Walls_0->SetRelativeLocation(FVector(0, 0, -200));
 	Walls_1->SetRelativeLocation(FVector(0, 0, -100));
 	Walls_2->SetRelativeLocation(FVector(0, 0, -190));
 }
 
+void ARoomDoor::BossDoor()
+{
+	BossDoorMesh->SetHiddenInGame(false);
+	BossDoorMesh->SetRelativeLocation(FVector(0, 0, 0));
+}
+
 void ARoomDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	BossDoorMesh->SetHiddenInGame(true);
+	BossDoorMesh->SetRelativeLocation(FVector(0, 0, -200));
+
+	Walls_0->SetHiddenInGame(true);
+	Walls_1->SetHiddenInGame(true);
+	Walls_2->SetHiddenInGame(true);
 }

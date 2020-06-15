@@ -13,8 +13,8 @@ ACardActor::ACardActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	UPaperSprite* B_PaperSpriteAsset = LoadObject<UPaperSprite>(NULL, TEXT("PaperSprite'/Game/Card/Texture/Card_Back_Sprite.Card_Back_Sprite'"), NULL, LOAD_None, NULL);
-	UPaperSprite* F_PaperSpriteAsset = LoadObject<UPaperSprite>(NULL, TEXT("PaperSprite'/Game/Card/Texture/Card_Front_Sprite.Card_Front_Sprite'"), NULL, LOAD_None, NULL);
+	static UPaperSprite* B_PaperSpriteAsset = LoadObject<UPaperSprite>(NULL, TEXT("PaperSprite'/Game/Card/Texture/Card_Back_Sprite.Card_Back_Sprite'"), NULL, LOAD_None, NULL);
+	static UPaperSprite* F_PaperSpriteAsset = LoadObject<UPaperSprite>(NULL, TEXT("PaperSprite'/Game/Card/Texture/Card_Front_Sprite.Card_Front_Sprite'"), NULL, LOAD_None, NULL);
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 

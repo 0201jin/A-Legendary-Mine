@@ -28,6 +28,7 @@ public:
 	void RoomActiveActor(int _RoomNumber);
 	void RoomInActiveActor();
 	void DestroyMonster();
+	void DestroyBoss();
 
 	TArray<FRoomData> GetRoomArray();
 	TArray<FRoadData> GetRoadArray();
@@ -41,6 +42,7 @@ public:
 
 protected:
 	bool IntersectLine(const FVector & _SP1, const FVector & _EP1, const FVector & _SP2, const FVector & _EP2);
+	bool CheckBossRoom(int i, int fiCount);
 
 protected:
 	FALGraph graph;
