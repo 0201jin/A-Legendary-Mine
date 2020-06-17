@@ -29,7 +29,7 @@ void MapGeneratorSys::MapGen(int _Stage)
 	while (GameInstance->StageSizeData[_Stage].StageSize > RoomSize) //다른 방들 생성
 	{
 		int RandomIndex = (rand() % GameInstance->RoomTemplateData[iStage].Num());
-		
+
 		if (!GameInstance->RoomTemplateData[iStage][RandomIndex].IsBossRoom)
 		{
 			UE_LOG(LogTemp, Log, TEXT("RoomIndex %d"), RandomIndex);
@@ -112,6 +112,8 @@ void MapGeneratorSys::MapGen(int _Stage)
 
 	//방이 겹치지 않게 퍼트림
 
+	int FarIdx = 0;
+	float FarDis = 0;
 	for (int i = 0; i < RoomArray.Num(); i++)
 	{
 		while (true)
@@ -120,7 +122,7 @@ void MapGeneratorSys::MapGen(int _Stage)
 
 			for (int x = 0; x < RoomArray.Num(); x++)
 			{
-				if (i != x)
+				if (i != x && i != RoomArray.Num() - 2 && x != RoomArray.Num() - 2)
 				{
 					int MinSX = RoomArray[i].SX;
 					int MinSY = RoomArray[i].SY;
@@ -133,10 +135,16 @@ void MapGeneratorSys::MapGen(int _Stage)
 					if (abs(RoomArray[i].X - RoomArray[x].X) <= (MinSX + 100) &&
 						abs(RoomArray[i].Y - RoomArray[x].Y) <= (MinSY + 100))
 					{
-						RoomArray[i].X += ((rand() % 31) - 15) * 100;
-						RoomArray[i].Y += ((rand() % 31) - 15) * 100;
+						RoomArray[i].X += ((rand() % 21) - 10) * 100;
+						RoomArray[i].Y += ((rand() % 21) - 10) * 100;
 
 						TemplateActorArray[i]->SetActorLocation(FVector(RoomArray[i].X, RoomArray[i].Y, 0));
+
+						if (FarDis < FVector::Distance(FVector(0, 0, 0), FVector(RoomArray[i].X, RoomArray[i].Y, 0)))
+						{
+							FarDis = FVector::Distance(FVector(0, 0, 0), FVector(RoomArray[i].X, RoomArray[i].Y, 0));
+							FarIdx = i;
+						}
 
 						Check = false;
 						break;
@@ -148,6 +156,51 @@ void MapGeneratorSys::MapGen(int _Stage)
 			{
 				break;
 			}
+		}
+	}
+
+	TemplateActorArray[RoomArray.Num() - 2]->SetActorLocation(FVector(RoomArray[FarIdx].X, RoomArray[FarIdx].Y, 0));
+	while (true)
+	{
+		bool Check = true;
+
+		for (int x = 0; x < RoomArray.Num(); x++)
+		{
+			if (x != RoomArray.Num() - 2)
+			{
+				int MinSX = RoomArray[RoomArray.Num() - 2].SX;
+				int MinSY = RoomArray[RoomArray.Num() - 2].SY;
+
+				if (RoomArray[RoomArray.Num() - 2].X > RoomArray[x].X)
+					MinSX = RoomArray[x].SX;
+				if (RoomArray[RoomArray.Num() - 2].Y > RoomArray[x].Y)
+					MinSY = RoomArray[x].SY;
+
+				if (abs(RoomArray[RoomArray.Num() - 2].X - RoomArray[x].X) <= (MinSX + 100) &&
+					abs(RoomArray[RoomArray.Num() - 2].Y - RoomArray[x].Y) <= (MinSY + 100))
+				{
+					int XMul = 1;
+					int YMul = 1;
+
+					if (RoomArray[FarIdx].X < 0)
+						XMul = -1;
+					if (RoomArray[FarIdx].Y < 0)
+						YMul = -1;
+
+					RoomArray[RoomArray.Num() - 2].X += ((rand() % 10)) * (100 * XMul);
+					RoomArray[RoomArray.Num() - 2].Y += ((rand() % 10)) * (100 * YMul);
+
+					TemplateActorArray[RoomArray.Num() - 2]->SetActorLocation(FVector(RoomArray[RoomArray.Num() - 2].X, RoomArray[RoomArray.Num() - 2].Y, 0));
+
+					Check = false;
+					break;
+				}
+			}
+		}
+
+		if (Check)
+		{
+			break;
 		}
 	}
 
@@ -849,9 +902,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 			{
 				if (RoadArray[i].Data[fiCount].X == V1RF.X)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[1].X > V1RF.X)
+						Rot = 180;
+					else
+						Rot = 0;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, 0, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V1RF,
 							FVector(1, 1, 1))));
 
@@ -872,9 +931,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 				}
 				else if (RoadArray[i].Data[fiCount].Y == V1RF.Y)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[1].Y > V1RF.Y)
+						Rot = -90;
+					else
+						Rot = 90;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, 90, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V1RF,
 							FVector(1, 1, 1))));
 
@@ -896,9 +961,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 
 				if (RoadArray[i].Data[fiCount].X == V2RF.X)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[1].X > V2RF.X)
+						Rot = 180;
+					else
+						Rot = 0;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, 0, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V2RF,
 							FVector(1, 1, 1))));
 
@@ -919,9 +990,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 				}
 				else if (RoadArray[i].Data[fiCount].Y == V2RF.Y)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[1].Y > V2RF.Y)
+						Rot = -90;
+					else
+						Rot = 90;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, 90, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V2RF,
 							FVector(1, 1, 1))));
 
@@ -945,9 +1022,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 			{
 				if (RoadArray[i].Data[fiCount].X == V1RF.X)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[0].X > V1RF.X)
+						Rot = 180;
+					else
+						Rot = 0;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, 180, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V1RF,
 							FVector(1, 1, 1))));
 
@@ -968,9 +1051,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 				}
 				else if (RoadArray[i].Data[fiCount].Y == V1RF.Y)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[0].Y > V1RF.Y)
+						Rot = -90;
+					else
+						Rot = 90;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, -90, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V1RF,
 							FVector(1, 1, 1))));
 
@@ -992,9 +1081,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 
 				if (RoadArray[i].Data[fiCount].X == V2RF.X)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[0].X > V2RF.X)
+						Rot = 180;
+					else
+						Rot = 0;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, 180, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V2RF,
 							FVector(1, 1, 1))));
 
@@ -1015,9 +1110,15 @@ void MapGeneratorSys::MapGen(int _Stage)
 				}
 				else if (RoadArray[i].Data[fiCount].Y == V2RF.Y)
 				{
+					float Rot = 0;
+					if (RoadArray[i].Data[0].Y > V2RF.Y)
+						Rot = -90;
+					else
+						Rot = 90;
+
 					DoorArray.Add(InGameLevel->GetWorld()->SpawnActor<ARoomDoor>(
 						ARoomDoor::StaticClass(),
-						FTransform(FRotator(0, -90, 0),
+						FTransform(FRotator(0, Rot, 0),
 							V2RF,
 							FVector(1, 1, 1))));
 
@@ -1095,12 +1196,13 @@ void MapGeneratorSys::DeleteMap()
 
 void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 {
-	UE_LOG(LogTemp, Log, TEXT("RoomActive %d"), RoomArray[_RoomNumber].RoomNumber);
-
-	if (GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber].IsMonsterRoom)
+	if (RoomActiveActorArray[_RoomNumber].Num() > 0)
 	{
-		if (RoomActiveActorArray[_RoomNumber].Num() > 0)
+		if (GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber].IsMonsterRoom)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 60, FColor::Blue, TEXT("Active Room"));
+
+
 			for (int i = 0; i < MonsterArray[_RoomNumber].Num();)
 			{
 				int iNum = GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber].Template->ActorArr.Num();
@@ -1163,22 +1265,34 @@ void MapGeneratorSys::RoomActiveActor(int _RoomNumber)
 				}
 			}
 		}
-	}
-	else if (GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber].IsBossRoom)
-	{
-		//보스 몬스터 스폰
-		GEngine->AddOnScreenDebugMessage(-1, 60, FColor::Red, TEXT("Active Boos Room"));
+		else if (GameInstance->RoomTemplateData[iStage][RoomArray[_RoomNumber].RoomNumber].IsBossRoom)
+		{
+			//보스 몬스터 스폰
+			GEngine->AddOnScreenDebugMessage(-1, 60, FColor::Red, TEXT("Active Boos Room"));
 
-		RoomActiveActorArray[_RoomNumber].Empty();
-
-		InGameLevel->UpDateNavMesh(
-			FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100),
-			FVector(
+			FVector Lo = FVector(
 				RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
-				RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
+				RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10);
 
-		for (int ii = 0; ii < DoorArray.Num(); ii++)
-			DoorArray[ii]->ActiveDoor();
+			int BossRandom = rand() % GameInstance->BossData[iStage].Num();
+
+			InGameLevel->GetWorld()->SpawnActor<ABossActor>(
+				GameInstance->BossData[iStage][BossRandom].Class,
+				FTransform(FRotator(0, 0, 0),
+					FVector(Lo.X, Lo.Y, GameInstance->BossData[iStage][BossRandom].SpawnHeight),
+					FVector(1, 1, 1)));
+
+			RoomActiveActorArray[_RoomNumber].Empty();
+
+			InGameLevel->UpDateNavMesh(
+				FVector(RoomArray[_RoomNumber].SX, RoomArray[_RoomNumber].SY, 100),
+				FVector(
+					RoomArray[_RoomNumber].X + RoomArray[_RoomNumber].SX / 2,
+					RoomArray[_RoomNumber].Y + RoomArray[_RoomNumber].SY / 2, -10));
+
+			for (int ii = 0; ii < DoorArray.Num(); ii++)
+				DoorArray[ii]->ActiveDoor();
+		}
 	}
 }
 

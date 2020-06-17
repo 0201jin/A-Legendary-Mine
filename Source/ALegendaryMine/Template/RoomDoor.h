@@ -29,5 +29,8 @@ protected:
 	UStaticMeshComponent* Walls_1;
 	UStaticMeshComponent* Walls_2;
 
+	UStaticMeshComponent* BossDoorFrameMesh;
 	UStaticMeshComponent* BossDoorMesh;
+
+	bool bBossDoor = false;
 };

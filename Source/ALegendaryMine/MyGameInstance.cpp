@@ -17,6 +17,9 @@ UMyGameInstance::UMyGameInstance()
 	static ConstructorHelpers::FObjectFinder<UDataTable> MonsterData1(TEXT("DataTable'/Game/Template/TemplateDataTable/Monster_Stage1.Monster_Stage1'"));
 	MonsterDataTable.Add(MonsterData1.Object);
 
+	static ConstructorHelpers::FObjectFinder<UDataTable> BossData(TEXT("DataTable'/Game/Template/TemplateDataTable/Boss_Stage1.Boss_Stage1'"));
+	BossDataTable.Add(BossData.Object);
+
 	static ConstructorHelpers::FObjectFinder<UDataTable> StageSizeData(TEXT("DataTable'/Game/Template/TemplateDataTable/StageSize/StageSizeDataTable.StageSizeDataTable'"));
 	StageSizeDataTable = StageSizeData.Object;
 
@@ -99,6 +102,26 @@ void UMyGameInstance::Init()
 			if (MonsterTemplateRSTableRow)
 			{
 				MonsterData[i].Add(*MonsterTemplateRSTableRow);
+			}
+		}
+	}
+
+	//보스 데이터 테이블
+	for (int i = 0; i < BossDataTable.Num(); i++)
+	{
+		BossData.Add(TArray<FBossDataTableRow>());
+
+		FString BossTemplateRSContextString;
+		TArray<FName> BossTemplateRSRowNames;
+		BossTemplateRSRowNames = BossDataTable[i]->GetRowNames();
+
+		for (auto& name : BossTemplateRSRowNames)
+		{
+			FBossDataTableRow* BossTemplateRSTableRow = BossDataTable[i]->FindRow<FBossDataTableRow>(name, BossTemplateRSContextString);
+
+			if (BossTemplateRSTableRow)
+			{
+				BossData[i].Add(*BossTemplateRSTableRow);
 			}
 		}
 	}

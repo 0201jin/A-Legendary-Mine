@@ -45,6 +45,9 @@ void AInGame::BeginPlay()
 
 	Mapgen->MapGen(0);
 
+	//
+	CameraToCharacter();
+
 	//Áö¿ì±â
 	TArray<FRoomData> RoomArray = Mapgen->GetRoomArray();
 

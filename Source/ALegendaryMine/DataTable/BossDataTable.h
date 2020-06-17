@@ -16,6 +16,9 @@ struct FBossDataTableRow : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		UClass* Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		int32 SpawnHeight;
 };
 
 UCLASS()

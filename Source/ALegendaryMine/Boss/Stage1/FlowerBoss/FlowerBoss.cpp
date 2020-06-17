@@ -9,13 +9,37 @@ AFlowerBoss::AFlowerBoss()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	static ConstructorHelpers::FObjectFinder<UClass> AnimClass(TEXT("AnimBlueprint'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_Animation.FlowerBoss_Animation_C'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("SkeletalMesh'/Game/Boss/1Stage/Flower/FlowerBoss_1.FlowerBoss_1'"));
+
+	GetCapsuleComponent()->SetRelativeScale3D(FVector(3, 3, 3));
+	GetCapsuleComponent()->SetCapsuleRadius(7);
+
+	GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
+	GetMesh()->SetRelativeRotation(FRotator(0, 90, 0));
+	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetMesh()->AnimClass = AnimClass.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackToRootMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Attack_To_Root_Montage.FlowerBoss_1_Armature_Attack_To_Root_Montage'"));
+	AttackToRootAnim = AttackToRootMo.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackToSideMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Fire_To_Side_Montage.FlowerBoss_1_Armature_Fire_To_Side_Montage'"));
+	AttackToSideAnim = AttackToSideMo.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackToSkyMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Fire_To_Sky_Montage.FlowerBoss_1_Armature_Fire_To_Sky_Montage'"));
+	AttackToSkyAnim = AttackToSkyMo.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Dead_Montage.FlowerBoss_1_Armature_Dead_Montage'"));
+	DeadAnim = DeadMo.Object;
 }
 
 // Called when the game starts or when spawned
 void AFlowerBoss::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	AnimInstance = GetMesh()->GetAnimInstance();
 }
 
 // Called every frame

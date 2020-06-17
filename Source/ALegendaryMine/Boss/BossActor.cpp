@@ -17,6 +17,7 @@ void ABossActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnDefaultController();
 }
 
 void ABossActor::PossessedBy(AController* NewController)

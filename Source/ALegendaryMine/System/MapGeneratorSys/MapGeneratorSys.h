@@ -10,6 +10,7 @@
 #include "Monster/BumpType/BumpTypeMonster.h"
 #include "Monster/MeleeType/MeleeType.h"
 #include "Monster/StandOffType/StandOffTypeMonster.h"
+#include "Boss/BossActor.h"
 
 #include "CoreMinimal.h"
 
@@ -62,4 +63,6 @@ protected:
 	int MaxDisIndex;
 	int iStage = 0;
 	int iMonsterCount = 0;
+
+	bool bRoomActive = false;
 };

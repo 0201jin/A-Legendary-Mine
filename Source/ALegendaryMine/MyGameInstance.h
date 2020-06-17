@@ -7,6 +7,7 @@
 #include "DataTable/MonsterDataTable.h"
 #include "DataTable/WeaponDataTable.h"
 #include "DataTable/CardDataTable.h"
+#include "DataTable/BossDataTable.h"
 
 #include "Struct/MapGeneratorStruct.h"
 
@@ -32,10 +33,10 @@ protected:
 	TArray<class UDataTable*> TemplateDataTable;
 	TArray<class UDataTable*> RoadTemplateDataTable;
 	TArray<class UDataTable*> MonsterDataTable;
-	
+	TArray<class UDataTable*> BossDataTable;
+
 	class UDataTable* StageSizeDataTable;
 	class UDataTable* WeaponDataTable;
-
 	class UDataTable* BuffDataTable;
 	class UDataTable* DeBuffDataTable;
 
@@ -43,6 +44,7 @@ public:
 	TArray<TArray<FTemplateDataTableRow>> RoomTemplateData;
 	TArray<TArray<FRoadMeshData>> RoadTemplateData;
 	TArray<TArray<FMonsterDataTableRow>> MonsterData;
+	TArray<TArray<FBossDataTableRow>> BossData;
 
 	TArray<FStageSizeDataTableRow> StageSizeData;
 	TArray<FWeaponDataTableRow> WeaponData;

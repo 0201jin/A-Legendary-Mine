@@ -23,4 +23,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	UAnimMontage* AttackToRootAnim;
+	UAnimMontage* AttackToSideAnim;
+	UAnimMontage* AttackToSkyAnim;
+	UAnimMontage* DeadAnim;
+
+	UAnimInstance* AnimInstance;
 };
