@@ -16,7 +16,7 @@ AAdventurer::AAdventurer()
 	GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
 
 	GetCapsuleComponent()->SetCapsuleHalfHeight(32);
-	GetCapsuleComponent()->SetCapsuleRadius(32);
+	GetCapsuleComponent()->SetCapsuleRadius(8.6f);
 	
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> Skeletal(TEXT("SkeletalMesh'/Game/Character/Adventurer/Adventurer.Adventurer'"));
 	GetMesh()->SetSkeletalMesh(Skeletal.Object);

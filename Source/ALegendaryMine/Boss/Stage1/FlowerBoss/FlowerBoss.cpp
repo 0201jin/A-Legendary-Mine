@@ -3,6 +3,11 @@
 
 #include "FlowerBoss.h"
 
+#include "Boss/CircleSkillRange.h"
+#include "Skill/RootSkill.h"
+
+#define RAND_TERM ((rand() % 3) + 2)
+
 // Sets default values
 AFlowerBoss::AFlowerBoss()
 {
@@ -32,6 +37,7 @@ AFlowerBoss::AFlowerBoss()
 	
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Dead_Montage.FlowerBoss_1_Armature_Dead_Montage'"));
 	DeadAnim = DeadMo.Object;
+
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +46,40 @@ void AFlowerBoss::BeginPlay()
 	Super::BeginPlay();
 
 	AnimInstance = GetMesh()->GetAnimInstance();
+	
+	GetWorldTimerManager().SetTimer(AttackTerm, this, &AFlowerBoss::AttackTermFunc, 0.1, false, RAND_TERM);
+}
+
+void AFlowerBoss::AttackToRoot()
+{
+	FVector Lo = GetActorLocation();
+	Lo.Z = 0.5;
+
+	for (int i = 1; i < 9; i++)
+	{
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X + (100 * i), Lo.Y, Lo.Z), FVector(1, 1, 1)))->SetLifeTime(3, ARootSkill::StaticClass());
+
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X - (100 * i), Lo.Y, Lo.Z), FVector(1, 1, 1)))->SetLifeTime(3, ARootSkill::StaticClass());
+
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X, Lo.Y + (100 * i), Lo.Z), FVector(1, 1, 1)))->SetLifeTime(3, ARootSkill::StaticClass());
+
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X, Lo.Y - (100 * i), Lo.Z), FVector(1, 1, 1)))->SetLifeTime(3, ARootSkill::StaticClass());
+		
+	}
+
+	GetWorldTimerManager().SetTimer(AttackTerm, this, &AFlowerBoss::AttackTermFunc, 0.1, false, RAND_TERM + 3);
+}
+
+void AFlowerBoss::AttackToSide()
+{
+}
+
+void AFlowerBoss::AttackToSky()
+{
 }
 
 // Called every frame
@@ -47,4 +87,11 @@ void AFlowerBoss::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bCanAttack)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Attack Sibal"));
+		bCanAttack = false;
+
+		AttackToRoot();
+	}
 }

@@ -5,6 +5,8 @@
 #include "Monster/MonsterActor.h"
 #include "HitBox/HitBox.h"
 
+#include "Boss/CircleSkillRange.h"
+
 void APlayerPawn::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (bJumping && bGodMode)
@@ -26,8 +28,6 @@ APlayerPawn::APlayerPawn()
 
 	Cast<UCapsuleComponent>(RootComponent)->SetCollisionProfileName("Pawn");
 	Cast<UCapsuleComponent>(RootComponent)->OnComponentBeginOverlap.AddDynamic(this, &APlayerPawn::OnOverlapBegin);
-
-	GetCapsuleComponent()->SetCapsuleRadius(14.f);
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //값을 올리면 옆으로 흐르듯 이동

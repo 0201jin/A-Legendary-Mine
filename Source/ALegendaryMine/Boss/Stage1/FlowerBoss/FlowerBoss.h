@@ -2,6 +2,7 @@
 
 #pragma once
 #include "Boss/BossActor.h"
+#include "Engine.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -20,6 +21,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void AttackToRoot();
+	void AttackToSide();
+	void AttackToSky();
+
+	void AttackTermFunc() { bCanAttack = true; }
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,4 +38,8 @@ protected:
 	UAnimMontage* DeadAnim;
 
 	UAnimInstance* AnimInstance;
+
+	FTimerHandle AttackTerm;
+
+	bool bCanAttack = false;
 };

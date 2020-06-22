@@ -35,9 +35,12 @@ void ARoomActiveActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (RoomNumber != -1 && Cast<APlayerPawn>(OtherActor) != nullptr)
 	{
-		Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (OtherComp == Cast<APlayerPawn>(OtherActor)->GetCapsuleComponent())
+		{
+			Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		//모든 방의 창을 닫는 함수
-		Cast<AInGame>(GetWorld()->GetLevelScriptActor())->GetMapgen()->RoomActiveActor(RoomNumber);
+			//모든 방의 창을 닫는 함수
+			Cast<AInGame>(GetWorld()->GetLevelScriptActor())->GetMapgen()->RoomActiveActor(RoomNumber);
+		}
 	}
 }

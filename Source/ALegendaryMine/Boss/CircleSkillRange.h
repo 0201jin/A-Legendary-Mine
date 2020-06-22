@@ -2,33 +2,35 @@
 
 #pragma once
 #include "Engine/Classes/Particles/ParticleSystemComponent.h"
-#include "Boss/SkillActor.h"
+#include "Engine.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "RootSkill.generated.h"
+#include "CircleSkillRange.generated.h"
 
 UCLASS()
-class ALEGENDARYMINE_API ARootSkill : public ASkillActor
+class ALEGENDARYMINE_API ACircleSkillRange : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ARootSkill();
+	ACircleSkillRange();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetLifeTime(float _Time, UClass * _SpawnActor);
+
 protected:
 	UParticleSystemComponent* Effect;
-	UStaticMeshComponent* Cylinder;
+	UClass* SpawnActor;
+
+	float Time = 0;
+	float LifeTime = 0;
 };

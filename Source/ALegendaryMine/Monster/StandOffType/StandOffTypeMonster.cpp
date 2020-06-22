@@ -51,11 +51,13 @@ void AStandOffTypeMonster::IsNotStun()
 			AiController->MoveToLocation(GetActorLocation());
 			AnimInstance->Montage_Play(AttackAnimation);
 		}
-		else if (Distance > (Distance / 3) && bCanAttack)
+		else if (Distance > AttackDistance && bCanAttack)
 			AiController->MoveToLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 
-		else if (500 <= AttackDistance && !bCanAttack)
-			AiController->MoveToLocation(GetActorLocation() + (GetActorForwardVector() * -10));
+		else if (500 >= Distance && !bCanAttack)
+		{
+			AiController->MoveToLocation(GetActorLocation() + (GetActorForwardVector() * -100));
+		}
 	}
 }
 

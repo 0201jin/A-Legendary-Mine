@@ -2,50 +2,52 @@
 
 
 #include "RootSkill.h"
-#include "Engine.h"
+
+#include "Player/PlayerPawn.h"
 
 // Sets default values
 ARootSkill::ARootSkill()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	static UStaticMesh* RootMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Boss/1Stage/Flower/Skill/Cone.Cone'"));
 	static UMaterial* RootMat = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/Boss/1Stage/Flower/Skill/DefaultMaterial.DefaultMaterial'"));
+	static UStaticMesh* CylinderMesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Engine/BasicShapes/Cylinder.Cylinder'"));
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
-	Mesh = NewObject<UInstancedStaticMeshComponent>(this, TEXT("RootMesh"));
-	Mesh->SetStaticMesh(RootMesh);
-	Mesh->AttachTo(RootComponent);
-	Mesh->SetRelativeLocation(FVector(0, 0, 0));
+	Cylinder = NewObject<UStaticMeshComponent>(this, TEXT("Cylinder"));
+	Cylinder->SetStaticMesh(CylinderMesh);
+	Cylinder->AttachTo(RootComponent);
+	Cylinder->SetVisibility(false);
+	Cylinder->SetGenerateOverlapEvents(true);
+	Cylinder->OnComponentBeginOverlap.AddDynamic(this, &ARootSkill::OnOverlapBegin);
+	Cylinder->SetCollisionProfileName("OverlapAll");
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectAsset(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/RootSkillEffect.RootSkillEffect'"));
+
+	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MovementParticles"));
+	Effect->AttachTo(RootComponent);
+	Effect->SetTemplate(EffectAsset.Object);
+	Effect->SetRelativeLocation(FVector(0, 0, 0));
+	Effect->SetActive(false);
 }
 
 // Called when the game starts or when spawned
 void ARootSkill::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	int r = (rand() % 4) + 4;
 
-	for (int i = 0; i < r; i++)
+	Effect->SetActive(true);
+}
+
+void ARootSkill::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (Cast<APlayerPawn>(OtherActor))
 	{
-		FVector Location = GetActorLocation();
-		Location.X += (rand() % 100) - 50;
-		Location.Y += (rand() % 100) - 50;
-		Location.Z = 0;
-
-		FVector Scale = FVector(0.1, 0.1, 1);
-		int rs = ((rand() % 5)) * 0.1;
-		Scale.X += rs;
-		Scale.Y += rs;
-		Scale.Z += ((rand() % 20)) * 0.1;
-
-		FRotator Rotation = FRotator(0, 0, 0);
-		Rotation.Yaw = (rand() % 50) - 25;
-		Rotation.Pitch = (rand() % 50) - 25;
-
-		Mesh->AddInstanceWorldSpace(FTransform(Rotation, Location, Scale));
+		if (Cast<APlayerPawn>(OtherActor)->GetCapsuleComponent() == OtherComp)
+			Cast<APlayerPawn>(OtherActor)->Damage(1);
 	}
 }
 
@@ -55,4 +57,3 @@ void ARootSkill::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
