@@ -33,9 +33,14 @@ void ACircleSkillRange::Tick(float DeltaTime)
 
 	Time += DeltaTime;
 
+	if (SpawnTime <= Time && !bSpawn)
+	{
+		bSpawn = true;
+		GetWorld()->SpawnActor<ASkillActor>(SpawnActor, GetActorTransform())->SetLifeTime(SkillLifeTime);
+	}
+
 	if (LifeTime <= Time)
 	{
-		GetWorld()->SpawnActor<ASkillActor>(SpawnActor, GetActorTransform())->SetLifeTime(1);
 		Destroy();
 	}
 
@@ -45,9 +50,21 @@ void ACircleSkillRange::Tick(float DeltaTime)
 	Effect->SetFloatParameter("ColorAlpha", Result);
 }
 
-void ACircleSkillRange::SetLifeTime(float _Time, UClass* _SpawnActor)
+void ACircleSkillRange::SetLifeTime(float _Time, UClass* _SpawnActor, float _SkillLifeTime)
 {
 	LifeTime = _Time;
 	SpawnActor = _SpawnActor;
+	SpawnTime = _Time;
+
+	SkillLifeTime = _SkillLifeTime;
+}
+
+void ACircleSkillRange::SetLifeTime(float _Time, float _SpawnTime, UClass* _SpawnActor, float _SkillLifeTime)
+{
+	LifeTime = _Time;
+	SpawnActor = _SpawnActor;
+	SpawnTime = _SpawnTime;
+
+	SkillLifeTime = _SkillLifeTime;
 }
 

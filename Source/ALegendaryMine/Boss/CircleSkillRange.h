@@ -25,7 +25,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetLifeTime(float _Time, UClass * _SpawnActor);
+	void SetLifeTime(float _Time, UClass * _SpawnActor, float _SkillLifeTime = 1);
+	void SetLifeTime(float _Time, float _SpawnTime, UClass * _SpawnActor, float _SkillLifeTime = 1);
 
 protected:
 	UParticleSystemComponent* Effect;
@@ -33,4 +34,8 @@ protected:
 
 	float Time = 0;
 	float LifeTime = 0;
+	float SpawnTime = 0;
+	float SkillLifeTime = 0;
+
+	bool bSpawn = false;
 };

@@ -17,6 +17,8 @@ public:
 	// Sets default values for this character's properties
 	AFlowerBoss();
 
+	void Attack();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -25,7 +27,12 @@ protected:
 	void AttackToSide();
 	void AttackToSky();
 
-	void AttackTermFunc() { bCanAttack = true; }
+	void PlayATS();
+
+	void AttackTermFunc();
+	void CanAttackFunc() { bCanAttack = true; }
+
+	void Dead();
 
 public:	
 	// Called every frame
@@ -37,9 +44,8 @@ protected:
 	UAnimMontage* AttackToSkyAnim;
 	UAnimMontage* DeadAnim;
 
-	UAnimInstance* AnimInstance;
-
 	FTimerHandle AttackTerm;
+	FTimerHandle AttackTimer;
 
 	bool bCanAttack = false;
 };

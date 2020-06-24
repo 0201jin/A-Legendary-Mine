@@ -30,13 +30,36 @@ void ABossActor::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Log, TEXT("Monster : Possessed Controller!"));
 }
 
+void ABossActor::Dead()
+{
+}
+
 void ABossActor::Damage(int _Damage, AActor* _ACKActor)
 {
+	UE_LOG(LogTemp, Log, TEXT("BossMonster : Damaged!"));
+
 	Health -= _Damage;
 
-	if (Health <= 0)
+	if (Health <= 0 && !bDead)
 	{
-		Destroy();
+		bDead = true;
+		Dead();
 		Cast<AInGame>(GetWorld()->GetLevelScriptActor())->GetMapgen()->DestroyBoss();
+		SetActorTickEnabled(false);
 	}
+}
+
+void ABossActor::Attack()
+{
+	UE_LOG(LogTemp, Log, TEXT("BossMonster : Attack!"));
+}
+
+void ABossActor::Pause()
+{
+	AnimInstance->Montage_Pause();
+}
+
+void ABossActor::End()
+{
+	AnimInstance->Montage_Stop(0.1);
 }

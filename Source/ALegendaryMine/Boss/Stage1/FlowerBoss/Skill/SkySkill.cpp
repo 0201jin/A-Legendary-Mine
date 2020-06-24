@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "RootSkill.h"
+#include "SkySkill.h"
 
 // Sets default values
-ARootSkill::ARootSkill()
+ASkySkill::ASkySkill()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	static UMaterial* RootMat = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/Boss/1Stage/Flower/Skill/DefaultMaterial.DefaultMaterial'"));
@@ -18,11 +18,12 @@ ARootSkill::ARootSkill()
 	Cylinder->SetStaticMesh(CylinderMesh);
 	Cylinder->AttachTo(RootComponent);
 	Cylinder->SetVisibility(false);
-	Cylinder->SetGenerateOverlapEvents(true);
-	Cylinder->OnComponentBeginOverlap.AddDynamic(this, &ARootSkill::OnOverlapBegin);
+	Cylinder->SetGenerateOverlapEvents(false);
+	Cylinder->SetRelativeScale3D(FVector(0.1, 0.1, 0.1));
+	Cylinder->OnComponentBeginOverlap.AddDynamic(this, &ASkySkill::OnOverlapBegin);
 	Cylinder->SetCollisionProfileName("OverlapAll");
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectAsset(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/RootSkillEffect.RootSkillEffect'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectAsset(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/SkyAttackEffect.SkyAttackEffect'"));
 
 	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MovementParticles"));
 	Effect->AttachTo(RootComponent);
@@ -32,16 +33,24 @@ ARootSkill::ARootSkill()
 }
 
 // Called when the game starts or when spawned
-void ARootSkill::BeginPlay()
+void ASkySkill::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Cylinder->SetGenerateOverlapEvents(true);
 }
 
 // Called every frame
-void ARootSkill::Tick(float DeltaTime)
+void ASkySkill::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Time += DeltaTime;
+
+	if (Time >= 1 && !bCanDamage)
+	{
+		Cylinder->SetGenerateOverlapEvents(true);
+		Cylinder->SetRelativeScale3D(FVector(1, 1, 1));
+		bCanDamage = true;
+	}
 }
+

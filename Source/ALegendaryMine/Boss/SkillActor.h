@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#include "Player/PlayerPawn.h"
+#include "Engine/Classes/Particles/ParticleSystemComponent.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -21,6 +23,9 @@ protected:
 
 	void DestroySkill();
 
+	UFUNCTION()
+		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,4 +34,11 @@ public:
 
 protected:
 	FTimerHandle LifeTime;
+
+	bool bCanDamage = false;
+	float Time = 0;
+
+protected:
+	UParticleSystemComponent* Effect;
+	UStaticMeshComponent* Cylinder;
 };
