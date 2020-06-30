@@ -79,6 +79,8 @@ void APlayerPawn::Tick(float DeltaTime)
 		DiRo.Roll = 0;
 
 		HitBox->SetActorRotation(DiRo);
+
+		HitBox->SetCollisionEnable(ECollisionEnabled::QueryAndPhysics);
 	}
 }
 
@@ -159,7 +161,6 @@ void APlayerPawn::Damage(int _Damage)
 {
 	UE_LOG(LogTemp, Log, TEXT("Player Damaged!"));
 }
-
 void APlayerPawn::Attack(FRotator _Ro)
 {
 	if (CheckAction())
@@ -167,7 +168,6 @@ void APlayerPawn::Attack(FRotator _Ro)
 		SetActorRotation(_Ro);
 
 		HitBox->ClearHitMonster();
-		HitBox->SetCollisionEnable(ECollisionEnabled::QueryAndPhysics);
 
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (!AnimInstance || !AttackAnimation) return;

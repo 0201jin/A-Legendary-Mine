@@ -23,6 +23,9 @@ AFlowerBoss::AFlowerBoss()
 	static ConstructorHelpers::FObjectFinder<UClass> AnimClass(TEXT("AnimBlueprint'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_Animation.FlowerBoss_Animation_C'"));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("SkeletalMesh'/Game/Boss/1Stage/Flower/FlowerBoss_1.FlowerBoss_1'"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ProjectileStaticMesh(TEXT("StaticMesh'/Game/Monster/Monster_Projectile.Monster_Projectile'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> MissileParticle(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/SkyAttackP1Effect.SkyAttackP1Effect'"));
+
+	MissileEffect = MissileParticle.Object;
 
 	ProjectileMesh = ProjectileStaticMesh.Object;
 
@@ -86,6 +89,35 @@ void AFlowerBoss::AttackToRoot()
 	GetWorldTimerManager().SetTimer(AttackTerm, this, &AFlowerBoss::AttackTermFunc, 0.1, false, RAND_TERM + iAT);
 }
 
+void AFlowerBoss::AttackToRootP1()
+{
+	FVector Lo = GetActorLocation();
+	Lo.Z = 0.5;
+
+	float iAT = 0.9;
+
+	for (int i = 1; i < 9; i++)
+	{
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X + (100 * i), Lo.Y + (100 * i), Lo.Z), FVector(1, 1, 1)))->SetLifeTime(iAT, ARootSkill::StaticClass());
+
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X - (100 * i), Lo.Y - (100 * i), Lo.Z), FVector(1, 1, 1)))->SetLifeTime(iAT, ARootSkill::StaticClass());
+
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X - (100 * i), Lo.Y + (100 * i), Lo.Z), FVector(1, 1, 1)))->SetLifeTime(iAT, ARootSkill::StaticClass());
+
+		GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
+			FTransform(FRotator(0, 0, 0), FVector(Lo.X + (100 * i), Lo.Y - (100 * i), Lo.Z), FVector(1, 1, 1)))->SetLifeTime(iAT, ARootSkill::StaticClass());
+
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Patten 1"));
+
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AFlowerBoss::End, 0.1, false, iAT + 0.5);
+	GetWorldTimerManager().SetTimer(AttackTerm, this, &AFlowerBoss::AttackTermFunc, 0.1, false, RAND_TERM + iAT);
+}
+
 void AFlowerBoss::AttackToSide()
 {
 	FRotator Rot = GetActorRotation();
@@ -127,6 +159,9 @@ void AFlowerBoss::AttackTermFunc()
 
 void AFlowerBoss::Dead()
 {
+	End();
+	AttackParam = -1;
+	GetWorldTimerManager().ClearTimer(AttackTimer);
 	AnimInstance->Montage_Play(DeadAnim);
 }
 
@@ -139,12 +174,18 @@ void AFlowerBoss::Attack()
 		break;
 
 	case 1:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MissileEffect, FVector(GetActorLocation().X, GetActorLocation().Y, 400));
 		AttackToSky();
 		break;
 
 	case 2:
+		SetActorRotation(FRotator(0, rand() % 360, 0));
 		GetWorldTimerManager().SetTimer(AttackTimer, this, &AFlowerBoss::AttackToSide, 0.5, true, 0);
 		GetWorldTimerManager().SetTimer(AttackTerm, this, &AFlowerBoss::AttackTermFunc, 0.1, false, RAND_TERM + 5);
+		break;
+
+	case 3:
+		AttackToRootP1();
 		break;
 	}
 }
@@ -158,7 +199,7 @@ void AFlowerBoss::Tick(float DeltaTime)
 	{
 		bCanAttack = false;
 
-		AttackParam = rand() % 3;
+		AttackParam = rand() % 4;
 
 		switch (AttackParam)
 		{
@@ -173,6 +214,10 @@ void AFlowerBoss::Tick(float DeltaTime)
 
 		case 2:
 			AnimInstance->Montage_Play(AttackToSideAnim);
+			break;
+
+		case 3:
+			AnimInstance->Montage_Play(AttackToRootAnim);
 			break;
 		}
 	}

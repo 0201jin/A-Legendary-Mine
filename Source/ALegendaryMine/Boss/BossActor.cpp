@@ -56,10 +56,11 @@ void ABossActor::Attack()
 
 void ABossActor::Pause()
 {
+	UE_LOG(LogTemp, Log, TEXT("BossMonster : Pause!"));
 	AnimInstance->Montage_Pause();
 }
 
 void ABossActor::End()
 {
-	AnimInstance->Montage_Stop(0.1);
+	AnimInstance->Montage_Stop(0);
 }

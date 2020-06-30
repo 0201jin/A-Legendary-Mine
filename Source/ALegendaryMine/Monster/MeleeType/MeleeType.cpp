@@ -43,6 +43,7 @@ void AMeleeType::BeginPlay()
 			FVector(HitBoxSize.X, HitBoxSize.Y, 1)));
 
 	HitBox->SetDamage(1);
+	HitBox->OwnerActor = this;
 }
 
 void AMeleeType::IsNotStun()

@@ -4,6 +4,7 @@
 #include "Player/PlayerPawn.h"
 #include "Template/RoomTemplateActor.h"
 #include "Template/RoadTemplateActor.h"
+#include "Template/RoomDoor.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -62,7 +63,8 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		Destroy();
 	}
 
-	else if (Cast<ARoomTemplateActor>(OtherActor) || Cast<ARoadTemplateActor>(OtherActor))
+	else if (Cast<ARoomTemplateActor>(OtherActor) || Cast<ARoadTemplateActor>(OtherActor)
+		|| Cast<ARoomDoor>(OtherActor))
 	{
 		Destroy();
 	}

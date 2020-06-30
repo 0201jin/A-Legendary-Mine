@@ -12,8 +12,8 @@ UCLASS()
 class ALEGENDARYMINE_API AHitBox : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHitBox();
 
@@ -21,13 +21,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetDamage(int _Damage);
 	void ClearHitMonster();
 	void SetCollisionEnable(ECollisionEnabled::Type _Collision);
+
+	UFUNCTION(BlueprintCallable)
+		FVector GetOwnerActorLocation() { return OwnerActor->GetActorLocation(); }
+
+public:
+	AActor* OwnerActor;
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)

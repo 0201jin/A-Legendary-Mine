@@ -24,6 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void AttackToRoot();
+	void AttackToRootP1();
 	void AttackToSide();
 	void AttackToSky();
 
@@ -46,6 +47,8 @@ protected:
 
 	FTimerHandle AttackTerm;
 	FTimerHandle AttackTimer;
+
+	UParticleSystem* MissileEffect;
 
 	bool bCanAttack = false;
 };

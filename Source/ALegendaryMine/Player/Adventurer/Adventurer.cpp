@@ -52,6 +52,7 @@ void AAdventurer::BeginPlay()
 			FVector(1, HitBoxX, HitBoxY)));
 
 	HitBox->SetDamage(AD);
+	HitBox->OwnerActor = this;
 }
 
 // Called every frame
