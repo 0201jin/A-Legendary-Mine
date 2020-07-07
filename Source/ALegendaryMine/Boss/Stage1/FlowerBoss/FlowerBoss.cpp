@@ -23,7 +23,7 @@ AFlowerBoss::AFlowerBoss()
 	static ConstructorHelpers::FObjectFinder<UClass> AnimClass(TEXT("AnimBlueprint'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_Animation.FlowerBoss_Animation_C'"));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("SkeletalMesh'/Game/Boss/1Stage/Flower/FlowerBoss_1.FlowerBoss_1'"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ProjectileStaticMesh(TEXT("StaticMesh'/Game/Monster/Monster_Projectile.Monster_Projectile'"));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> MissileParticle(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/SkyAttackP1Effect.SkyAttackP1Effect'"));
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> MissileParticle(TEXT("NiagaraSystem'/Game/Boss/1Stage/Flower/Skill/SkyAttackP1_NG.SkyAttackP1_NG'"));
 
 	MissileEffect = MissileParticle.Object;
 
@@ -140,7 +140,7 @@ void AFlowerBoss::AttackToSky()
 	FVector Lo = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 
 	GetWorld()->SpawnActor<ACircleSkillRange>(ACircleSkillRange::StaticClass(),
-		FTransform(FRotator(0, 0, 0), FVector(Lo.X, Lo.Y, 0.5), FVector(1.5, 1.5, 1.5)))->SetLifeTime(1, 0.25, ASkySkill::StaticClass(), 1.25);
+		FTransform(FRotator(0, 0, 0), FVector(Lo.X, Lo.Y, 0.5), FVector(1.5, 1.5, 1.5)))->SetLifeTime(1, 0.25, ASkySkill::StaticClass(), 2.5);
 }
 
 void AFlowerBoss::PlayATS()
@@ -174,7 +174,8 @@ void AFlowerBoss::Attack()
 		break;
 
 	case 1:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MissileEffect, FVector(GetActorLocation().X, GetActorLocation().Y, 400));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MissileEffect, FVector(GetActorLocation().X, GetActorLocation().Y, 400));
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MissileEffect, FVector(GetActorLocation().X, GetActorLocation().Y, 400));
 		AttackToSky();
 		break;
 

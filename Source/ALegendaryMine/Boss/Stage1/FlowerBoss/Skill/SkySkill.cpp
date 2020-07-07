@@ -23,11 +23,11 @@ ASkySkill::ASkySkill()
 	Cylinder->OnComponentBeginOverlap.AddDynamic(this, &ASkySkill::OnOverlapBegin);
 	Cylinder->SetCollisionProfileName("OverlapAll");
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectAsset(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/SkyAttackEffect.SkyAttackEffect'"));
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> EffectAsset(TEXT("NiagaraSystem'/Game/Boss/1Stage/Flower/Skill/SkyAttack_NG.SkyAttack_NG'"));
 
-	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MovementParticles"));
+	Effect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MovementParticles"));
 	Effect->AttachTo(RootComponent);
-	Effect->SetTemplate(EffectAsset.Object);
+	Effect->SetAsset(EffectAsset.Object);
 	Effect->SetRelativeLocation(FVector(0, 0, 0));
 	Effect->SetActive(false);
 }

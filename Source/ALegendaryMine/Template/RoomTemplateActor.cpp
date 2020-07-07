@@ -13,7 +13,7 @@ ARoomTemplateActor::ARoomTemplateActor()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
 
-void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
+void ARoomTemplateActor::SetAsset(UMyCustomAsset* _MyCustomAsset)
 {
 	InstanceActor.Empty();
 
@@ -47,7 +47,7 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 
 		ActorArr.Add(
 			GetWorld()->SpawnActor<AActor>(
-				StaticMesh1->GeneratedClass, 
+				StaticMesh1->GeneratedClass,
 				MyCustomAsset->ActorArr[i].MeshTransform));
 
 		ActorArr[ActorArr.Num() - 1]->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
@@ -57,27 +57,42 @@ void ARoomTemplateActor::SetAsset(UMyCustomAsset * _MyCustomAsset)
 void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 {
 	bool bCheck = true;
-	
-	for (int i = 0; i < MyCustomAsset->ActorData[0].ActorData.Num(); i++)
-	{
-		FTransform InstanceTrans = FTransform::Identity;
-		InstanceActor[0]->GetInstanceTransform(i, InstanceTrans, true);
 
-		if (InstanceTrans.GetLocation().X == _Lo.X && InstanceTrans.GetLocation().Y == _Lo.Y)
+	for (int ii = 0; ii < MyCustomAsset->ActorData.Num(); ii++)
+		for (int i = 0; i < MyCustomAsset->ActorData[ii].ActorData.Num(); i++)
 		{
-			for (int j = 0; j < MyCustomAsset->ActorData.Num(); j++)
-				for (int k = 0; k < MyCustomAsset->ActorData[j].ActorData.Num(); k++)
-				{
-					FTransform InstanceTrans = FTransform::Identity;
-					InstanceActor[j]->GetInstanceTransform(k, InstanceTrans, true);
+			FTransform InstanceTrans = FTransform::Identity;
+			InstanceActor[ii]->GetInstanceTransform(i, InstanceTrans, true);
 
-					if (InstanceTrans.GetLocation().X == _Lo.X &&
-						InstanceTrans.GetLocation().Y == _Lo.Y)
+			if (InstanceTrans.GetLocation().X == _Lo.X && InstanceTrans.GetLocation().Y == _Lo.Y)
+			{
+				for (int j = 0; j < MyCustomAsset->ActorData.Num(); j++)
+					for (int k = 0; k < MyCustomAsset->ActorData[j].ActorData.Num(); k++)
 					{
-						InstanceActor[j]->UpdateInstanceTransform(k, FTransform(FRotator(), FVector(0, 0, -300), FVector(0, 0, 0)), true, true, true);
-						bCheck = false;
+						FTransform InstanceTrans = FTransform::Identity;
+						InstanceActor[j]->GetInstanceTransform(k, InstanceTrans, true);
+
+						if (InstanceTrans.GetLocation().X == _Lo.X &&
+							InstanceTrans.GetLocation().Y == _Lo.Y &&
+							InstanceTrans.GetLocation().Z >= 0)
+						{
+							InstanceActor[j]->UpdateInstanceTransform(k, FTransform(FRotator(), FVector(0, 0, -300), FVector(0, 0, 0)), true, true, true);
+							bCheck = false;
+						}
 					}
-				}
+			}
+		}
+
+	for (int i = 0; i < ActorArr.Num(); i++)
+	{
+		FTransform InstanceTrans = ActorArr[i]->GetActorTransform();
+
+		if (InstanceTrans.GetLocation().X == _Lo.X &&
+			InstanceTrans.GetLocation().Y == _Lo.Y &&
+			InstanceTrans.GetLocation().Z >= 0)
+		{
+			ActorArr[i]->Destroy();
+			bCheck = false;
 		}
 	}
 

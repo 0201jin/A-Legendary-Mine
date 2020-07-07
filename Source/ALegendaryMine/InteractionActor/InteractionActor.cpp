@@ -11,6 +11,11 @@ AInteractionActor::AInteractionActor()
 
 }
 
+void AInteractionActor::Damaged(int _Damage, FVector _TLo)
+{
+	DamageInteraction.Broadcast(_Damage, _TLo);
+}
+
 // Called when the game starts or when spawned
 void AInteractionActor::BeginPlay()
 {

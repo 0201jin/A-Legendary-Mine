@@ -7,6 +7,8 @@
 #include "Struct/MapGeneratorStruct.h"
 #include "MyGameInstance.h"
 #include "Monster/MonsterActor.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"

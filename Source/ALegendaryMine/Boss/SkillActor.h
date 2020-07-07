@@ -3,6 +3,8 @@
 #pragma once
 #include "Player/PlayerPawn.h"
 #include "Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -39,6 +41,7 @@ protected:
 	float Time = 0;
 
 protected:
-	UParticleSystemComponent* Effect;
+	UNiagaraComponent* Effect;
+
 	UStaticMeshComponent* Cylinder;
 };

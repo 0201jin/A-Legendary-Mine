@@ -3,6 +3,7 @@
 
 #include "HitBoxMTP.h"
 #include "Player/PlayerPawn.h"
+#include "InteractionActor/InteractionActor.h"
 
 // Sets default values
 AHitBoxMTP::AHitBoxMTP()
@@ -54,6 +55,7 @@ void AHitBoxMTP::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	if (Damage != 0)
 	{
 		APlayerPawn* Player = Cast<APlayerPawn>(OtherActor);
+		AInteractionActor* InteractionAT = Cast<AInteractionActor>(OtherActor);
 
 		if (Player)
 		{
@@ -70,6 +72,10 @@ void AHitBoxMTP::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 				Player->Damage(Damage);
 				HitPlayerList.Add(OtherActor);
 			}
+		}
+		else if (InteractionAT)
+		{
+			InteractionAT->Damaged(2, GetOwnerActorLocation());
 		}
 	}
 }

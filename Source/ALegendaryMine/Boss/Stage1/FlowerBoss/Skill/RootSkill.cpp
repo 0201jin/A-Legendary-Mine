@@ -22,11 +22,11 @@ ARootSkill::ARootSkill()
 	Cylinder->OnComponentBeginOverlap.AddDynamic(this, &ARootSkill::OnOverlapBegin);
 	Cylinder->SetCollisionProfileName("OverlapAll");
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectAsset(TEXT("ParticleSystem'/Game/Boss/1Stage/Flower/Skill/RootSkillEffect.RootSkillEffect'"));
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> EffectAsset(TEXT("NiagaraSystem'/Game/Boss/1Stage/Flower/Skill/RootSkill_NG.RootSkill_NG'"));
 
-	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MovementParticles"));
+	Effect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MovementParticles"));
 	Effect->AttachTo(RootComponent);
-	Effect->SetTemplate(EffectAsset.Object);
+	Effect->SetAsset(EffectAsset.Object);
 	Effect->SetRelativeLocation(FVector(0, 0, 0));
 	Effect->SetActive(false);
 }

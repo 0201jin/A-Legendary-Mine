@@ -5,6 +5,7 @@
 #include "Template/RoomTemplateActor.h"
 #include "Template/RoadTemplateActor.h"
 #include "Template/RoomDoor.h"
+#include "InteractionActor/InteractionActor.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -57,6 +58,11 @@ void AProjectile::SetSpeed(float _Speed)
 
 void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (Cast<AInteractionActor>(OtherActor))
+	{
+		Cast<AInteractionActor>(OtherActor)->Damaged(1, GetActorLocation());
+	}
+
 	if (Cast<APlayerPawn>(OtherActor))
 	{
 		Cast<APlayerPawn>(OtherActor)->Damage(Damage);

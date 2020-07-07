@@ -36,7 +36,7 @@ void ACircleSkillRange::Tick(float DeltaTime)
 	if (SpawnTime <= Time && !bSpawn)
 	{
 		bSpawn = true;
-		GetWorld()->SpawnActor<ASkillActor>(SpawnActor, GetActorTransform())->SetLifeTime(SkillLifeTime);
+		GetWorld()->SpawnActor<ASkillActor>(SpawnActor, FTransform(FRotator(0, 0, 0), GetActorLocation(), FVector(1, 1, 1)))->SetLifeTime(SkillLifeTime);
 	}
 
 	if (LifeTime <= Time)

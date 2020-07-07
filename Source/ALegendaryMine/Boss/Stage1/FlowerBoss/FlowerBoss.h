@@ -48,7 +48,7 @@ protected:
 	FTimerHandle AttackTerm;
 	FTimerHandle AttackTimer;
 
-	UParticleSystem* MissileEffect;
+	UNiagaraSystem* MissileEffect;
 
 	bool bCanAttack = false;
 };

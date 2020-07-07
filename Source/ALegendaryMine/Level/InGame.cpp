@@ -93,6 +93,21 @@ void AInGame::SpawnMonster(int _Stage, int _Number) //명령어 추후 반드시 지울 것
 	}
 }
 
+void AInGame::TPRoom(int _RoomNumber) //명령어 추후 반드시 지울 것 ex> ce TPRoom 0
+{
+	if (Mapgen->GetRoomArray().Num() > _RoomNumber)
+	{
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(FVector(
+			Mapgen->GetRoomArray()[_RoomNumber].X + (Mapgen->GetRoomArray()[_RoomNumber].SX / 2),
+			Mapgen->GetRoomArray()[_RoomNumber].Y + (Mapgen->GetRoomArray()[_RoomNumber].SY / 2),
+			100));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("RoomMax %d"), Mapgen->GetRoomArray().Num() - 1);
+	}
+}
+
 void AInGame::GenerateMap()
 {
 	UE_LOG(LogTemp, Log, TEXT("------------------------------"));

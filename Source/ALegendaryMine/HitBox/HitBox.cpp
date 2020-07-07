@@ -2,6 +2,7 @@
 
 #include "HitBox.h"
 #include "Monster/MonsterActor.h"
+#include "InteractionActor/InteractionActor.h"
 
 // Sets default values
 AHitBox::AHitBox()
@@ -53,6 +54,7 @@ void AHitBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	if (Damage != 0)
 	{
 		AMonsterActor* Monster = Cast<AMonsterActor>(OtherActor);
+		AInteractionActor* InteractionAT = Cast<AInteractionActor>(OtherActor);
 
 		if (Monster)
 		{
@@ -69,6 +71,10 @@ void AHitBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 				Monster->Damage(Damage, this);
 				HitMonsterList.Add(OtherActor);
 			}
+		}
+		else if (InteractionAT)
+		{
+			InteractionAT->Damaged(2, GetOwnerActorLocation());
 		}
 	}
 }

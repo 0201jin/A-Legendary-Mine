@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "InteractionActor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDamageInteraction, int32, Damage, FVector, Location);
+
 UCLASS()
 class ALEGENDARYMINE_API AInteractionActor : public AActor
 {
@@ -18,6 +20,8 @@ public:
 	// Sets default values for this actor's properties
 	AInteractionActor();
 
+	void Damaged(int _Damage, FVector _TLo = FVector());
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -27,4 +31,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	bool GetSpawnMonster();
+
+protected:
+	UPROPERTY(BluePrintAssignable, Category = "UpDateNavMesh")
+		FDamageInteraction DamageInteraction;
 };
