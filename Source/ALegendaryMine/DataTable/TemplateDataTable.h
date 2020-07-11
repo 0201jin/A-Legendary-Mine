@@ -25,6 +25,15 @@ public:
 		bool IsMonsterRoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool IsTreasureRoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool IsNPCRoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		bool IsShopRoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 RoomMonsterMaxScore;
 };
 
@@ -36,6 +45,9 @@ struct FStageSizeDataTableRow : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
 		int32 StageSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDataTable")
+		int32 TreasureRoomNumer;
 };
 
 UCLASS()

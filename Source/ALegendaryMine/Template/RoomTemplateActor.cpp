@@ -11,6 +11,9 @@ ARoomTemplateActor::ARoomTemplateActor()
 	PrimaryActorTick.bCanEverTick = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+
+	Walls = NewObject<UInstancedStaticMeshComponent>(this, TEXT("Walls"));
+	Walls->AttachTo(RootComponent);
 }
 
 void ARoomTemplateActor::SetAsset(UMyCustomAsset* _MyCustomAsset)
@@ -58,6 +61,7 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 {
 	bool bCheck = true;
 
+	//검은벽 제거 
 	for (int ii = 0; ii < MyCustomAsset->ActorData.Num(); ii++)
 		for (int i = 0; i < MyCustomAsset->ActorData[ii].ActorData.Num(); i++)
 		{
@@ -66,7 +70,66 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 
 			if (InstanceTrans.GetLocation().X == _Lo.X && InstanceTrans.GetLocation().Y == _Lo.Y)
 			{
-				for (int j = 0; j < MyCustomAsset->ActorData.Num(); j++)
+				for (int k = 0; k < MyCustomAsset->ActorData[0].ActorData.Num(); k++)
+				{
+					FTransform InstanceTrans = FTransform::Identity;
+					InstanceActor[0]->GetInstanceTransform(k, InstanceTrans, true);
+
+					if (InstanceTrans.GetLocation().X == _Lo.X &&
+						InstanceTrans.GetLocation().Y == _Lo.Y &&
+						InstanceTrans.GetLocation().Z >= 0)
+					{
+						InstanceActor[0]->UpdateInstanceTransform(k, FTransform(FRotator(), FVector(0, 0, -300), FVector(0, 0, 0)), true, true, true);
+
+						/*타일을 붙이는 작업*/
+						//삭제된 검은벽 주변에 있는 검은벽을 기준으로 +로 검은벽을 검색하고*
+						//검은벽이 있으면 타일을 부착*
+						//Lo와 같은 위치에 있었으면 패스*
+
+						if (bFindBlackWall)
+						{
+							for (int j = 0; j < MyCustomAsset->ActorData[0].ActorData.Num(); j++)
+							{
+								FTransform InstanceTrans = FTransform::Identity;
+								InstanceActor[0]->GetInstanceTransform(j, InstanceTrans, true);
+
+								if ((
+									((InstanceTrans.GetLocation().Y == _Lo.Y) && (InstanceTrans.GetLocation().X == _Lo.X + 100 || InstanceTrans.GetLocation().X == _Lo.X - 100)) ||
+									((InstanceTrans.GetLocation().X == _Lo.X) && (InstanceTrans.GetLocation().Y == _Lo.Y + 100 || InstanceTrans.GetLocation().Y == _Lo.Y - 100))) &&
+									InstanceTrans.GetLocation().Z >= 0)
+								{
+									FRotator Rot = (InstanceTrans.GetLocation() - _Lo).Rotation();
+									Rot.Pitch = 0;
+									Rot.Yaw += 90;
+
+									Walls->AddInstanceWorldSpace(FTransform(Rot, FVector(InstanceTrans.GetLocation().X, InstanceTrans.GetLocation().Y, 0), FVector(1, 1, 1)));
+									Walls->AddInstanceWorldSpace(FTransform(Rot, FVector(InstanceTrans.GetLocation().X, InstanceTrans.GetLocation().Y, 100), FVector(1, 1, 1)));
+
+									UE_LOG(LogTemp, Log, TEXT("Add Room Walls"));
+								}
+							}
+						}
+
+						bCheck = false;
+						bFindBlackWall = true;
+					}
+				}
+			}
+		}
+
+	if (bCheck && bFindBlackWall) //문 앞 한칸까지만의 오브젝트를 제거하기 위한 장치
+		iCount--;
+
+	//문 앞에 있는 오브젝트 제거
+	for (int ii = 0; ii < MyCustomAsset->ActorData.Num(); ii++)
+		for (int i = 0; i < MyCustomAsset->ActorData[ii].ActorData.Num(); i++)
+		{
+			FTransform InstanceTrans = FTransform::Identity;
+			InstanceActor[ii]->GetInstanceTransform(i, InstanceTrans, true);
+
+			if (InstanceTrans.GetLocation().X == _Lo.X && InstanceTrans.GetLocation().Y == _Lo.Y)
+			{
+				for (int j = 1; j < MyCustomAsset->ActorData.Num(); j++)
 					for (int k = 0; k < MyCustomAsset->ActorData[j].ActorData.Num(); k++)
 					{
 						FTransform InstanceTrans = FTransform::Identity;
@@ -80,10 +143,24 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 							bCheck = false;
 						}
 					}
+
+				for (int j = 0; j < Walls->GetNumRenderInstances(); j++)
+				{
+					FTransform InstanceTrans = FTransform::Identity;
+					Walls->GetInstanceTransform(j, InstanceTrans, true);
+
+					if (InstanceTrans.GetLocation().X == _Lo.X &&
+						InstanceTrans.GetLocation().Y == _Lo.Y &&
+						InstanceTrans.GetLocation().Z >= 0)
+					{
+						Walls->UpdateInstanceTransform(j, FTransform(FRotator(), FVector(0, 0, -300), FVector(0, 0, 0)), true, true, true);
+						bCheck = false;
+					}
+				}
 			}
 		}
 
-	for (int i = 0; i < ActorArr.Num(); i++)
+	for (int i = 0; i < ActorArr.Num(); i++) //문 앞에 있는 물체 제거
 	{
 		FTransform InstanceTrans = ActorArr[i]->GetActorTransform();
 
@@ -96,7 +173,7 @@ void ARoomTemplateActor::CreateRoad(FVector _RoadLo, FVector _Lo)
 		}
 	}
 
-	if (bCheck)
+	if (bCheck || iCount == 0)
 		return;
 
 	if (_RoadLo.X == _Lo.X)
@@ -115,6 +192,11 @@ void ARoomTemplateActor::DestroyRoom()
 	{
 		ActorArr[i]->Destroy();
 	}
+}
+
+void ARoomTemplateActor::SetRoadMeshData(FRoadMeshData _MeshData)
+{
+	Walls->SetStaticMesh(_MeshData.Walls);
 }
 
 // Called when the game starts or when spawned

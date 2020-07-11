@@ -3,6 +3,7 @@
 
 #include "SkillActor.h"
 #include "Engine.h"
+#include "InteractionActor/InteractionActor.h"
 
 // Sets default values
 ASkillActor::ASkillActor()
@@ -27,10 +28,17 @@ void ASkillActor::DestroySkill()
 
 void ASkillActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AInteractionActor* InteractionAT = Cast<AInteractionActor>(OtherActor);
+
 	if (Cast<APlayerPawn>(OtherActor))
 	{
 		if (Cast<APlayerPawn>(OtherActor)->GetCapsuleComponent() == OtherComp)
 			Cast<APlayerPawn>(OtherActor)->Damage(1);
+	}
+	
+	if (InteractionAT)
+	{
+		InteractionAT->Damaged(999);
 	}
 }
 

@@ -23,14 +23,16 @@ void MapGeneratorSys::MapGen(int _Stage)
 	iStage = _Stage;
 
 	//방 스폰
-	int RoomSize = 0;
-	int RoomCount = 0;
+	int RoomSize = 0, RoomCount = 0, TreasureRoomCount = 0;
 
-	while (GameInstance->StageSizeData[_Stage].StageSize > RoomSize) //다른 방들 생성
+	bool bMonsterRoomCount = true, bTreasureRoomCount = true;
+
+	while (bMonsterRoomCount || bTreasureRoomCount) //다른 방들 생성
 	{
 		int RandomIndex = (rand() % GameInstance->RoomTemplateData[iStage].Num());
 
-		if (!GameInstance->RoomTemplateData[iStage][RandomIndex].IsBossRoom)
+		if (GameInstance->RoomTemplateData[iStage][RandomIndex].IsMonsterRoom &&
+			bMonsterRoomCount)
 		{
 			UE_LOG(LogTemp, Log, TEXT("RoomIndex %d"), RandomIndex);
 
@@ -55,6 +57,41 @@ void MapGeneratorSys::MapGen(int _Stage)
 
 			RoomSize += GameInstance->RoomTemplateData[iStage][RandomIndex].RoomMonsterMaxScore;
 			RoomCount++;
+
+			if (GameInstance->StageSizeData[_Stage].StageSize < RoomSize)
+				bMonsterRoomCount = false;
+		}
+		else if (GameInstance->RoomTemplateData[iStage][RandomIndex].IsTreasureRoom &&
+			bTreasureRoomCount)
+		{
+			UE_LOG(LogTemp, Log, TEXT("RoomIndex %d"), RandomIndex);
+
+			FRoomData Data;
+
+			Data.SX = (GameInstance->RoomTemplateData[iStage][RandomIndex].Template->SX - 1) * 100;
+			Data.SY = (GameInstance->RoomTemplateData[iStage][RandomIndex].Template->SY - 1) * 100;
+			Data.X = 0;
+			Data.Y = 0;
+			Data.RoomNumber = RandomIndex;
+
+			TemplateActorArray.Add(
+				InGameLevel->GetWorld()->SpawnActor<ARoomTemplateActor>(
+					ARoomTemplateActor::StaticClass(),
+					FTransform(FRotator(0, 0, 0),
+						FVector(Data.X, Data.Y, 0),
+						FVector(1, 1, 1))));
+
+			TemplateActorArray[RoomCount]->SetAsset(GameInstance->RoomTemplateData[iStage][RandomIndex].Template);
+
+			RoomArray.Add(Data);
+
+			RoomSize += GameInstance->RoomTemplateData[iStage][RandomIndex].RoomMonsterMaxScore;
+			RoomCount++;
+
+			TreasureRoomCount++;
+
+			if (GameInstance->StageSizeData[_Stage].TreasureRoomNumer <= TreasureRoomCount)
+				bTreasureRoomCount = false;
 		}
 	}
 
@@ -892,7 +929,12 @@ void MapGeneratorSys::MapGen(int _Stage)
 
 			RoadTemplateActorArray[i]->SetRoadMeshData(GameInstance->RoadTemplateData[iStage][RandomIndex], RoadArray[i]);
 
+			TemplateActorArray[RoadArray[i].Data[fiCount].V1]->SetRoadMeshData(GameInstance->RoadTemplateData[iStage][RandomIndex]);
+			TemplateActorArray[RoadArray[i].Data[fiCount].V1]->CreateNewRoad();
 			TemplateActorArray[RoadArray[i].Data[fiCount].V1]->CreateRoad(RoadArray[i].Data[fiCount].V1R, RoadArray[i].Data[fiCount].V1RF);
+			
+			TemplateActorArray[RoadArray[i].Data[fiCount].V2]->SetRoadMeshData(GameInstance->RoadTemplateData[iStage][RandomIndex]);
+			TemplateActorArray[RoadArray[i].Data[fiCount].V2]->CreateNewRoad();
 			TemplateActorArray[RoadArray[i].Data[fiCount].V2]->CreateRoad(RoadArray[i].Data[fiCount].V2R, RoadArray[i].Data[fiCount].V2RF);
 
 			FVector V1RF = RoadArray[i].Data[fiCount].V1RF;
