@@ -1,6 +1,6 @@
 
 #include "AssetTypeActions_MyCustomAsset.h"
-#include "ALegendaryMine/MyCustomAsset.h"
+#include "MyCustomAsset.h"
 #include "CustomAssetEditorModule.h"
 
 #define LOCTEXT_NAMESPACE "AssetTypeActions_MyCustomAsset"

@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Factories/Factory.h"
-#include "MyCustomAssetFactory.generated.h"
+#include "MyCustomFactory.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ALEGENDARYMINE_API UMyCustomAssetFactory : public UFactory
+class ROOMTEMPLATEDESIGNER_API UMyCustomFactory : public UFactory
 {
 	GENERATED_BODY()
-
+	
 public:
-	UMyCustomAssetFactory();
+	UMyCustomFactory();
 
 	virtual UObject* FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn) override;
 };

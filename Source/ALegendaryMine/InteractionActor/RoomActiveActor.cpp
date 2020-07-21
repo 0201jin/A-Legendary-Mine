@@ -15,7 +15,7 @@ ARoomActiveActor::ARoomActiveActor()
 	Collision->SetCollisionProfileName("OverlapAll");
 	Collision->SetRelativeLocation(FVector(0, 0, 50));
 	Collision->SetRelativeRotation(FRotator(0, 0, 0));
-	Collision->InitBoxExtent(FVector(50, 10, 50));
+	Collision->InitBoxExtent(FVector(50, 50, 50));
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &ARoomActiveActor::OnOverlapBegin);
 }
 

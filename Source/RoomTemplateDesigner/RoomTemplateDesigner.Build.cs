@@ -25,7 +25,8 @@ public class RoomTemplateDesigner : ModuleRules
         PublicDependencyModuleNames.AddRange(
             new string[]
             {
-                "Core", 
+                "Core",
+                "ALegendaryMine"
 				// ... add other public dependencies that you statically link with here ...
 			}
         );
@@ -56,8 +57,7 @@ public class RoomTemplateDesigner : ModuleRules
                 "AdvancedPreviewScene",
                 "EditorStyle",
                 "RoomTemplateDesigner",
-                "LevelEditor",
-                "ALegendaryMine"
+                "LevelEditor"
                 // ... add private dependencies that you statically link with here ...	
 	        }
         );

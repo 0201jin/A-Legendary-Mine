@@ -14,6 +14,7 @@ AStandOffTypeMonster::AStandOffTypeMonster()
 void AStandOffTypeMonster::Attack()
 {
 	bCanAttack = false;
+	bCanMove = true;
 
 	AProjectile* ProjectileClass = GetWorld()->SpawnActor<AProjectile>(
 		AProjectile::StaticClass(),
@@ -54,9 +55,10 @@ void AStandOffTypeMonster::IsNotStun()
 		else if (Distance > AttackDistance && bCanAttack)
 			AiController->MoveToLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 
-		else if (500 >= Distance && !bCanAttack)
+		else if (500 >= Distance && !bCanAttack && bCanMove)
 		{
-			AiController->MoveToLocation(GetActorLocation() + (GetActorForwardVector() * -100));
+			bCanMove = false;
+			AiController->MoveToLocation(GetActorLocation() + (GetActorForwardVector() * -300));
 		}
 	}
 }

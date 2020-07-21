@@ -8,7 +8,7 @@
 // Sets default values
 ASkillActor::ASkillActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -17,8 +17,9 @@ ASkillActor::ASkillActor()
 void ASkillActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	Effect->SetActive(true);
+
+	if (Effect)
+		Effect->SetActive(true);
 }
 
 void ASkillActor::DestroySkill()
@@ -35,7 +36,7 @@ void ASkillActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		if (Cast<APlayerPawn>(OtherActor)->GetCapsuleComponent() == OtherComp)
 			Cast<APlayerPawn>(OtherActor)->Damage(1);
 	}
-	
+
 	if (InteractionAT)
 	{
 		InteractionAT->Damaged(999);

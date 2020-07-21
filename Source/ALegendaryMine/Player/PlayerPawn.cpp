@@ -161,6 +161,12 @@ void APlayerPawn::Damage(int _Damage)
 {
 	UE_LOG(LogTemp, Log, TEXT("Player Damaged!"));
 }
+
+void APlayerPawn::Stun(int _Time)
+{
+	UE_LOG(LogTemp, Log, TEXT("Player Stun!"));
+}
+
 void APlayerPawn::Attack(FRotator _Ro)
 {
 	if (CheckAction())

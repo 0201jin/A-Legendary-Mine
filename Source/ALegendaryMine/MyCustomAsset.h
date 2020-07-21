@@ -7,14 +7,14 @@
 #include "MyCustomAsset.generated.h"
 
 /**
- * 
+ *
  */
 USTRUCT(Atomic)
 struct FISMData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY()
+		UPROPERTY()
 		TArray<FInstancedStaticMeshInstanceData> ActorData; //Transfrom ¿˙¿Â
 
 	UPROPERTY()
@@ -26,7 +26,7 @@ struct FMeshData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY()
+		UPROPERTY()
 		FString MeshData;
 
 	UPROPERTY()
@@ -41,7 +41,7 @@ struct FAData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY()
+		UPROPERTY()
 		FString MeshData;
 
 	UPROPERTY()
@@ -56,7 +56,7 @@ struct FActorData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY()
+		UPROPERTY()
 		FString MeshData;
 
 	UPROPERTY()
@@ -68,9 +68,9 @@ class ALEGENDARYMINE_API UMyCustomAsset : public UObject
 {
 	GENERATED_BODY()
 
-public:
 	UMyCustomAsset();
 
+public:
 	UPROPERTY()
 		TArray<FISMData> ActorData;
 

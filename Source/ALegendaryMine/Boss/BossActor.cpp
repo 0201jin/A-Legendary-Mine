@@ -18,6 +18,8 @@ void ABossActor::BeginPlay()
 	Super::BeginPlay();
 	
 	SpawnDefaultController();
+
+	Player = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void ABossActor::PossessedBy(AController* NewController)
@@ -52,6 +54,10 @@ void ABossActor::Damage(int _Damage, AActor* _ACKActor)
 void ABossActor::Attack()
 {
 	UE_LOG(LogTemp, Log, TEXT("BossMonster : Attack!"));
+}
+
+void ABossActor::AttackEnd()
+{
 }
 
 void ABossActor::Pause()

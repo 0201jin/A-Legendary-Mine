@@ -69,6 +69,7 @@ protected:
 	bool bStun;
 	bool bNuckBack;
 	bool bGodMode;
+	bool bCanMove;
 
 	FRotator DiRo;
 	FVector HitBoxSize;

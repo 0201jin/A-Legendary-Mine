@@ -40,15 +40,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	UAnimMontage* AttackToRootAnim;
-	UAnimMontage* AttackToSideAnim;
-	UAnimMontage* AttackToSkyAnim;
-	UAnimMontage* DeadAnim;
-
-	FTimerHandle AttackTerm;
-	FTimerHandle AttackTimer;
-
 	UNiagaraSystem* MissileEffect;
-
-	bool bCanAttack = false;
 };

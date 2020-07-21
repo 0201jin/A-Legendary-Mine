@@ -30,11 +30,16 @@ protected:
 
 	virtual void Dead();
 
+	void InitSuddenAttack() { bSuddenAttack = true; }
+
 public:	
 	virtual void Damage(int _Damage, AActor* _ACKActor);
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Attack();
+
+	UFUNCTION(BlueprintCallable)
+		virtual void AttackEnd();
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Pause();
@@ -45,10 +50,23 @@ public:
 protected:
 	AAIController* AiController;
 
+	APawn* Player;
+
+	FTimerHandle AttackTerm;
+	FTimerHandle AttackTimer;
+	FTimerHandle SuddenAttackTimer;
+
 	UAnimInstance* AnimInstance;
+
+	TArray<UAnimMontage*> AnimArray;
+	UAnimMontage* DeadAnim;
+
+	class AHitBoxMTP* HitBox;
 
 	int Health;
 	int AttackParam = 0;
 
 	bool bDead = false;
+	bool bCanAttack = false;
+	bool bSuddenAttack = true;
 };

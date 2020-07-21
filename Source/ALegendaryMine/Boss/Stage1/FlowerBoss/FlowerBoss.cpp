@@ -39,13 +39,13 @@ AFlowerBoss::AFlowerBoss()
 	GetMesh()->AnimClass = AnimClass.Object;
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackToRootMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Attack_To_Root_Montage.FlowerBoss_1_Armature_Attack_To_Root_Montage'"));
-	AttackToRootAnim = AttackToRootMo.Object;
+	AnimArray.Add(AttackToRootMo.Object);
 	
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackToSideMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Fire_To_Side_Montage.FlowerBoss_1_Armature_Fire_To_Side_Montage'"));
-	AttackToSideAnim = AttackToSideMo.Object;
+	AnimArray.Add(AttackToSideMo.Object);
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackToSkyMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Fire_To_Sky_Montage.FlowerBoss_1_Armature_Fire_To_Sky_Montage'"));
-	AttackToSkyAnim = AttackToSkyMo.Object;
+	AnimArray.Add(AttackToSkyMo.Object);
 	
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMo(TEXT("AnimMontage'/Game/Boss/1Stage/Flower/Animation/FlowerBoss_1_Armature_Dead_Montage.FlowerBoss_1_Armature_Dead_Montage'"));
 	DeadAnim = DeadMo.Object;
@@ -145,7 +145,7 @@ void AFlowerBoss::AttackToSky()
 
 void AFlowerBoss::PlayATS()
 {
-	AnimInstance->Montage_Play(AttackToSkyAnim);
+	AnimInstance->Montage_Play(AnimArray[2]);
 }
 
 void AFlowerBoss::AttackTermFunc()
@@ -175,7 +175,6 @@ void AFlowerBoss::Attack()
 
 	case 1:
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MissileEffect, FVector(GetActorLocation().X, GetActorLocation().Y, 400));
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MissileEffect, FVector(GetActorLocation().X, GetActorLocation().Y, 400));
 		AttackToSky();
 		break;
 
@@ -205,7 +204,7 @@ void AFlowerBoss::Tick(float DeltaTime)
 		switch (AttackParam)
 		{
 		case 0:
-			AnimInstance->Montage_Play(AttackToRootAnim);
+			AnimInstance->Montage_Play(AnimArray[0]);
 			break;
 
 		case 1:
@@ -214,11 +213,11 @@ void AFlowerBoss::Tick(float DeltaTime)
 			break;
 
 		case 2:
-			AnimInstance->Montage_Play(AttackToSideAnim);
+			AnimInstance->Montage_Play(AnimArray[1]);
 			break;
 
 		case 3:
-			AnimInstance->Montage_Play(AttackToRootAnim);
+			AnimInstance->Montage_Play(AnimArray[0]);
 			break;
 		}
 	}

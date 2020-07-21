@@ -63,6 +63,7 @@ public:
 	void JumpTimerCoolFunc();
 
 	void Damage(int _Damage);
+	void Stun(int _Time);
 
 protected:
 	float PlayerSpeed;

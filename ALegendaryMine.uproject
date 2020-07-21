@@ -9,16 +9,15 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine",
 				"CoreUObject",
-				"UnrealEd",
+				"Engine",
 				"UMG"
 			]
 		},
 		{
 			"Name": "RoomTemplateDesigner",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
 			"AdditionalDependencies": [
 				"CoreUObject",
 				"Engine",

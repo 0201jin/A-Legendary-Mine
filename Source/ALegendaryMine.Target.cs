@@ -8,6 +8,7 @@ public class ALegendaryMineTarget : TargetRules
 	public ALegendaryMineTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-        ExtraModuleNames.Add("ALegendaryMine");
-    }
+		DefaultBuildSettings = BuildSettingsVersion.V2;
+		ExtraModuleNames.Add("ALegendaryMine");
+	}
 }
