@@ -19,7 +19,15 @@ public class ALegendaryMine : ModuleRules
                 "NavigationSystem",
                 "Paper2D",
                 "Niagara",
+                "ALegendaryMine",
             });
+
+        PrivateDependencyModuleNames.AddRange(
+            new string[]
+            {
+                "ALegendaryMine"
+            }
+        );
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 

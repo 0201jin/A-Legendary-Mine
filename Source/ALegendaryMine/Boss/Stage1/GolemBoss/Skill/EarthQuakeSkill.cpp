@@ -34,6 +34,14 @@ AEarthQuakeSkill::AEarthQuakeSkill()
 	CircleMeshComp->AttachTo(StunMesh);
 	CircleMeshComp->SetCollisionProfileName("OverlapAll");
 	CircleMeshComp->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> EffectAsset(TEXT("NiagaraSystem'/Game/Boss/1Stage/Golem/Skill/AttackToGound_NG.AttackToGound_NG'"));
+
+	Effect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MovementParticles"));
+	Effect->AttachTo(RootComponent);
+	Effect->SetAsset(EffectAsset.Object);
+	Effect->SetRelativeLocation(FVector(0, 0, 0));
+	Effect->SetActive(false);
 }
 
 void AEarthQuakeSkill::BeginPlay()

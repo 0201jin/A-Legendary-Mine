@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "Player/PlayerPawn.h"
+#include "ALegendaryMine/Player/PlayerPawn.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
